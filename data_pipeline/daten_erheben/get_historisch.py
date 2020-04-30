@@ -11,6 +11,7 @@ import pandas as pd
 from console_progressbar import ProgressBar
 import utils as utils
 from exception import file_exception, url_exception, raw_data_exception
+import log_writer
 
 dateTmpFile = "/tmp/tmp.txt"
 
@@ -35,7 +36,8 @@ def get_start_and_end_date():
         return startDate
 
     except:
-        raise file_exception("Unzureichende Lese- und Schribrechte.")
+        #raise file_exception("Unzureichende Lese- und Schribrechte.")
+        log_writer.influx_logger.error("Unzureichende Lese- und Schribrechte.")
 
 def get_temp_data(url):
 
@@ -47,7 +49,8 @@ def get_temp_data(url):
         files = zip_file.namelist()
 
     except:
-        raise url_exception("Die URL ist fehlerhaft.")
+        #raise url_exception("Die URL ist fehlerhaft.")
+        log_writer.influx_logger.error("Die URL ist fehlerhaft.")
 
     with zip_file.open(files[0]) as csvfile:   
 
@@ -92,7 +95,9 @@ def get_dwd_data(url):
 
     except:
 
-        raise raw_data_exception("Übergebenes Array fehlerhaft.")
+        #raise raw_data_exception("Übergebenes Array fehlerhaft.")
+        log_writer.influx_logger.error("Übergebenes Array fehlerhaft.")
+
     
     try:
         tmp = open(dateTmpFile, "w")
@@ -100,7 +105,8 @@ def get_dwd_data(url):
         tmp.close()
 
     except:
-        raise file_exception("Unzureichende Lese- und Schribrechte.")
+        #raise file_exception("Unzureichende Lese- und Schribrechte.")
+        log_writer.influx_logger.error("Unzureichende Lese- und Schribrechte.")
 
     return jsonWeatherArray
 
