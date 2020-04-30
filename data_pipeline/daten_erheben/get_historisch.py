@@ -9,9 +9,9 @@ from datetime import datetime, timedelta
 from io import BytesIO, StringIO
 import pandas as pd
 from console_progressbar import ProgressBar
-from .utils import *
-from exception import file_exception, url_exception, raw_data_exception
-from .log_writer import *
+import data_pipeline.daten_erheben.utils as utils
+from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception
+import data_pipeline.daten_erheben.log_writer as logger
 
 dateTmpFile = "/tmp/tmp.txt"
 
@@ -37,7 +37,7 @@ def get_start_and_end_date():
 
     except:
         #raise file_exception("Unzureichende Lese- und Schribrechte.")
-        influx_logger.error("Unzureichende Lese- und Schribrechte.")
+        logger.influx_logger.error("Unzureichende Lese- und Schribrechte.")
 
 def get_temp_data(url):
 
@@ -50,7 +50,7 @@ def get_temp_data(url):
 
     except:
         #raise url_exception("Die URL ist fehlerhaft.")
-        influx_logger.error("Die URL ist fehlerhaft.")
+        logger.influx_logger.error("Die URL ist fehlerhaft.")
 
     with zip_file.open(files[0]) as csvfile:   
 
@@ -84,7 +84,7 @@ def get_dwd_data(url):
                 timeString = get_timestamp_dwd(temperatures[i][0])
                 jsonBody = [
                     {'measurement': 'temperaturDWD',
-                    "time": get_converted_date(timeString),
+                    "time": utils.get_converted_date(timeString),
                     "fields":{"temperature":float(temperatures[i][1])}
                     }
                 ]
