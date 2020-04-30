@@ -1,6 +1,6 @@
 from flask import *
+import data_pipeline.daten_erheben.get_historisch as his
 import get_forecast
-import get_historisch
 import config
 import influxdb_logging
 import logging
@@ -24,7 +24,7 @@ def historische_datenerhebung():
 
     urlHistorisch = config.configData["historischURL"]
 
-    get_historisch.historische_daten_erheben(urlHistorisch)
+    his.historische_daten_erheben(urlHistorisch)
     return render_template('index.html')
 
 @app.route('/forcastDatenerhebung', methods = ['GET', 'POST'])
