@@ -9,9 +9,8 @@ from datetime import datetime, timedelta
 from io import BytesIO, StringIO
 import pandas as pd
 from console_progressbar import ProgressBar
-from .utils import *
+import utils as utils
 from exception import file_exception, url_exception, raw_data_exception
-from .log_writer import *
 
 dateTmpFile = "/tmp/tmp.txt"
 
@@ -36,8 +35,7 @@ def get_start_and_end_date():
         return startDate
 
     except:
-        #raise file_exception("Unzureichende Lese- und Schribrechte.")
-        influx_logger.error("Unzureichende Lese- und Schribrechte.")
+        raise file_exception("Unzureichende Lese- und Schribrechte.")
 
 def get_temp_data(url):
 
@@ -49,8 +47,7 @@ def get_temp_data(url):
         files = zip_file.namelist()
 
     except:
-        #raise url_exception("Die URL ist fehlerhaft.")
-        influx_logger.error("Die URL ist fehlerhaft.")
+        raise url_exception("Die URL ist fehlerhaft.")
 
     with zip_file.open(files[0]) as csvfile:   
 
@@ -84,7 +81,7 @@ def get_dwd_data(url):
                 timeString = get_timestamp_dwd(temperatures[i][0])
                 jsonBody = [
                     {'measurement': 'temperaturDWD',
-                    "time": get_converted_date(timeString),
+                    "time": utils.get_converted_date(timeString),
                     "fields":{"temperature":float(temperatures[i][1])}
                     }
                 ]
@@ -95,9 +92,7 @@ def get_dwd_data(url):
 
     except:
 
-        #raise raw_data_exception("Übergebenes Array fehlerhaft.")
-        log_writer.influx_logger.error("Übergebenes Array fehlerhaft.")
-
+        raise raw_data_exception("Übergebenes Array fehlerhaft.")
     
     try:
         tmp = open(dateTmpFile, "w")
@@ -105,8 +100,7 @@ def get_dwd_data(url):
         tmp.close()
 
     except:
-        #raise file_exception("Unzureichende Lese- und Schribrechte.")
-        log_writer.influx_logger.error("Unzureichende Lese- und Schribrechte.")
+        raise file_exception("Unzureichende Lese- und Schribrechte.")
 
     return jsonWeatherArray
 
