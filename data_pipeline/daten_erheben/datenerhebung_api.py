@@ -2,8 +2,6 @@ from flask import *
 import data_pipeline.daten_erheben.get_historisch as his
 import data_pipeline.daten_erheben.get_forecast as forc
 import data_pipeline.daten_erheben.config as con
-import influxdb_logging
-import logging
 
 app = Flask(__name__)
 
@@ -40,4 +38,3 @@ def forecast_datenerhebung():
 
 if __name__ == '__main__':
     app.run(host='localhost', port='8000')
-    influxdb_logging.InfluxHandler
