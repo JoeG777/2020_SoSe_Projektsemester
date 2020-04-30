@@ -1,12 +1,6 @@
-import json
-from influxdb import InfluxDBClient
 from urllib.request import urlopen
 import urllib.request
 from zipfile import ZipFile
-from datetime import datetime, timedelta
-from io import BytesIO, StringIO
-import pandas as pd
-from console_progressbar import ProgressBar
 import xml.etree.ElementTree as et
 import data_pipeline.daten_erheben.utils as utils
 from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception

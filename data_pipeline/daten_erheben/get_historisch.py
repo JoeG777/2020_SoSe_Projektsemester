@@ -1,14 +1,8 @@
-import json
-from influxdb import InfluxDBClient
-import urllib.request
 from zipfile import ZipFile
-import csv
 import os
 import requests
-from datetime import datetime, timedelta
-from io import BytesIO, StringIO
+from io import BytesIO
 import pandas as pd
-from console_progressbar import ProgressBar
 import data_pipeline.daten_erheben.utils as utils
 from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception
 import data_pipeline.daten_erheben.log_writer as logger
@@ -96,7 +90,7 @@ def get_dwd_data(url):
     except:
 
         #raise raw_data_exception("Übergebenes Array fehlerhaft.")
-        log_writer.influx_logger.error("Übergebenes Array fehlerhaft.")
+        logger.influx_logger.error("Übergebenes Array fehlerhaft.")
 
     
     try:
@@ -106,7 +100,7 @@ def get_dwd_data(url):
 
     except:
         #raise file_exception("Unzureichende Lese- und Schribrechte.")
-        log_writer.influx_logger.error("Unzureichende Lese- und Schribrechte.")
+        logger.influx_logger.error("Unzureichende Lese- und Schribrechte.")
 
     return jsonWeatherArray
 
