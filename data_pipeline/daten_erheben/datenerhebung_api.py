@@ -1,7 +1,7 @@
 from flask import *
 import data_pipeline.daten_erheben.get_historisch as his
-import get_forecast
-import config
+import data_pipeline.daten_erheben.get_forecast as forc
+import data_pipeline.daten_erheben.config as con
 import influxdb_logging
 import logging
 
@@ -22,7 +22,7 @@ def historische_datenerhebung():
 
     # urlHistorisch = request.json()['historischURL']
 
-    urlHistorisch = config.configData["historischURL"]
+    urlHistorisch = con.configData["historischURL"]
 
     his.historische_daten_erheben(urlHistorisch)
     return render_template('index.html')
@@ -33,9 +33,9 @@ def forecast_datenerhebung():
     # urlForecast = request.json()['forecastURL']
     # timeOfSchedule = request.json()['timeOfSchedule']
 
-    urlForecast = config.configData["forecastURL"]
+    urlForecast = con.configData["forecastURL"]
 
-    get_forecast.vorhersage_daten_erheben(urlForecast)
+    forc.vorhersage_daten_erheben(urlForecast)
     return render_template('index.html')
 
 if __name__ == '__main__':
