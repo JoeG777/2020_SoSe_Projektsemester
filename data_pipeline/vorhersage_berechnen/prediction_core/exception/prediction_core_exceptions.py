@@ -65,4 +65,18 @@ class InvalidConfigException(Exception):
         if self.message:
             return 'InvalidConfigException: {0}'.format(self.message)
         else:
-            return 'InvalidConfigException has been raised'
+            return 'InvalidConfigException has been raised'#
+
+
+class PersistorException(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'PersistorException: {0}'.format(self.message)
+        else:
+            return 'PersistorException has been raised'
