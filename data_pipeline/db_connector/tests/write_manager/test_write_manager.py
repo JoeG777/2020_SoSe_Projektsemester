@@ -4,7 +4,7 @@ from data_pipeline.db_connector.src.write_manager import write_manager as wm
 
 class test_build_write_json(unittest.TestCase):
 
-    def adds_all_values(self):
+    def test_adds_all_values(self):
         expected_json = [
             {'measurement': "test_measurement",
              "time": 1,
