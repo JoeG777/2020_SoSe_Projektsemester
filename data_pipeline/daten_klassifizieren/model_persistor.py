@@ -27,6 +27,7 @@ classification_config = {
     }
 }
 
+
 def load_classifier(classification_config):
     '''Name in Dokumentation: klassifizierer_laden
     Parameter:
@@ -51,7 +52,6 @@ def load_classifier(classification_config):
     #  vorhanden ist
 
 
-
 def persist_classifier(classifier, classification_config):
     '''Name in Dokumentation: klassifizierer_persistieren
     Parameter:
@@ -71,6 +71,7 @@ def persist_classifier(classifier, classification_config):
     save_dictionary(classifier_dictionary, datasource_classifier)
     return 0
 
+
 def load_dictionary(datasource_classifier):
     '''Name in Dokumentation: -
     Parameter:
@@ -79,7 +80,6 @@ def load_dictionary(datasource_classifier):
         dictionary: Dictionary, das alle Klassifizierer enthaelt'''
     with open(datasource_classifier, "rb") as file:
         return pickle.load(file)
-
 
 
 def save_dictionary(classifier_dictionary, datasource_classifier):
