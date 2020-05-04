@@ -15,11 +15,10 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/historischeDatenerhebung', methods = ['GET', 'POST'])
+@app.route('/historischeDatenerhebung', methods = ['POST'])
 def historische_datenerhebung():
 
-    urlHistorisch = request.json()['historischURL']
-
+    urlHistorisch = request.get_json()['historischURL']
     # urlHistorisch = con.configData["historischURL"]
 
     his.historische_daten_erheben(urlHistorisch)
@@ -28,7 +27,7 @@ def historische_datenerhebung():
 @app.route('/forcastDatenerhebung', methods = ['GET', 'POST'])
 def forecast_datenerhebung():
 
-    urlForecast = request.json()['forecastURL']
+    urlForecast = request.get_json()['forecastURL']
     timeOfSchedule = request.json()['timeOfSchedule']
 
     # urlForecast = con.configData["forecastURL"]
