@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 from influxdb import InfluxDBClient
 from console_progressbar import ProgressBar
 
-"""
-Diese Methode formatiert das übergebene Datum in ein passendes Format und zieht 2 Stunden ab damit es in Grafana richtig angezeigt wird
-"""
-def get_converted_date(date):
 
+def get_converted_date(date):
+    '''
+    Diese Methode zieht von dem übergebenen Datum 2 Stunden ab damit es in Grafana richtig angezeigt werden kann.
+    '''
     last_time = datetime(year = int(date[:4]), month = int(date[5:7]), day = int(date[8:10]), hour = int(date[11:13]), minute = int(date[14:16]), second = int(date[17:19]))
     two_hours = timedelta(hours = 2)
 
@@ -17,12 +17,12 @@ def get_converted_date(date):
 
     return return_time
 
-"""
-Diese Methode erstellt die WetterDWD Datenbank, baut eine Verbindung zu dieser auf und schreibt Daten aus einem
-übergebenen JSON-Array in die Datenbank. Bei Erfolgreichem schreiben kommt am Ende die Nachricht Daten aktualisiert.
-"""
-def write_to_influx(json_array):
 
+def write_to_influx(json_array):
+    '''
+    Diese Methode erstellt die WetterDWD Datenbank, baut eine Verbindung zu dieser auf und schreibt Daten aus einem
+    übergebenen JSON-Array in die Datenbank. Bei Erfolgreichem schreiben kommt am Ende die Nachricht Daten aktualisiert.
+    '''
     client = InfluxDBClient('localhost', 8086, 'admin', 'admin', 'WetterDWD')
     client.create_database('WetterDWD')
 
