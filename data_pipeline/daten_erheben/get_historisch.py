@@ -116,9 +116,9 @@ def get_dwd_data(url):
 
     return jsonWeatherArray
 
-""""
+"""
 Main-Methode für den Hauptaufruf.
-""""
+"""
 def historische_daten_erheben(url):
 
     utils.write_to_influx(get_dwd_data(url))
