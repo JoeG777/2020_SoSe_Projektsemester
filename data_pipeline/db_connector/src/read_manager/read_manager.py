@@ -1,6 +1,7 @@
+import pandas as pd
+
 from influxdb import InfluxDBClient
 from ..db_config import db_config
-import datetime
 
 url = db_config.params.get("url")
 port = db_config.params.get("port")
@@ -12,7 +13,7 @@ db = db_config.params.get("db_name")
 def read_query(query):
     """
     Takes a query in the influx sql dialect. Sends this query to the client provided by the current config and returns
-    the queries result.
+    the queries result. Calls format_data() on all retrieved sets.
     :param query: The query for the data retrieval.
     :return: The result of the query.
     """
@@ -24,7 +25,7 @@ def read_query(query):
     for p in points:
         result.append(p.get('valueScaled'))
 
-    return result
+    return format_data(result)
 
 
 def read_register_of_measurement(measurement, register):
@@ -53,3 +54,12 @@ def read_register_of_measurement_from_to(measurement, register, start, end):
             + '\' and time < \'' + end \
             + '\' and register = \'' + register + '\''
     return read_query(query)
+
+
+def format_data(dataset):
+    """
+    Formats a given dataset into a pandas DataFrame.
+    :param dataset: The dataset to format.
+    :return: The given dataset as a DataFrame.
+    """
+    return pd.DataFrame(dataset)
