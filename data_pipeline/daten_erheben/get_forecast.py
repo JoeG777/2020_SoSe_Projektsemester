@@ -54,8 +54,7 @@ def get_forecast_data(url):
             jsonWeatherArray.append(jsonBody)
 
     except:
-
-        log_writer.influx_logger.error("Datenarray fehlerhaft.")
+        raise raw_data_exception("Datenarray fehlerhaft.")
 
     return jsonWeatherArray
 
@@ -65,15 +64,15 @@ def get_forecast(url):
         urllib.request.urlretrieve(url, "data.zip") # KMZ-Datei herunterladen und als .zip speichern
 
     except:
-        log_writer.influx_logger.error("Die URL ist fehlerhaft.")
+        raise url_exception("Die URL ist fehlerhaft.")
 
     try:
         with ZipFile('data.zip', 'r') as zip_datei:
             filename = zip_datei.namelist()[0] # Liste aller Dateien in der gespeicherten ZIP-Datei ermitteln 
             zip_datei.extractall("") # ZIP-Datei entpacken 
 
-    except: 
-        log_writer.influx_logger.error("Unzureichende Lese- und Schribrechte.")
+    except:
+        raise file_exception("Unzureichende Lese- und Schribrechte.")
 
     return filename
 
