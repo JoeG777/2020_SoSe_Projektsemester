@@ -21,7 +21,7 @@ def get_converted_date(date):
 Diese Methode erstellt die WetterDWD Datenbank, baut eine Verbindung zu dieser auf und schreibt Daten aus einem
 übergebenen JSON-Array in die Datenbank. Bei Erfolgreichem schreiben kommt am Ende die Nachricht Daten aktualisiert.
 """
-def write_to_influx(jsonArray):
+def write_to_influx(json_array):
 
     client = InfluxDBClient('localhost', 8086, 'admin', 'admin', 'WetterDWD')
     client.create_database('WetterDWD')
@@ -29,9 +29,9 @@ def write_to_influx(jsonArray):
     pb_forecast = ProgressBar(total=100, prefix='Daten schreiben', suffix='', decimals=2, length=50, fill='#', zfill='-')
     counter = 1
 
-    for json in jsonArray:
+    for json in json_array:
         client.write_points(json)
-        percent = float("{:.2f}".format((counter/len(jsonArray)*100)))
+        percent = float("{:.2f}".format((counter/len(json_array)*100)))
         counter += 1
         pb_forecast.print_progress_bar(percent)
 
