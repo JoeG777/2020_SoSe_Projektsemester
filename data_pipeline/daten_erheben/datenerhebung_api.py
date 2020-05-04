@@ -24,7 +24,7 @@ def historische_datenerhebung():
     his.historische_daten_erheben(urlHistorisch)
     return render_template('index.html')
 
-@app.route('/forcastDatenerhebung', methods = ['GET', 'POST'])
+@app.route('/forecastDatenerhebung', methods = ['POST'])
 def forecast_datenerhebung():
 
     urlForecast = request.get_json()['forecastURL']
