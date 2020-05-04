@@ -9,21 +9,23 @@ import data_pipeline.daten_erheben.log_writer as logger
 
 dateTmpFile = "/tmp/tmp.txt"
 
-"""
-Formatiert den Zeitstempel der einzelnen Wetterdaten in ein geeignetes Format für das Einschreiben in InfluxDB.
-"""
+
 def get_timestamp_dwd(time):
+    '''
+    Formatiert den Zeitstempel der einzelnen Wetterdaten in ein geeignetes Format für das Einschreiben in InfluxDB.
+    '''
 
     formatted = time[:4] + "-" + time[4:6] + "-" + time[6:8] + "T" + time[8:10] + ":" + time[10:12] + ":00Z"
     return formatted
 
-""""
-Das Start- und das Enddatum der anzufragenden Wetterdaten wird bestimmt und zurückgegeben. 
-Für das bestimmen des Startdatums wird nach einem Eintrag in der tmp.txt-Datei geschaut.
-Ist in dieser ein Datum schon erhalten, dann wird dies auch als Startdatum genutzt. Ist sie jedoch leer,
-wird das Standard-Startdatum (05.01.2020) gesetzt. Beim Enddatum handelt es sich immer um die aktuelle Zeit der Abfrage.
-"""
+
 def get_start_and_end_date():
+    '''
+    Das Start- und das Enddatum der anzufragenden Wetterdaten wird bestimmt und zurückgegeben.
+    Für das bestimmen des Startdatums wird nach einem Eintrag in der tmp.txt-Datei geschaut.
+    Ist in dieser ein Datum schon erhalten, dann wird dies auch als Startdatum genutzt. Ist sie jedoch leer,
+    wird das Standard-Startdatum (05.01.2020) gesetzt. Beim Enddatum handelt es sich immer um die aktuelle Zeit der Abfrage.
+    '''
 
     try:
         if not os.path.exists(dateTmpFile):
@@ -41,11 +43,12 @@ def get_start_and_end_date():
     except:
         raise file_exception("Unzureichende Lese- und Schreibrechte.")
 
-"""
-ZIP-Datei vom DWD wird heruntergeladen, die CSV darin wird ausgelesen, 
-und die einzelnen Temperaturdaten werden in ein Array mit ihren dazugehörigen Zeitstempeln gelagert.
-"""
+
 def get_temp_data(url):
+    '''
+    ZIP-Datei vom DWD wird heruntergeladen, die CSV darin wird ausgelesen,
+    und die einzelnen Temperaturdaten werden in ein Array mit ihren dazugehörigen Zeitstempeln gelagert.
+    '''
 
     returnData = []
 
@@ -70,11 +73,12 @@ def get_temp_data(url):
 
     return returnData
 
-"""
-Temperaturdaten aus der extrahierten CSV-Datei werden für die InfluxDB passend formatiert, 
-in ein JSON-Array gespeichert und zurückgegeben.
-"""
+
 def get_dwd_data(url):
+    '''
+    Temperaturdaten aus der extrahierten CSV-Datei werden für die InfluxDB passend formatiert,
+    in ein JSON-Array gespeichert und zurückgegeben.
+    '''
 
     jsonWeatherArray = []
     temperatures = get_temp_data(url)
@@ -116,9 +120,10 @@ def get_dwd_data(url):
 
     return jsonWeatherArray
 
-"""
-Main-Methode für den Hauptaufruf.
-"""
+
 def historische_daten_erheben(url):
+    '''
+    Main-Methode für den Hauptaufruf.
+    '''
 
     utils.write_to_influx(get_dwd_data(url))
