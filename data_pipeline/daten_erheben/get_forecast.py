@@ -6,6 +6,11 @@ import data_pipeline.daten_erheben.utils as utils
 from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception
 import data_pipeline.daten_erheben.log_writer as log_writer
 
+"""
+KML-Datei mit den Vorhersage-Wetterdaten wird als XML verarbeitet. Temperaturdaten der Vorhersagegröße werden gesucht und gespeichert.
+Temperaturdaten werden für die InfluxDB passend formatiert, Temperatur von Kelvin in Grad Celsius umgerechnet und in einem JSON-Array gespeichert.
+Gibt zusammengesetztes JSON-Array mit Vorhersage-Wetterdaten zurück.
+"""
 def get_forecast_data(url):
 
     tree = et.parse(get_forecast(url)) # XML-Dokument in XML-Tree umwandeln
@@ -58,6 +63,10 @@ def get_forecast_data(url):
 
     return jsonWeatherArray
 
+"""
+Vorhersage-Wetterdaten-URL wird eingelesen. Die vorhandene KMZ-Datei wird als ZIP-Datei gespeichert und extrahiert.
+Gibt Liste aller Dateien der gespeicherten ZIP-Datei zurück.
+"""
 def get_forecast(url):
 
     try:
@@ -76,6 +85,9 @@ def get_forecast(url):
 
     return filename
 
+"""
+Main-Methode für den Hauptaufruf.
+"""
 def vorhersage_daten_erheben(url):
 
     utils.write_to_influx(get_forecast_data(url))
