@@ -6,6 +6,7 @@ import data_pipeline.daten_erheben.utils as utils
 from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception
 import data_pipeline.daten_erheben.log_writer as log_writer
 
+
 """
 KML-Datei mit den Vorhersage-Wetterdaten wird als XML verarbeitet. Temperaturdaten der Vorhersagegröße werden gesucht und gespeichert.
 Temperaturdaten werden für die InfluxDB passend formatiert, Temperatur von Kelvin in Grad Celsius umgerechnet und in einem JSON-Array gespeichert.
