@@ -3,7 +3,7 @@ filtern_config = {
     "filter_options": {
         "default": {
             "room": {
-                "WarmwWasserZyklus": {
+                "WarmWasserZyklus": {
                     "delete": "True",
                     "Interpolation": "linear"
                 },
@@ -21,7 +21,7 @@ filtern_config = {
                 }
             },
             "condenser": {
-                "WarmwWasserZyklus": {
+                "WarmWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -39,7 +39,7 @@ filtern_config = {
                 }
             },
             "evaporator": {
-                "WarmwWasserZyklus": {
+                "WarmWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -57,7 +57,7 @@ filtern_config = {
                 }
             },
             "inlet": {
-                "WarmwWasserZyklus": {
+                "WarmWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -75,7 +75,7 @@ filtern_config = {
                 }
             },
             "outlet": {
-                "WarmwWasserZyklus": {
+                "WarmWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -93,7 +93,7 @@ filtern_config = {
                 }
             },
             "freshAirIntake": {
-                "WarmwWasserZyklus": {
+                "WarmWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
