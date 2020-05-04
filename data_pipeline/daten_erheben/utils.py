@@ -19,9 +19,6 @@ def write_to_influx(jsonArray):
     client = InfluxDBClient('localhost', 8086, 'admin', 'admin', 'WetterDWD')
     client.create_database('WetterDWD')
 
-    # url = request.json()['url']
-    # startDate = request.json()['startDate']
-
     pbForecast = ProgressBar(total=100,prefix='Daten schreiben', suffix='', decimals=2, length=50, fill='#', zfill='-')
     counter = 1
 
