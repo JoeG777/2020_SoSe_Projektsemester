@@ -17,6 +17,15 @@ def write_query(json):
     client = InfluxDBClient(url, port, user, password, db)
     client.write_points(json)
 
+def write_query_array(json_array):
+    """
+    Takes a parameter as JSON-Array and writes the data defined in it into the influx database provided in db_config.
+    :param json: The JSON-Array to write into the database
+    """
+    client = InfluxDBClient(url, port, user, password, db)
+
+    for json in json_array:
+        client.write_points(json)
 
 def write_value_with_time(measurement, value, value_name, time):
     """
