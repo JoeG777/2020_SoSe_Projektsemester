@@ -91,4 +91,3 @@ Main-Methode für den Hauptaufruf.
 """
 def vorhersage_daten_erheben(url):
 
-    utils.write_to_influx(get_forecast_data(url))
