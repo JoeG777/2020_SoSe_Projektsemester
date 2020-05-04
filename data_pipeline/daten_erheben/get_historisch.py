@@ -30,7 +30,7 @@ def get_start_and_end_date():
         return startDate
 
     except:
-        raise file_exception("Unzureichende Lese- und Schribrechte.")
+        raise file_exception("Unzureichende Lese- und Schreibrechte.")
 
 def get_temp_data(url):
 
@@ -95,7 +95,7 @@ def get_dwd_data(url):
         tmp.close()
 
     except:
-        raise file_exception("Unzureichende Lese- und Schribrechte.")
+        raise file_exception("Unzureichende Lese- und Schreibrechte.")
 
     return jsonWeatherArray
 

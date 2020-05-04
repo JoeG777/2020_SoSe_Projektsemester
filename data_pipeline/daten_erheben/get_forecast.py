@@ -72,7 +72,7 @@ def get_forecast(url):
             zip_datei.extractall("") # ZIP-Datei entpacken 
 
     except:
-        raise file_exception("Unzureichende Lese- und Schribrechte.")
+        raise file_exception("Unzureichende Lese- und Schreibrechte.")
 
     return filename
 
