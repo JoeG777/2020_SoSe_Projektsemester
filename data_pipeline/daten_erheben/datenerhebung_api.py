@@ -28,7 +28,6 @@ def historische_datenerhebung():
 def forecast_datenerhebung():
 
     urlForecast = request.get_json()['forecastURL']
-    timeOfSchedule = request.get_json()['timeOfSchedule']
 
     # urlForecast = con.configData["forecastURL"]
 
