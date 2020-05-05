@@ -12,7 +12,7 @@ dateTmpFile = "/tmp/tmp.txt"
 def get_timestamp_dwd(time):
     '''
     Formats the time stamp of the individual weather data in a suitable format for writing into InfluxDB.
-    :param unformatted time stamp of the individual weather data
+    :param time: unformatted time stamp of the individual weather data
     :return: formatted time stamp
     '''
 
@@ -26,6 +26,7 @@ def get_start_date():
     To determine the start date, it looks for an entry in the tmp.txt file.
     If a date has already been received in this, then this is also used as the start date.
     However, if it is empty, the standard start date (05.01.2020) is set.
+    :raises file_exception: For inadequate read and write rights.
     :return: start date for the beginning of the query
     '''
 
@@ -50,7 +51,8 @@ def get_temp_data(url):
     '''
     Downloads the ZIP file from DWD, reads the CSV,
     and stores the individual temperature data in an array with their associated time stamps.
-    :param url Download-link for the weather data from DWD
+    :param url: Download-link for the weather data from DWD
+    :raises url_exception: For incorrect URL.
     :return: Array with all weather entries and their time stamps
     '''
 
@@ -82,7 +84,9 @@ def get_dwd_data(url):
     '''
     Temperature data from the extracted CSV file are formatted appropriately for the InfluxDB,
     stored in a JSON array and returned.
-    :param url Download-link for the weather data from DWD
+    :param url: Download-link for the weather data from DWD
+    :raises raw_data_exception: For incorrect passed data
+    :raises file_exception: For inadequate read and write rights.
     :return: Json-Array with all the formatted weather entries and their formatted time stamps
     '''
 
@@ -130,7 +134,7 @@ def get_dwd_data(url):
 def historische_daten_erheben(url):
     '''
     Main method for the main call.
-    :param url Download-link for the weather data from DWD
+    :param url: Download-link for the weather data from DWD
     '''
 
     utils.write_to_influx(get_dwd_data(url))
