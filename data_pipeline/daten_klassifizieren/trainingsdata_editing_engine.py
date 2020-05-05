@@ -23,6 +23,8 @@ def daten_erweitern(config):
         #df = pd.concat([room], axis=1)
         #durchschnittliche Ableitung
         df['Room_deriv'] = (df['Room'].shift(-1)-df['Room'].shift(1)) / 2
+        #absolute Änderung
+        df['Room_ch_abs'] = df['Room'].diff(1)
 
 
 
@@ -64,6 +66,7 @@ def daten_markieren(config):
         start_marker = config['event_features']['start_marker'] #1.0
         start_deriv = config['event_features']['start_deriv'] #-0.06
         start_ch = config['event_features']['start_ch'] #-0.06
+        start_abtau = config['event_features']['start_abtau'] # 10.0
         end_marker = config['event_features']['end_marker'] #-1
         end_deriv = config['event_features']['end_deriv'] #0.06
         end_shift = config['event_features']['end_shift'] #30
@@ -72,7 +75,7 @@ def daten_markieren(config):
         df['Warmwassermarker'] = 0
         #Markierung Anfang
         #durchschnittliche Ableitung Room <= -0.06
-        df.loc[(df['Room_deriv'] <= start_deriv) & (df['Room_deriv'] <= start_ch), 'Warmwassermarker'] = start_marker
+        df.loc[(df['In'].shift(1) > start_abtau) & (df['Room_deriv'] <= start_deriv) & (df['Room_deriv'] <= start_ch), 'Warmwassermarker'] = start_marker
         #Löschen doppelter oder dreifacher Startpunkte
         df.loc[(df['Warmwassermarker'] == start_marker) & ((df['Warmwassermarker'].shift(-1) == start_marker) |
                                                            (df['Warmwassermarker'].shift(-2) == start_marker)), 'Warmwassermarker'] = del_marker
@@ -83,25 +86,12 @@ def daten_markieren(config):
         df.loc[(df['Warmwassermarker'] == end_marker) & ((df['Warmwassermarker'].shift(-1) == end_marker) |
                                                          (df['Warmwassermarker'].shift(-2) == end_marker)), 'Warmwassermarker'] = del_marker
         #kann nur zwischen 22-8Uhr auftreten
-        df.loc[(df['Warmwassermarker'].index.hour > 7) & (df['Warmwassermarker'].index.hour < 22), 'Warmwassermarker'] = 0
+        df.loc[(df['Warmwassermarker'].index.hour > 8) & (df['Warmwassermarker'].index.hour < 22), 'Warmwassermarker'] = 0
 
         #Zyklenbereich markieren
-        df['Warmwasserzyklus'] = False
-        in_cycle = False
-        count_start = 0
-        count_end = 0
-        count_in = 0
-        for i in range(0, len(df)):
-            current = df.iat[i, 6]
-            if in_cycle and (current == 0 or current == 1):
-                count_in += 1
-                df.iat[i, 6] = 10
-                current = 10
-            if current == 1:
-                count_start += 1
-                in_cycle = True
-            df.iat[i, 7] = in_cycle
-            if current == -1:
-                count_end += 1
-                in_cycle = False
+        spaces = df.loc[(df['Warmwassermarker'] == start_marker) | (df['Warmwassermarker'] == end_marker)].index.tolist()
+        len(spaces)
+        for i in range(0,len(spaces), 2):
+            df.loc[spaces[i]:spaces[i+1], 'Warmwasserzyklus'] = True
+
     #DB-Connector.daten_schreiben(db_train, df)
