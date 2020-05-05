@@ -18,10 +18,11 @@ def default():
 def filtern():
     '''
     Name in documentation: 'filtern'
+    Start the filtern engine.
     '''
     config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
-    data_pipeline.daten_filtern.filtern_engine.filtern(config)
+    data_pipeline.daten_filtern.src.filtern_engine.filtern(config)
 
     return render_template('index.html')
 
