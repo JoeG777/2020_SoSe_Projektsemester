@@ -1,7 +1,7 @@
 from influx_logging import InfluxHandler
 import logging
 
-class LogWriter():
+class Logger():
 
     def __init__(self):
 
