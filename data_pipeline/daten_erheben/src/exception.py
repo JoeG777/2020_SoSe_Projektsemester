@@ -1,7 +1,7 @@
 """
 Die File-Exception wird geworfen, wenn eine Datei lokal nicht gefunden werden kann, oder man keine Schreibe-/Leserechte in dem jeweiligen Verzeichnis besitzt.
 """
-class file_exception(Exception):
+class FileException(Exception):
 
     def __init__(self, *args):
 
@@ -19,7 +19,7 @@ class file_exception(Exception):
 """
 Die URL-Exception wird geworfen, wenn die übergebene URL fehlerhaft ist und die benötigten Wetterdaten daher nicht heruntergeladen werden können. 
 """
-class url_exception(Exception):
+class UrlException(Exception):
 
     def __init__(self, *args):
 
@@ -37,7 +37,7 @@ class url_exception(Exception):
 """
 Die Raw-Data-Exception wird geworfen, wenn bspw. das Array mit den Tupeln aus Timestamp und Temperaturmesspunkt fehlerhaft aufgebaut ist und von der jeweigen Methode daher nicht genutzt werden kann. 
 """
-class raw_data_exception(Exception):
+class RawDataException(Exception):
 
     def __init__(self, *args):
 
