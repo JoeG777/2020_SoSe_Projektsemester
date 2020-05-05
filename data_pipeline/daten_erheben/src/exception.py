@@ -1,5 +1,3 @@
-import data_pipeline.daten_erheben.src.log_writer as log_writer
-
 """
 Die File-Exception wird geworfen, wenn eine Datei lokal nicht gefunden werden kann, oder man keine Schreibe-/Leserechte in dem jeweiligen Verzeichnis besitzt.
 """
@@ -11,8 +9,6 @@ class file_exception(Exception):
             self.message = args[0]
         else:
             self.message = None
-
-        log_writer.influx_logger.error(self.message)
 
     def __str__(self):
         if self.message:
@@ -32,8 +28,6 @@ class url_exception(Exception):
         else:
             self.message = None
 
-        log_writer.influx_logger.error(self.message)
-
     def __str__(self):
         if self.message:
             return 'UrlException, {0}'.format(self.message)
@@ -51,8 +45,6 @@ class raw_data_exception(Exception):
             self.message = args[0]
         else:
             self.message = None
-
-        log_writer.influx_logger.error(self.message)
 
     def __str__(self):
         if self.message:

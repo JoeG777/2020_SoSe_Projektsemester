@@ -1,8 +1,16 @@
 from influx_logging import InfluxHandler
 import logging
 
-influx_handler = InfluxHandler(database="error_log")
-logging.getLogger().setLevel(logging.DEBUG)
+class LogWriter():
 
-influx_logger = logging.getLogger('influx_logging.tests.simple_message')
-influx_logger.addHandler(influx_handler)
+    def __init__(self):
+
+        self.influx_handler = InfluxHandler(database="error_log")
+        logging.getLogger().setLevel(logging.DEBUG)
+
+        self.influx_logger = logging.getLogger('influx_logging.tests.simple_message')
+        self.influx_logger.addHandler(self.influx_handler)
+
+
+
+
