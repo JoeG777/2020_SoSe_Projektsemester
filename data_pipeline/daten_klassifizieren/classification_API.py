@@ -17,7 +17,7 @@ def classify():
             print("raise: ConfigError")
             response = 500
 
-        #classification.execute_classifier(config)
+        #classification.apply_classifier(config)
     except Exception:
         response = 500
 

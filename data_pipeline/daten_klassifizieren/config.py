@@ -1,11 +1,13 @@
 classification_config = {
 
-    "datasource_raw_data" : (host, port, username, database, password),
-    "datasource_training_data" : (host, port, username, database, password),
-    "datasource_classified_data" : (host, port, username, database, password),
-    "timeframe" :("2020-01-05 00:00", "2020-02-05 00:00"),
-    "selected_event" :"Abtauzyklus",
+    "datasource_raw_data": 'nilan',
+    "datasource_training_data": 'database',
+    "datasource_classified_data": 'classified_data',
+    "timeframe":("2020-01-05 00:00:00", "2020-01-09 00:00:00"),
+    "selected_event": "abtauzyklus",
     "new_classifier_method": "kNN",
+    "measurement": "temperature_register",
+    "abtauzyklus": 206,
     # TODO : in ChangeLog eintragen
     "selected_event_options": {"Abtauzyklus","Warmwasseraufbereitung","Ofennutzung","Lüfterstufen"},
     "event_features" : {
