@@ -6,6 +6,7 @@ from data_pipeline.exception.exceptions import (
     InvalidConfigException)
 
 import collections
+import copy
 #TODO changes single quotes to double quotes
 def validate_config(config):
     # TODO validate config in general?
@@ -49,6 +50,7 @@ def check_redundancies(config):
 
 
 def check_prediction_chain(config):
+    config = copy.deepcopy(config)
     predicted = ['outdoor']
     to_be_predicted = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet', 'outdoor']
 
