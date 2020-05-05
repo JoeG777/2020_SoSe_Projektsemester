@@ -2,7 +2,7 @@ import data_pipeline.db_connector.src.read_manager.read_manager as rm
 import pandas as pd
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
-from data_pipeline.vorhersage_berechnen.prediction_core.model_persistor import model_persistor
+from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
 
 default_measurement = "measurement"
 nilan_db = "nilan"
@@ -94,7 +94,9 @@ def save_prediction_model(all_models, config):
 def train(config):
     all_models = []
     all_data = get_all_data()
-    for prediction_unit in config:
+    selected_value = config.get("selected_value")
+    all_prediction_units = config.get("prediction_options").get(selected_value)
+    for prediction_unit in all_prediction_units:
         all_models.append(train_model(all_data, prediction_unit))
     save_prediction_model(all_models, config)
 
