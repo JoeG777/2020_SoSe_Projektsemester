@@ -6,7 +6,8 @@ import data_pipeline.db_connector.src.write_manager.write_manager as wm
 
 def get_converted_date(date):
     '''
-    Diese Methode zieht von dem übergebenen Datum 2 Stunden ab damit es in Grafana richtig angezeigt werden kann.
+    This method removes 2 hours from the transfered date in order to show it correctly in Grafana.
+    :param date Describes the Date you want to convert.
     '''
     last_time = datetime(year = int(date[:4]), month = int(date[5:7]), day = int(date[8:10]), hour = int(date[11:13]), minute = int(date[14:16]), second = int(date[17:19]))
     two_hours = timedelta(hours = 2)
@@ -21,8 +22,8 @@ def get_converted_date(date):
 
 def write_to_influx(json_array):
     '''
-    Diese Methode erstellt die WetterDWD Datenbank, baut eine Verbindung zu dieser auf und schreibt Daten aus einem
-    übergebenen JSON-Array in die Datenbank. Bei Erfolgreichem schreiben kommt am Ende die Nachricht Daten aktualisiert.
+    This Method transfer the data to the writemanager to write them in a database.
+    :param json_array The JSON-Array includes the data you want to write in the database.
     '''
 
     wm.write_query_array(json_array)
