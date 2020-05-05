@@ -1,5 +1,5 @@
 """
-Die File-Exception wird geworfen, wenn eine Datei lokal nicht gefunden werden kann, oder man keine Schreibe-/Leserechte in dem jeweiligen Verzeichnis besitzt.
+Gets thrown once a local file cannot be found, or the user does not have the necessary rights to read or write.
 """
 class FileException(Exception):
 
@@ -17,7 +17,7 @@ class FileException(Exception):
             return 'FileException'
 
 """
-Die URL-Exception wird geworfen, wenn die übergebene URL fehlerhaft ist und die benötigten Wetterdaten daher nicht heruntergeladen werden können. 
+Gets thrown once the passed URL is incorrect and therefore the neccessary weather data can't get pulled. 
 """
 class UrlException(Exception):
 
@@ -35,7 +35,7 @@ class UrlException(Exception):
             return 'UrlException'
 
 """
-Die Raw-Data-Exception wird geworfen, wenn bspw. das Array mit den Tupeln aus Timestamp und Temperaturmesspunkt fehlerhaft aufgebaut ist und von der jeweigen Methode daher nicht genutzt werden kann. 
+Gets thrown once for example the array out of timestamps and temperaturedata is defective and therefore can't be used by the respective method. 
 """
 class RawDataException(Exception):
 
