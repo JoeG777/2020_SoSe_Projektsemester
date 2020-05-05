@@ -2,7 +2,7 @@ from urllib.request import urlopen
 import urllib.request
 from zipfile import ZipFile
 import xml.etree.ElementTree as et
-import data_pipeline.daten_erheben.src.utils as utils
+import data_pipeline.daten_erheben.src.utils.utils as utils
 from data_pipeline.daten_erheben.src.exception import file_exception, url_exception, raw_data_exception
 import data_pipeline.daten_erheben.src.log_writer as log_writer
 

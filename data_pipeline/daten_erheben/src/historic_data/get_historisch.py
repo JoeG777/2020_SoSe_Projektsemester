@@ -3,7 +3,7 @@ import os
 import requests
 from io import BytesIO
 import pandas as pd
-import data_pipeline.daten_erheben.src.utils as utils
+import data_pipeline.daten_erheben.src.utils.utils as utils
 from data_pipeline.daten_erheben.src.exception import file_exception, url_exception, raw_data_exception
 
 dateTmpFile = "/tmp/tmp.txt"
