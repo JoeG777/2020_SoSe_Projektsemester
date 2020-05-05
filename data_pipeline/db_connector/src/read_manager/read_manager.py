@@ -9,6 +9,19 @@ user = db_config.params.get("user")
 password = db_config.params.get("password")
 
 
+def read_query_in_good(db, query):
+    """
+    Takes a query in the influx sql dialect. Sends this query to the client provided by the current config and returns
+    the queries result. Calls format_data() on all retrieved sets.
+    :param db: The database the query should be read from.
+    :param query: The query for the data retrieval.
+    :return: The result of the query.
+    """
+    client = InfluxDBClient(url, port, user, password, db)
+    data = client.query(query)
+    return pd.DataFrame(data.get_points())
+
+
 def read_query(db, query):
     """
     Takes a query in the influx sql dialect. Sends this query to the client provided by the current config and returns
@@ -21,7 +34,6 @@ def read_query(db, query):
     data = client.query(query)
     points = list(data.get_points())
     result = []
-
     for p in points:
         result.append(p.get('valueScaled'))
 
@@ -36,8 +48,8 @@ def read_register_of_measurement(db, measurement, register):
     :param register: The register the data should be retrieved from.
     :return: The retrieved data.
     """
-    query = 'select * from ' + measurement + ' where register = \'' + register + '\''
-    return format_data(read_query(db, query))
+    query = 'select valueScaled from ' + measurement + ' where register = \'' + register + '\'' + ' LIMIT 50'
+    return format_data(read_query_in_good(db, query))
 
 
 def read_register_of_measurement_from_to(db, measurement, register, start, end):
