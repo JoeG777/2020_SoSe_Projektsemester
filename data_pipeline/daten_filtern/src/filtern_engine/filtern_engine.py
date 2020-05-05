@@ -7,11 +7,10 @@ import data_pipeline.db_connector.src.write_manager.write_manager as writer
 from influxdb import InfluxDBClient
 from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
 
-
-
 logger = log_writer.LogWriter()
 
-def filtern():
+
+def filter():
     """
     Name in documentation: 'filtern'
     Takes the config and load the klassified data. After that it delete and interpolate the marked intervall. Last it persist the filtered data.
@@ -24,21 +23,20 @@ def filtern():
     filtern_data = get_data()
 
     try:
-        for kurve in config:
-            for zyklus in config[kurve]:
-                if config[kurve][zyklus]["delete"] == "True":
-                    filtern_data = tag_drop(zyklus, kurve, filtern_data)
-                    methode = config[kurve][zyklus]["Interpolation"]
-                    filtern_data = interpolation(methode, kurve, filtern_data)
+        for curve in config:
+            for cycle in config[curve]:
+                if config[curve][cycle]["delete"] == "True":
+                    filtern_data = tag_drop(cycle, curve, filtern_data)
+                    method = config[curve][cycle]["Interpolation"]
+                    filtern_data = interpolation(method, curve, filtern_data)
 
     except:
         logger.influx_logger.error("Config is wrong.")
         raise ConfigExeption("Config is wrong.", 900)
 
-
     persist_data(filtern_data)
     pass
-    #return statuscode
+    # return statuscode
 
 
 def get_data():
@@ -55,7 +53,7 @@ def get_data():
         raise DBException("Database not available.", 901)
 
 
-def tag_drop(kurve, zyklus, filtern_data):
+def tag_drop(curve, cycle, filtern_data):
     """
     Name in documentation: 'tag_drop'
     Delete one cycle in one curve.
@@ -65,12 +63,12 @@ def tag_drop(kurve, zyklus, filtern_data):
     :return: the klassified data with one cycle of one curve deleted
     """
 
-    filtern_data = filtern_data.loc[filtern_data.zyklus == True , kurve] = np.nan
+    filtern_data = filtern_data.loc[filtern_data.zyklus == True, curve] = np.nan
 
     return filtern_data
 
 
-def interpolation(methode, kurve, zyklenfreie_daten):
+def interpolation(method, curve, zyklenfreie_daten):
     """
     Name in documentation: 'interpolation'
     Interpolate one curve, after a cycle was deletet. The method has already been read from config file.
@@ -80,9 +78,10 @@ def interpolation(methode, kurve, zyklenfreie_daten):
     :return: The klassified data after filtering a cycle.
     """
 
-    gefilterte_daten = zyklenfreie_daten[kurve].interpolate(method = methode , inplace = True)
+    gefilterte_daten = zyklenfreie_daten[curve].interpolate(method=method, inplace=True)
 
     return gefilterte_daten
+
 
 def persist_data(filtern_data):
     '''
@@ -93,11 +92,9 @@ def persist_data(filtern_data):
     '''
     try:
         # TODO Query für klassifizierte Daten
-        writer.write_query("Gefilterte Daten" , filtern_data)
+        writer.write_query("Gefilterte Daten", filtern_data)
     except:
         logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
 
     pass
-
-

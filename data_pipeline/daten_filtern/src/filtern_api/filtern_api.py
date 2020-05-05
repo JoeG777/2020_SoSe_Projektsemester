@@ -14,7 +14,7 @@ def default():
 
 
 @app.route('/filtern')
-def filtern():
+def filter():
     '''
     Name in documentation: 'filtern'
     Start the filtern engine.
