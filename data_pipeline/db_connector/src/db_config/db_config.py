@@ -3,5 +3,5 @@ params = {
     "port": 8086,
     "user": "admin",
     "password": "admin",
-    "db_name": "WetterDWD"
+    "db_name": "db"
 }
