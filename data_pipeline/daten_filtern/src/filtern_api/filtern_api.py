@@ -1,5 +1,5 @@
 from flask import *
-from data_pipeline.daten_filtern.src.filtern_engine.filtern_engine import filtern_engine
+from data_pipeline.daten_filtern.src.filtern_engine import filtern_engine
 
 app = Flask(__name__)
 
