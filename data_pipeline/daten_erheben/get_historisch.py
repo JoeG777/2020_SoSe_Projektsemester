@@ -12,7 +12,8 @@ dateTmpFile = "/tmp/tmp.txt"
 
 def get_timestamp_dwd(time):
     '''
-    Formatiert den Zeitstempel der einzelnen Wetterdaten in ein geeignetes Format für das Einschreiben in InfluxDB.
+    Formats the time stamp of the individual weather data in a suitable format for writing into InfluxDB.
+    :param unformatted time stamp of the individual weather data
     '''
 
     formatted = time[:4] + "-" + time[4:6] + "-" + time[6:8] + "T" + time[8:10] + ":" + time[10:12] + ":00Z"
@@ -21,10 +22,10 @@ def get_timestamp_dwd(time):
 
 def get_start_and_end_date():
     '''
-    Das Start- und das Enddatum der anzufragenden Wetterdaten wird bestimmt und zurückgegeben.
-    Für das bestimmen des Startdatums wird nach einem Eintrag in der tmp.txt-Datei geschaut.
-    Ist in dieser ein Datum schon erhalten, dann wird dies auch als Startdatum genutzt. Ist sie jedoch leer,
-    wird das Standard-Startdatum (05.01.2020) gesetzt. Beim Enddatum handelt es sich immer um die aktuelle Zeit der Abfrage.
+    Requests the start and end dates of the weather data.
+    To determine the start date, it looks for an entry in the tmp.txt file.
+    If a date has already been received in this, then this is also used as the start date. However, if it is empty,
+    the standard start date (05.01.2020) is set. The end date is always the current time of the query.
     '''
 
     try:
@@ -46,8 +47,9 @@ def get_start_and_end_date():
 
 def get_temp_data(url):
     '''
-    ZIP-Datei vom DWD wird heruntergeladen, die CSV darin wird ausgelesen,
-    und die einzelnen Temperaturdaten werden in ein Array mit ihren dazugehörigen Zeitstempeln gelagert.
+    Downloads the ZIP file from DWD, reads the CSV,
+    and stores the individual temperature data in an array with their associated time stamps.
+    :param url Download-link for the weather data from DWD
     '''
 
     returnData = []
@@ -76,8 +78,9 @@ def get_temp_data(url):
 
 def get_dwd_data(url):
     '''
-    Temperaturdaten aus der extrahierten CSV-Datei werden für die InfluxDB passend formatiert,
-    in ein JSON-Array gespeichert und zurückgegeben.
+    Temperature data from the extracted CSV file are formatted appropriately for the InfluxDB,
+    stored in a JSON array and returned.
+    :param url Download-link for the weather data from DWD
     '''
 
     jsonWeatherArray = []
@@ -123,7 +126,8 @@ def get_dwd_data(url):
 
 def historische_daten_erheben(url):
     '''
-    Main-Methode für den Hauptaufruf.
+    Main method for the main call.
+    :param url Download-link for the weather data from DWD
     '''
 
     utils.write_to_influx(get_dwd_data(url))
