@@ -1,5 +1,5 @@
 import unittest
-import data_pipeline.daten_erheben.src.get_historisch as his
+import data_pipeline.daten_erheben.src.historic_data.get_historisch as his
 from data_pipeline.daten_erheben.src.exception import url_exception
 
 
