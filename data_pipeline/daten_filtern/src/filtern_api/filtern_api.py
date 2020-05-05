@@ -1,6 +1,5 @@
 from flask import *
-from filtern_config import filtern_config
-import filtern_engine
+from data_pipeline.daten_filtern.src.filtern_engine.filtern_engine import filtern_engine
 
 app = Flask(__name__)
 
@@ -20,9 +19,8 @@ def filtern():
     Name in documentation: 'filtern'
     Start the filtern engine.
     '''
-    config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
-    data_pipeline.daten_filtern.src.filtern_engine.filtern(config)
+    filtern_engine.filtern()
 
     return render_template('index.html')
 
