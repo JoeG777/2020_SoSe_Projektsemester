@@ -56,13 +56,13 @@ def tag_drop(curve, cycle, filtern_data):
     """
     Name in documentation: 'tag_drop'
     Delete one cycle in one curve.
-    :param kurve: the name of the curve as string
-    :param zyklus: the name of the cycle as string
+    :param curve: the name of the curve as string
+    :param cycle: the name of the cycle as string
     :param filtern_data: the klassified data
     :return: the klassified data with one cycle of one curve deleted
     """
 
-    filtern_data = filtern_data.loc[filtern_data.zyklus == True, curve] = np.nan
+    filtern_data = filtern_data.loc[filtern_data.cycle == True, curve] = np.nan
 
     return filtern_data
 
