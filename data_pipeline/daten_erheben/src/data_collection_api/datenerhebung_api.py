@@ -51,7 +51,7 @@ def historische_datenerhebung():
     except exc.RawDataException as rexc:
         response['statuscode'] = rexc.args[1]
     finally:
-        return render_template('index.html')
+        return make_response(jsonify({'statuscode': response['statuscode']}))
 
 
 @app.route('/forecastDatenerhebung', methods = ['POST'])
@@ -64,12 +64,20 @@ def forecast_datenerhebung():
     :return: Opens 'index.html'
     '''
 
-    urlForecast = request.get_json()['forecastURL']
-
-    # urlForecast = con.configData["forecastURL"]
-
-    forc.vorhersage_daten_erheben(urlForecast)
-    return render_template('index.html')
+    response = {}
+    try:
+        urlForecast = request.get_json()['forecastURL']
+        if not urlForecast:
+            raise exc.UrlException("URL incorrect", 904)
+        forc.vorhersage_daten_erheben(urlForecast)
+    except exc.UrlException as uexc:
+        response['statuscode'] = uexc.args[1]
+    except exc.FileException as fexc:
+        response['statuscode'] = fexc.args[1]
+    except exc.RawDataException as rexc:
+        response['statuscode'] = rexc.args[1]
+    finally:
+        return make_response(jsonify({'statuscode': response['statuscode']}))
 
 if __name__ == '__main__':
     app.run(host='localhost', port='8000')
