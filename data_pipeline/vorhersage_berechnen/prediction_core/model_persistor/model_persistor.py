@@ -1,5 +1,5 @@
 import pickle
-from data_pipeline.vorhersage_berechnen.prediction_core.exception.prediction_core_exceptions import PersistorException
+from data_pipeline.exception.exceptions import PersistorException
 
 file_name = "current_model.p"
 
