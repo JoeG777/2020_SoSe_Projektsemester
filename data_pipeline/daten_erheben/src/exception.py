@@ -1,4 +1,4 @@
-import data_pipeline.daten_erheben.log_writer as log_writer
+import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 """
 Die File-Exception wird geworfen, wenn eine Datei lokal nicht gefunden werden kann, oder man keine Schreibe-/Leserechte in dem jeweiligen Verzeichnis besitzt.

@@ -1,5 +1,5 @@
 import unittest
-import data_pipeline.daten_erheben.utils as util
+import data_pipeline.daten_erheben.src.utils as util
 
 
 class MyTestCase(unittest.TestCase):

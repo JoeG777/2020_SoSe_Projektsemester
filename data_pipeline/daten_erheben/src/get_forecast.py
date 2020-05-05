@@ -2,9 +2,8 @@ from urllib.request import urlopen
 import urllib.request
 from zipfile import ZipFile
 import xml.etree.ElementTree as et
-import data_pipeline.daten_erheben.utils as utils
-from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception
-import data_pipeline.daten_erheben.log_writer as log_writer
+import data_pipeline.daten_erheben.src.utils as utils
+from data_pipeline.daten_erheben.src.exception import file_exception, url_exception, raw_data_exception
 
 
 def get_forecast_data(url):
