@@ -1,4 +1,4 @@
-from data_pipeline.vorhersage_berechnen.prediction_core.exception.prediction_core_exceptions import (
+from data_pipeline.exception.exceptions import (
     InvalidTrainingPercentageException,
     RedundantConfigException,
     IncompleteConfigException,
