@@ -40,9 +40,12 @@ def historische_datenerhebung():
 
     response = {}
     try:
-        urlHistorisch = request.get_json()['historischURL']
-        if not urlHistorisch:
+
+        if int(request.headers.get('Content-Length')) == 0:
             raise exc.UrlException("URL incorrect", 904)
+
+        urlHistorisch = request.get_json()['historischURL']
+
         his.historische_daten_erheben(urlHistorisch)
     except exc.UrlException as uexc:
         response['statuscode'] = uexc.args[1]
@@ -66,9 +69,12 @@ def forecast_datenerhebung():
 
     response = {}
     try:
-        urlForecast = request.get_json()['forecastURL']
-        if not urlForecast:
+
+        if int(request.headers.get('Content-Length')) == 0:
             raise exc.UrlException("URL incorrect", 904)
+
+        urlForecast = request.get_json()['forecastURL']
+
         forc.vorhersage_daten_erheben(urlForecast)
     except exc.UrlException as uexc:
         response['statuscode'] = uexc.args[1]
