@@ -15,6 +15,7 @@ classification_config = {
         "start_deriv": 1.0,
         "start_evap": 0.0,
         "start_ch": -0.06,
+        "start_abtau": 10.0,
         "end_marker": -1.0,
         "end_deriv": 0.5,
         "end_shift": -1.0,
