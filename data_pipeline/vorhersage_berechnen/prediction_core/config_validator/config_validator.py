@@ -6,12 +6,16 @@ from data_pipeline.exception.exceptions import (
     InvalidConfigException)
 
 import collections
-
+#TODO changes single quotes to double quotes
 def validate_config(config):
-    check_completeness(config)
-    check_redundancies(config)
-    check_training_percentage(config)
-    check_prediction_chain(config)
+    # TODO validate config in general?
+    selected_value = config.get("selected_value")
+
+    prediction_units = config.get("prediction_options").get(selected_value)
+    check_completeness(prediction_units)
+    check_redundancies(prediction_units)
+    check_training_percentage(prediction_units)
+    check_prediction_chain(prediction_units)
 
 
 def check_completeness(config):
@@ -54,7 +58,6 @@ def check_prediction_chain(config):
     new_prediction = True
 
     while new_prediction:
-        print(predicted)
         new_prediction = False
 
         for entry in config:
