@@ -4,9 +4,11 @@ import requests
 from io import BytesIO
 import pandas as pd
 import data_pipeline.daten_erheben.src.utils.utils as utils
-from data_pipeline.daten_erheben.src.exception import file_exception, url_exception, raw_data_exception
+from data_pipeline.daten_erheben.src.exception import FileException, UrlException, RawDataException
+import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 dateTmpFile = "/tmp/tmp.txt"
+logger = log_writer.LogWriter()
 
 
 def get_timestamp_dwd(time):
@@ -44,7 +46,8 @@ def get_start_date():
         return startDate
 
     except:
-        raise file_exception("Unzureichende Lese- und Schreibrechte.")
+        logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
+        raise FileException("Unzureichende Lese- und Schreibrechte.")
 
 
 def get_temp_data(url):
@@ -64,7 +67,8 @@ def get_temp_data(url):
         files = zip_file.namelist()
 
     except:
-        raise url_exception("Die URL ist fehlerhaft.")
+        logger.influx_logger.error("Die URL ist fehlerhaft.")
+        raise UrlException("Die URL ist fehlerhaft.")
 
     with zip_file.open(files[0]) as csvfile:   
 
@@ -117,7 +121,8 @@ def get_dwd_data(url):
             lastDateRead = get_timestamp_dwd(temperatures[i][0])
 
     except:
-        raise raw_data_exception("Übergebenes Array fehlerhaft.")
+        logger.influx_logger.error("Übergebenes Array fehlerhaft.")
+        raise RawDataException("Übergebenes Array fehlerhaft.")
 
     
     try:
@@ -126,7 +131,8 @@ def get_dwd_data(url):
         tmp.close()
 
     except:
-        raise file_exception("Unzureichende Lese- und Schreibrechte.")
+        logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
+        raise FileException("Unzureichende Lese- und Schreibrechte.")
 
     return jsonWeatherArray
 

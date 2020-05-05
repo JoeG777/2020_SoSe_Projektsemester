@@ -3,7 +3,7 @@ import urllib.request
 from zipfile import ZipFile
 import xml.etree.ElementTree as et
 import data_pipeline.daten_erheben.src.utils.utils as utils
-from data_pipeline.daten_erheben.src.exception import file_exception, url_exception, raw_data_exception
+from data_pipeline.daten_erheben.src.exception import FileException, UrlException, RawDataException
 import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 logger = log_writer.LogWriter()
@@ -66,7 +66,7 @@ def get_forecast_data(url):
 
     except:
         logger.influx_logger.error("Datenarray fehlerhaft.")
-        raise raw_data_exception("Datenarray fehlerhaft.")
+        raise RawDataException("Datenarray fehlerhaft.")
 
     return jsonWeatherArray
 
@@ -86,7 +86,7 @@ def get_forecast(url):
 
     except:
         logger.influx_logger.error("Die URL ist fehlerhaft.")
-        raise url_exception("Die URL ist fehlerhaft.")
+        raise UrlException("Die URL ist fehlerhaft.")
 
     try:
         with ZipFile('data.zip', 'r') as zip_datei:
@@ -95,7 +95,7 @@ def get_forecast(url):
 
     except:
         logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
-        raise file_exception("Unzureichende Lese- und Schreibrechte.")
+        raise FileException("Unzureichende Lese- und Schreibrechte.")
 
     return filename
 
