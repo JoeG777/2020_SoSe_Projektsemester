@@ -47,7 +47,10 @@ def get_historic_data():
 
         urlHistorisch = request.get_json()['historischURL']
 
-        his.historische_daten_erheben(urlHistorisch)
+        his.raise_historic_data(urlHistorisch)
+
+        response['statuscode'] = 200
+
     except exc.UrlException as uexc:
         response['statuscode'] = uexc.args[1]
     except exc.FileException as fexc:
@@ -77,7 +80,10 @@ def get_forecast_data():
 
         urlForecast = request.get_json()['forecastURL']
 
-        forc.vorhersage_daten_erheben(urlForecast)
+        forc.raise_forecast_data(urlForecast)
+
+        response['statuscode'] = 200
+
     except exc.UrlException as uexc:
         response['statuscode'] = uexc.args[1]
     except exc.FileException as fexc:

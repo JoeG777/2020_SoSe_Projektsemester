@@ -137,7 +137,7 @@ def get_dwd_data(url):
     return jsonWeatherArray
 
 
-def get_historic_data(url):
+def raise_historic_data(url):
     '''
     Name in documentation: 'historische_daten_erheben()'
     Main method for the main call.

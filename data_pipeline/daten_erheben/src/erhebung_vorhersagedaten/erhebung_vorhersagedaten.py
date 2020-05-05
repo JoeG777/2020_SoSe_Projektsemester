@@ -8,7 +8,7 @@ import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 logger = log_writer.LogWriter()
 
-def get_forecast_data(url):
+def get_forecast_data(url)  :
 
     '''
     The KML-file including the forecast weatherdata is being processed as XML. The Method searches and saves the Temperature data,
@@ -100,7 +100,7 @@ def get_forecast(url):
     return filename
 
 
-def get_forecast_data(url):
+def raise_forecast_data(url):
 
     '''
     Name in documentation: 'vorhersagedaten_erheben()'
