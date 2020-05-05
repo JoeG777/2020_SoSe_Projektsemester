@@ -9,7 +9,7 @@ app = Flask(__name__)
 def start():
 
     '''
-    Leitet beim ersten Aufruf des Servers auf die URL /index weiter.
+    Forwards to the URL '/index' when the server gets called for the first time.
     '''
 
     return redirect(url_for('index'))
@@ -18,7 +18,7 @@ def start():
 def index():
 
     '''
-    Öffnet die index.html zur Bedienung der Applikation.
+    Opens 'index.html' to allow using the application.
     '''
 
     return render_template('index.html')
@@ -27,9 +27,9 @@ def index():
 def historische_datenerhebung():
 
     '''
-    Wird aufgerufen, sobald die historischen Wetterdaten aktualisiert werden sollen.
-    Dabei wird durch einen request aus den Parametern die URL zum Download der ZIP-Datei entnommen.
-    Anschließend wird die Methode: 'historische_daten_erheben(url)' aufgerufen und erneut die index.html geöffnet.
+    Gets called once the historical weather data gets updated.
+    Therefore the URL where the ZIP-file gets pulled from is getting extracted from the parameters trough a request.
+    Afterwards the method: 'historische_daten_erheben(url)' gets called and 'index.html' reopened.
     '''
 
     urlHistorisch = request.get_json()['historischURL']
@@ -42,9 +42,9 @@ def historische_datenerhebung():
 def forecast_datenerhebung():
 
     '''
-    Wird aufgerufen, sobald die Vorhersage-Wetterdaten aktualisiert werden sollen.
-    Dabei wird durch einen request aus den Parametern die URL zum Download der KMZ-Datei entnommen.
-    Anschließend wird die Methode: 'vorhersage_daten_erheben(url)' aufgerufen und erneut die index.html geöffnet.
+    Gets called once the forecast weather data gets updated.
+    Therefore the URL where the KMZ-file gets pulled from is getting extracted from the parameters trough a request.
+    Afterwards the method: 'historische_daten_erheben(url)' gets called and 'index.html' reopened.
     '''
 
     urlForecast = request.get_json()['forecastURL']
