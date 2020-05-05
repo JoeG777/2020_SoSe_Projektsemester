@@ -1,7 +1,6 @@
 from flask import *
-import data_pipeline.daten_erheben.get_historisch as his
-import data_pipeline.daten_erheben.get_forecast as forc
-import data_pipeline.daten_erheben.config as con
+import data_pipeline.daten_erheben.src.historic_data.get_historisch as his
+import data_pipeline.daten_erheben.src.forecast_data.get_forecast as forc
 
 app = Flask(__name__)
 

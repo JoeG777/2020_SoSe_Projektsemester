@@ -2,10 +2,11 @@ from urllib.request import urlopen
 import urllib.request
 from zipfile import ZipFile
 import xml.etree.ElementTree as et
-import data_pipeline.daten_erheben.utils as utils
-from data_pipeline.daten_erheben.exception import file_exception, url_exception, raw_data_exception
-import data_pipeline.daten_erheben.log_writer as log_writer
+import data_pipeline.daten_erheben.src.utils.utils as utils
+from data_pipeline.daten_erheben.src.exception import file_exception, url_exception, raw_data_exception
+import data_pipeline.daten_erheben.src.log_writer as log_writer
 
+logger = log_writer.LogWriter()
 
 def get_forecast_data(url):
 
@@ -62,6 +63,7 @@ def get_forecast_data(url):
             jsonWeatherArray.append(jsonBody)
 
     except:
+        logger.influx_logger.error("Datenarray fehlerhaft.")
         raise raw_data_exception("Datenarray fehlerhaft.")
 
     return jsonWeatherArray
@@ -79,6 +81,7 @@ def get_forecast(url):
         urllib.request.urlretrieve(url, "data.zip") # KMZ-Datei herunterladen und als .zip speichern
 
     except:
+        logger.influx_logger.error("Die URL ist fehlerhaft.")
         raise url_exception("Die URL ist fehlerhaft.")
 
     try:
@@ -87,6 +90,7 @@ def get_forecast(url):
             zip_datei.extractall("") # ZIP-Datei entpacken 
 
     except:
+        logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
         raise file_exception("Unzureichende Lese- und Schreibrechte.")
 
     return filename
