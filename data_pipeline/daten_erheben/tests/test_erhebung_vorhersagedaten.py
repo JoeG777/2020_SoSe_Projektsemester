@@ -1,5 +1,5 @@
 import unittest
-import data_pipeline.daten_erheben.src.forecast_data.get_forecast as fore
+import data_pipeline.daten_erheben.src.erhebung_vorhersagedaten.erhebung_vorhersagedaten as fore
 from data_pipeline.daten_erheben.src.exception import UrlException
 
 

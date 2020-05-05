@@ -100,10 +100,12 @@ def get_forecast(url):
     return filename
 
 
-def vorhersage_daten_erheben(url):
+def get_forecast_data(url):
 
     '''
+    Name in documentation: 'vorhersagedaten_erheben()'
     Main-method for the main call.
+    :param url: This is the URL to download the forecast weather data.
     '''
 
     utils.write_to_influx(get_forecast_data(url))

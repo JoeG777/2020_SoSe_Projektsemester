@@ -1,6 +1,6 @@
 from flask import *
-import data_pipeline.daten_erheben.src.historic_data.get_historisch as his
-import data_pipeline.daten_erheben.src.forecast_data.get_forecast as forc
+import data_pipeline.daten_erheben.src.erhebung_historischer_daten.erhebung_historischer_daten as his
+import data_pipeline.daten_erheben.src.erhebung_vorhersagedaten.erhebung_vorhersagedaten as forc
 import data_pipeline.daten_erheben.src.exception as exc
 
 app = Flask(__name__)
@@ -29,13 +29,14 @@ def index():
 
 
 @app.route('/historischeDatenerhebung', methods = ['POST'])
-def historische_datenerhebung():
+def get_historic_data():
 
     '''
+    Name in documentation: 'historische_daten_erheben()'
     Gets called once the historical weather data gets updated.
     Therefore the URL where the ZIP-file gets pulled from is getting extracted from the parameters trough a request.
     Afterwards the method: 'historische_daten_erheben(url)' gets called and 'index.html' reopened.
-    :return: Opens 'index.html'
+    :return: statuscode
     '''
 
     response = {}
@@ -58,13 +59,14 @@ def historische_datenerhebung():
 
 
 @app.route('/forecastDatenerhebung', methods = ['POST'])
-def forecast_datenerhebung():
+def get_forecast_data():
 
     '''
+    Name in documentation: 'vorhersagedaten_erheben()'
     Gets called once the forecast weather data gets updated.
     Therefore the URL where the KMZ-file gets pulled from is getting extracted from the parameters trough a request.
     Afterwards the method: 'historische_daten_erheben(url)' gets called and 'index.html' reopened.
-    :return: Opens 'index.html'
+    :return: statuscode
     '''
 
     response = {}

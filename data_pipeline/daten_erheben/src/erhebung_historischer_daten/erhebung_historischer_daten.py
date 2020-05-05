@@ -137,8 +137,9 @@ def get_dwd_data(url):
     return jsonWeatherArray
 
 
-def historische_daten_erheben(url):
+def get_historic_data(url):
     '''
+    Name in documentation: 'historische_daten_erheben()'
     Main method for the main call.
     :param url: Download-link for the weather data from DWD
     '''
