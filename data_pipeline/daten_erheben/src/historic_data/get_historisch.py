@@ -46,8 +46,8 @@ def get_start_date():
         return startDate
 
     except:
-        logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
-        raise FileException("Unzureichende Lese- und Schreibrechte.")
+        logger.influx_logger.error("Inadequate read and write rights.")
+        raise FileException("Inadequate read and write rights.", 903)
 
 
 def get_temp_data(url):
@@ -67,8 +67,8 @@ def get_temp_data(url):
         files = zip_file.namelist()
 
     except:
-        logger.influx_logger.error("Die URL ist fehlerhaft.")
-        raise UrlException("Die URL ist fehlerhaft.")
+        logger.influx_logger.error("Incorrect URL.")
+        raise UrlException("Incorrect URL.", 904)
 
     with zip_file.open(files[0]) as csvfile:   
 
@@ -121,8 +121,8 @@ def get_dwd_data(url):
             lastDateRead = get_timestamp_dwd(temperatures[i][0])
 
     except:
-        logger.influx_logger.error("Übergebenes Array fehlerhaft.")
-        raise RawDataException("Übergebenes Array fehlerhaft.")
+        logger.influx_logger.error("incorrect passed data.")
+        raise RawDataException("incorrect passed data.", 905)
 
     
     try:
@@ -131,8 +131,8 @@ def get_dwd_data(url):
         tmp.close()
 
     except:
-        logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
-        raise FileException("Unzureichende Lese- und Schreibrechte.")
+        logger.influx_logger.error("Inadequate read and write rights.")
+        raise FileException("Inadequate read and write rights.", 903)
 
     return jsonWeatherArray
 

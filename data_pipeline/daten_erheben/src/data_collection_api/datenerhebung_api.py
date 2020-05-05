@@ -1,6 +1,7 @@
 from flask import *
 import data_pipeline.daten_erheben.src.historic_data.get_historisch as his
 import data_pipeline.daten_erheben.src.forecast_data.get_forecast as forc
+import data_pipeline.daten_erheben.src.exception as exc
 
 app = Flask(__name__)
 
@@ -37,11 +38,20 @@ def historische_datenerhebung():
     :return: Opens 'index.html'
     '''
 
-    urlHistorisch = request.get_json()['historischURL']
-    # urlHistorisch = con.configData["historischURL"]
-
-    his.historische_daten_erheben(urlHistorisch)
-    return render_template('index.html')
+    response = {}
+    try:
+        urlHistorisch = request.get_json()['historischURL']
+        if not urlHistorisch:
+            raise exc.UrlException("URL incorrect", 904)
+        his.historische_daten_erheben(urlHistorisch)
+    except exc.UrlException as uexc:
+        response['statuscode'] = uexc.args[1]
+    except exc.FileException as fexc:
+        response['statuscode'] = fexc.args[1]
+    except exc.RawDataException as rexc:
+        response['statuscode'] = rexc.args[1]
+    finally:
+        return render_template('index.html')
 
 
 @app.route('/forecastDatenerhebung', methods = ['POST'])

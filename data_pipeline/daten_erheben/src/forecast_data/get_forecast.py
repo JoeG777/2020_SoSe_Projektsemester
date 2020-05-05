@@ -15,8 +15,8 @@ def get_forecast_data(url):
     transform it for InfluxDB and Changes the type from Kelvin to Celsius. The formatted forecast temperature data is saved in one Json-Array.
     The Method returns this Array.
     :param url: This is the URL to download the forecast weatherdata.
-    :return: Returns a JSON-Array existing of forecast temperature data.
     :raises RawDataException: For incorrect passed data.
+    :return: Returns a JSON-Array existing of forecast temperature data.
     '''
 
     tree = et.parse(get_forecast(url)) # XML-Dokument in XML-Tree umwandeln
@@ -65,8 +65,8 @@ def get_forecast_data(url):
             jsonWeatherArray.append(jsonBody)
 
     except:
-        logger.influx_logger.error("Datenarray fehlerhaft.")
-        raise RawDataException("Datenarray fehlerhaft.")
+        logger.influx_logger.error("incorrect passed data.")
+        raise RawDataException("incorrect passed data.", 905)
 
     return jsonWeatherArray
 
@@ -76,17 +76,17 @@ def get_forecast(url):
     '''
     This Method downloads the KMZ file from the URL, saves it as ZIP-file and extracts it.
     :param url: This is the URL to download the forecast weatherdata.
-    :return: The return is a list of all files in the saved ZIP-file.
     :raises FileException: For inadequate read and write rights.
     :raises UrlException: For incorrect URL.
+    :return: The return is a list of all files in the saved ZIP-file.
     '''
 
     try:
         urllib.request.urlretrieve(url, "data.zip") # KMZ-Datei herunterladen und als .zip speichern
 
     except:
-        logger.influx_logger.error("Die URL ist fehlerhaft.")
-        raise UrlException("Die URL ist fehlerhaft.")
+        logger.influx_logger.error("Incorrect URL.")
+        raise UrlException("Incorrect URL.", 904)
 
     try:
         with ZipFile('data.zip', 'r') as zip_datei:
@@ -94,8 +94,8 @@ def get_forecast(url):
             zip_datei.extractall("") # ZIP-Datei entpacken 
 
     except:
-        logger.influx_logger.error("Unzureichende Lese- und Schreibrechte.")
-        raise FileException("Unzureichende Lese- und Schreibrechte.")
+        logger.influx_logger.error("Inadequate read and write rights.")
+        raise FileException("Inadequate read and write rights.", 903)
 
     return filename
 

@@ -1,6 +1,4 @@
 from datetime import datetime, timedelta
-from influxdb import InfluxDBClient
-from console_progressbar import ProgressBar
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
 
 
