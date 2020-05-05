@@ -26,6 +26,7 @@ def index():
 
     return render_template('index.html')
 
+
 @app.route('/historischeDatenerhebung', methods = ['POST'])
 def historische_datenerhebung():
 
