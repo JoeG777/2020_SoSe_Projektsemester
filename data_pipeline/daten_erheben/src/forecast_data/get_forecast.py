@@ -16,7 +16,7 @@ def get_forecast_data(url):
     The Method returns this Array.
     :param url: This is the URL to download the forecast weatherdata.
     :return: Returns a JSON-Array existing of forecast temperature data.
-    :raises raw_data_exception: For incorrect passed data.
+    :raises RawDataException: For incorrect passed data.
     '''
 
     tree = et.parse(get_forecast(url)) # XML-Dokument in XML-Tree umwandeln
@@ -77,8 +77,8 @@ def get_forecast(url):
     This Method downloads the KMZ file from the URL, saves it as ZIP-file and extracts it.
     :param url: This is the URL to download the forecast weatherdata.
     :return: The return is a list of all files in the saved ZIP-file.
-    :raises file_exception: For inadequate read and write rights.
-    :raises url_exception: For incorrect URL.
+    :raises FileException: For inadequate read and write rights.
+    :raises UrlException: For incorrect URL.
     '''
 
     try:
