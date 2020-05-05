@@ -13,18 +13,20 @@ def get_timestamp_dwd(time):
     '''
     Formats the time stamp of the individual weather data in a suitable format for writing into InfluxDB.
     :param unformatted time stamp of the individual weather data
+    :return: formatted time stamp
     '''
 
     formatted = time[:4] + "-" + time[4:6] + "-" + time[6:8] + "T" + time[8:10] + ":" + time[10:12] + ":00Z"
     return formatted
 
 
-def get_start_and_end_date():
+def get_start_date():
     '''
-    Requests the start and end dates of the weather data.
+    Requests the start of the weather data.
     To determine the start date, it looks for an entry in the tmp.txt file.
-    If a date has already been received in this, then this is also used as the start date. However, if it is empty,
-    the standard start date (05.01.2020) is set. The end date is always the current time of the query.
+    If a date has already been received in this, then this is also used as the start date.
+    However, if it is empty, the standard start date (05.01.2020) is set.
+    :return: start date for the beginning of the query
     '''
 
     try:
@@ -49,6 +51,7 @@ def get_temp_data(url):
     Downloads the ZIP file from DWD, reads the CSV,
     and stores the individual temperature data in an array with their associated time stamps.
     :param url Download-link for the weather data from DWD
+    :return: Array with all weather entries and their time stamps
     '''
 
     returnData = []
@@ -80,6 +83,7 @@ def get_dwd_data(url):
     Temperature data from the extracted CSV file are formatted appropriately for the InfluxDB,
     stored in a JSON array and returned.
     :param url Download-link for the weather data from DWD
+    :return: Json-Array with all the formatted weather entries and their formatted time stamps
     '''
 
     jsonWeatherArray = []
@@ -91,7 +95,7 @@ def get_dwd_data(url):
 
         for i in range(len(temperatures)):
 
-            if get_timestamp_dwd(temperatures[i][0]) == get_start_and_end_date():
+            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
                 startDatumGefunden = True
 
             if startDatumGefunden:
