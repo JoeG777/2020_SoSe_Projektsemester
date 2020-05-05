@@ -7,6 +7,7 @@ def filtern(config):
     Name in documentation: 'filtern'
     Takes the config and load the klassified data. After that it delete and interpolate the marked intervall. Last it persist the filtered data.
     :param config: The seleceted value of filtern config.
+    :return: A http status code.
     """
 
     filtern_data = get_data()
@@ -19,6 +20,8 @@ def filtern(config):
                 filtern_data = interpolation(methode, kurve, filtern_data)
 
     persist_data(filtern_data)
+
+    return statuscode
 
 
 def get_data():
@@ -64,7 +67,8 @@ def persist_data(filtern_data):
     '''
     Name in documentation: 'persist_data'
     Persist the filtered data.
-    :param gefilterte_daten:
+    :param filtern_data: the filtered data.
+    :return: A http status code.
     '''
     # Aufruf DB-Connector
     statuscode = ""
