@@ -6,6 +6,7 @@ import numpy as np
 class Filtern_engine_tests(unittest.TestCase):
     def test_tag_drop(self):
         #opening_data
+        #float('NaN')
         opening_y = range(0,10)
         opening_time = pd.Series([10 ,11,12,13,14,15,16,17,18,19])
         opening_room = pd.Series([1,2,3,4,5,6,7,8,9,10] , index = opening_y)
@@ -14,6 +15,7 @@ class Filtern_engine_tests(unittest.TestCase):
         opening_namen = ["time" , "room" , "OfenZyklus"]
         opening_data.columns = opening_namen
         opening_data = opening_data.set_index("time")
+
 
         #expected_data
         expected_y = range(0,10)
@@ -29,9 +31,11 @@ class Filtern_engine_tests(unittest.TestCase):
         real_data = fe.tag_drop('room' , 'OfenZyklus' , opening_data)
 
         #comparison real_data and exected_data
-        ok = real_data.equals(expected_data)
-
+        ok = real_data.room.all() == expected_data.room.all()
         self.assertTrue(ok)
+
+
+
 
     def test_interpolation(self):
         #opening_data
@@ -58,12 +62,7 @@ class Filtern_engine_tests(unittest.TestCase):
         real_data = fe.interpolation("linear", "room", opening_data)
 
         #comparison real_data and exected_data
-
-        ok = True
-        for i in expected_y:
-            if real_data.iloc[i].room != expected_data.iloc[i].room:
-                ok = False
-
+        ok = real_data.room.all() == expected_data.room.all()
         self.assertTrue(ok)
 
 
