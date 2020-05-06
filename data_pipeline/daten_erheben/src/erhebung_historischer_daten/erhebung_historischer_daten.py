@@ -119,8 +119,6 @@ def get_dwd_data(url):
 
                 jsonWeatherArray.append(jsonBody)
 
-                print("Moin")
-
             lastDateRead = get_timestamp_dwd(temperatures[i][0])
 
     except:
