@@ -18,15 +18,22 @@ register_dict = {
 }
 
 
+# TODO MAKE THIS METHOD IRRELEVANT.
 def get_data(register):
     return rm.read_register_of_measurement(nilan_db, "temperature_register", register_dict[register])
 
 
+# TODO ...and this.
 def get_temperature():
     return rm.read_query_in_good(temp_db, "SELECT * FROM weatherTest LIMIT 50")
 
 
 def get_all_data():
+    """
+    Retrieves all data from the database defined in nilan_db and temp_db and merges this data into a dataframe.
+    The dataframe then is returned.
+    :return: A dataframe containing all data relevant for the model creation.
+    """
     keys = register_dict.keys()
     df = get_temperature()
     df = df.rename(columns={'temperature': "outdoor"})
@@ -49,7 +56,15 @@ def get_all_data():
     return df
 
 
-def model_to_dict(score, model, dependent_data_keys):
+def model_data_to_dict(score, model, dependent_data_keys):
+    """
+    Takes a score, a model and the keys of the dependent data this model was created with and returns a dictionary.
+    The structure of the dictionary is defined in 3.4.1.5.3 of the architecture documentation.
+    :param score: The score this model reached.
+    :param model: The model that should be persisted.
+    :param dependent_data_keys: The keys for the dependent data the model was created with.
+    :return: A dictionary containing all data as defined in 3.4.1.5.3
+    """
     return {
         "dependent": dependent_data_keys,
         "score": float(score),
@@ -58,6 +73,12 @@ def model_to_dict(score, model, dependent_data_keys):
 
 
 def train_model(all_data, prediction_unit):
+    """
+    Takes a list of dataframes and a prediction unit. Creates a model according to the prediction unit.
+    :param all_data: A Dictionary of dataframes. Each independent curve of the prediction unit needs to be present here.
+    :param prediction_unit: The prediction unit the model should be based on.
+    :return: The created model in a dictionary as defined in model_data_to_dict.
+    """
     model = linear_model.LinearRegression()
 
     independent_data_keys = prediction_unit["independent"]
@@ -65,16 +86,22 @@ def train_model(all_data, prediction_unit):
     test_sample_size = prediction_unit["test_sample_size"]
 
     independent_train, independent_test, dependent_train, dependent_test = train_test_split(
+        # TODO IS HERE A BUG?
         all_data[independent_data_keys],
         all_data[dependent_data_keys],
         test_size=test_sample_size,
         random_state=0)
     model.fit(independent_train, dependent_train)
 
-    return model_to_dict(model.score(independent_test, dependent_test), model, dependent_data_keys)
+    return model_data_to_dict(model.score(independent_test, dependent_test), model, dependent_data_keys)
 
 
 def calculate_average_score(all_models):
+    """
+    Takes a list of models and calculates their average score.
+    :param all_models: The list of models.
+    :return: The average score.
+    """
     score_sum = 0
     for model in all_models:
         score_sum += model["score"]
@@ -82,6 +109,11 @@ def calculate_average_score(all_models):
 
 
 def save_prediction_model(all_models, config):
+    """
+    Takes a list of models and the corresponding configuration. Persists these as a dictionary as defined in 3.4.1.5.3.
+    :param all_models: All models to be persisted.
+    :param config: The config these models where created with.
+    """
     avg_score = calculate_average_score(all_models)
     persist_dictionary = {
         "average_score": avg_score,
@@ -92,6 +124,10 @@ def save_prediction_model(all_models, config):
 
 
 def train(config):
+    """
+    Takes a configuration and trains a regression model based on this configuration.
+    :param config: The configuration the model should be created with.
+    """
     all_models = []
     all_data = get_all_data()
     selected_value = config.get("selected_value")
