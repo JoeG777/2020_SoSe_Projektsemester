@@ -129,35 +129,3 @@ def train(config):
     for prediction_unit in all_prediction_units:
         all_models.append(train_model(all_data, prediction_unit))
     save_prediction_model(all_models, config)
-
-
-# ------------------------------ TESTONLY
-default = [
-    {
-        "independent": ["freshAirIntake"],
-        "dependent": ["condenser"],
-        "test_sample_size": 0.2
-    },
-    {
-        "independent": ["freshAirIntake"],
-        "dependent": ["inlet"],
-        "test_sample_size": 0.2
-    },
-    {
-        "independent": ["freshAirIntake", "condenser", "evaporator"],
-        "dependent": ["room"],
-        "test_sample_size": 0.2
-    },
-    {
-        "independent": ["freshAirIntake", "condenser"],
-        "dependent": ["evaporator"],
-        "test_sample_size": 0.2
-    },
-    {
-        "independent": ["freshAirIntake"],
-        "dependent": ["outlet"],
-        "test_sample_size": 0.2
-    }
-]
-
-train(default)
