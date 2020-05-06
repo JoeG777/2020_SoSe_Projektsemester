@@ -96,7 +96,6 @@ def get_dwd_data(url):
 
     jsonWeatherArray = []
     temperatures = get_temp_data(url)
-    startDatumGefunden = False
     lastDateRead = ""
     
     try:
@@ -104,9 +103,6 @@ def get_dwd_data(url):
         for i in range(len(temperatures)):
 
             if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
-                startDatumGefunden = True
-
-            if startDatumGefunden:
 
                 timeString = get_timestamp_dwd(temperatures[i][0])
                 jsonBody = [
