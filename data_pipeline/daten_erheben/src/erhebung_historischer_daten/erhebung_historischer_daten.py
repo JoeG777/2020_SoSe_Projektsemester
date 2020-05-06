@@ -4,7 +4,7 @@ import requests
 from io import BytesIO
 import pandas as pd
 import data_pipeline.daten_erheben.src.utils.utils as utils
-from data_pipeline.daten_erheben.src.exception import FileException, UrlException, RawDataException
+from data_pipeline.exception.exceptions import FileException, UrlException, RawDataException
 import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 dateTmpFile = "/tmp/tmp.txt"

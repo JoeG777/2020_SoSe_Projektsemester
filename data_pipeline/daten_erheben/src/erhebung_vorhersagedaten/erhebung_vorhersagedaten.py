@@ -3,7 +3,7 @@ import urllib.request
 from zipfile import ZipFile
 import xml.etree.ElementTree as et
 import data_pipeline.daten_erheben.src.utils.utils as utils
-from data_pipeline.daten_erheben.src.exception import FileException, UrlException, RawDataException
+from data_pipeline.exception.exceptions import FileException, UrlException, RawDataException
 import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 logger = log_writer.LogWriter()

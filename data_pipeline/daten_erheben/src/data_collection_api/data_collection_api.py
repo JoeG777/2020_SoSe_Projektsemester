@@ -1,7 +1,7 @@
 from flask import *
 import data_pipeline.daten_erheben.src.erhebung_historischer_daten.erhebung_historischer_daten as his
 import data_pipeline.daten_erheben.src.erhebung_vorhersagedaten.erhebung_vorhersagedaten as forc
-import data_pipeline.daten_erheben.src.exception as exc
+import data_pipeline.exception.exceptions as exc
 
 app = Flask(__name__)
 
