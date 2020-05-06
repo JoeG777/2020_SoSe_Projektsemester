@@ -7,7 +7,7 @@ import data_pipeline.daten_erheben.src.utils.utils as utils
 from data_pipeline.exception.exceptions import FileException, UrlException, RawDataException
 import data_pipeline.daten_erheben.src.log_writer as log_writer
 
-dateTmpFile = "/tmp/tmp.txt"
+dateTmpFile = "./tmp.txt"
 logger = log_writer.LogWriter()
 
 
@@ -96,6 +96,7 @@ def get_dwd_data(url):
 
     jsonWeatherArray = []
     temperatures = get_temp_data(url)
+    start_date_gefunden = False
     lastDateRead = ""
     
     try:
@@ -103,6 +104,10 @@ def get_dwd_data(url):
         for i in range(len(temperatures)):
 
             if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
+
+                start_date_gefunden = True
+
+            if start_date_gefunden:
 
                 timeString = get_timestamp_dwd(temperatures[i][0])
                 jsonBody = [
@@ -113,6 +118,8 @@ def get_dwd_data(url):
                 ]
 
                 jsonWeatherArray.append(jsonBody)
+
+                print("Moin")
 
             lastDateRead = get_timestamp_dwd(temperatures[i][0])
 
