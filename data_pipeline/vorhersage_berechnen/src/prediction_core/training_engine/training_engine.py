@@ -37,10 +37,6 @@ def get_all_data():
     keys = register_dict.keys()
     df = get_temperature()
     df = df.rename(columns={'temperature': "outdoor"})
-    # -------
-    # ONLY FOR TESTING!!!
-    df['time'] = pd.to_datetime(df['time'])
-    df = df.set_index('time')
     df = df.resample(rule='1S').bfill()
     # -------
     for key in keys:
@@ -48,8 +44,6 @@ def get_all_data():
         current_dataset = current_dataset.rename(columns={'valueScaled': key})
         # -------
         # ONLY FOR TESTING!!!
-        current_dataset['time'] = pd.to_datetime(current_dataset['time'])
-        current_dataset = current_dataset.set_index('time')
         current_dataset = current_dataset.resample(rule='1S').bfill()
         # -------
         df = pd.merge(df, current_dataset, on='time', how='inner')
