@@ -36,7 +36,7 @@ def get_historic_data():
     except exc.RawDataException as rexc:
         response['statuscode'] = rexc.args[1]
     finally:
-        return make_response(jsonify({'statuscode': response['statuscode']}))
+        return Response(status=response['statuscode'])
 
 
 @app.route('/forecastDatenerhebung', methods = ['POST'])
@@ -69,7 +69,7 @@ def get_forecast_data():
     except exc.RawDataException as rexc:
         response['statuscode'] = rexc.args[1]
     finally:
-        return make_response(jsonify({'statuscode': response['statuscode']}))
+        return Response(status=response['statuscode'])
 
 if __name__ == '__main__':
     app.run(host='localhost', port='8000')
