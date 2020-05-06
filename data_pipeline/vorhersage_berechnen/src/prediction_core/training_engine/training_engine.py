@@ -7,25 +7,7 @@ from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor impo
 default_measurement = "measurement"
 nilan_db = "nilan"
 temp_db = "darkSkyDaten"
-
-register_dict = {
-    "freshAirIntake": "201",
-    "inlet": "202",
-    "room": "210",
-    "outlet": "204",
-    "condenser": "205",
-    "evaporator": "206"
-}
-
-
-# TODO MAKE THIS METHOD IRRELEVANT.
-def get_data(register):
-    return rm.read_register_of_measurement(nilan_db, "temperature_register", register_dict[register])
-
-
-# TODO ...and this.
-def get_temperature():
-    return rm.read_query_in_good(temp_db, "SELECT * FROM weatherTest LIMIT 50")
+curves = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"]
 
 
 def get_all_data():
@@ -34,19 +16,19 @@ def get_all_data():
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
     """
-    keys = register_dict.keys()
-    df = get_temperature()
+    df = rm.read_data(temp_db, measurement="weatherTest")
     df = df.rename(columns={'temperature': "outdoor"})
-    df = df.resample(rule='1S').bfill()
-    # -------
-    for key in keys:
-        current_dataset = get_data(key)
+
+    for key in curves:
+        current_dataset = rm.read_data(
+            nilan_db,
+            measurement="temperature_register",
+            register=key,
+            resolve_register="True")
         current_dataset = current_dataset.rename(columns={'valueScaled': key})
-        # -------
-        # ONLY FOR TESTING!!!
-        current_dataset = current_dataset.resample(rule='1S').bfill()
-        # -------
+
         df = pd.merge(df, current_dataset, on='time', how='inner')
+
     return df
 
 
