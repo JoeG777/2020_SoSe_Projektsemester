@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import pytz
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
 
