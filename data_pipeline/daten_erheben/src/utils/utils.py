@@ -28,6 +28,6 @@ def write_to_influx(json_array):
     :param json_array: The JSON-Array includes the data you want to write in the database.
     '''
 
-    wm.write_query_array(json_array)
+    wm.write_query_array("db_rohdaten",json_array)
 
     print("Daten aktualisiert.")
