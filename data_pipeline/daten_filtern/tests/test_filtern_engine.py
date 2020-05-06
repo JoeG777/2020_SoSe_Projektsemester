@@ -56,13 +56,15 @@ class Filtern_engine_tests(unittest.TestCase):
 
         #real_data
         real_data = fe.interpolation("linear", "room", opening_data)
-        print(real_data)
-        print(expected_data)
+
         #comparison real_data and exected_data
-        #ok = real_data.equals(expected_data)
 
+        ok = True
+        for i in expected_y:
+            if real_data.iloc[i].room != expected_data.iloc[i].room:
+                ok = False
 
-        #self.assertTrue(ok)
+        self.assertTrue(ok)
 
 
 
