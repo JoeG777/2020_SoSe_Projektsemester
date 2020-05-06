@@ -3,9 +3,10 @@ classification_config = {
     "datasource_raw_data": 'nilan',
     "datasource_training_data": 'database',
     "datasource_classified_data": 'classified_data',
-    "timeframe":("2020-01-05 00:00:00", "2020-01-09 00:00:00"),
+    "datasource_classifier": 'model_np4.txt',
+    "timeframe": ("2020-01-10 00:00:00", "2020-01-12 00:00:00"),
     "selected_event": "abtauzyklus",
-    "new_classifier_method": "kNN",
+    "new_classifier_method": "",
     "measurement": "temperature_register",
     "abtauzyklus": 206,
     # TODO : in ChangeLog eintragen
@@ -22,9 +23,9 @@ classification_config = {
         "del_marker": 0.0
     },
     "test_sample_size" : 0.2,
-    "classification_method" : "SVM",
+    "classification_method" : "kNN",
     "classification_method_options" : {
-        "SVM" : "model = SVM()",
-        "kNN" : "model = KNeighbors()"
+        "SVM": "sklearn.svm.SVC()",
+        "kNN": "sklearn.neighbors.KNeighborsClassifier()"
     }
 }

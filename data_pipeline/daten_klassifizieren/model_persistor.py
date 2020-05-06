@@ -1,31 +1,13 @@
 import sklearn
+from sklearn.externals import joblib
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 import pickle
 #import logWriter
+from data_pipeline.daten_klassifizieren.config import classification_config as config
 
 
 # TODO: logWriter noch einbinden
-
-classification_config = {
-
-    "datasource_raw_data": ("host", "port", "username", "database", "password"),
-    "datesource_training_data": ("host", "port", "username", "database", "password"),
-    "datasource_classified_data": ("host", "port", "username", "database", "password"),
-    "datasource_classifier": "data_pipeline/daten_klassifizieren/model.txt",
-    "timeframe": ("2020-01-05 00:00", "2020-02-05 00:00"),
-    "selected_event": "",
-    "new_classifier_method": "kNN",
-    "event_features": {
-        "Ableitung_start": 1.0,
-        "Ableitung_ende": -1.0
-    },
-    "test_sample_size": 0.2,
-    "classification_method_options": {
-        "SVM": "sklearn.svm.SVC()",
-        "kNN": " sklearn.neighbors.KNeighborsClassifier()"
-    }
-}
 
 
 def load_classifier(classification_config):
@@ -37,11 +19,14 @@ def load_classifier(classification_config):
         sklearn object: Ein Klassifizierungsalgorithmus aus dem sklearn Paket'''
     new_classifier_method = classification_config["new_classifier_method"]
     if new_classifier_method != "":
+        print('a')
         exec_string = classification_config["classification_method_options"][new_classifier_method]
         return eval(exec_string)
 
     datasource_classifier = classification_config["datasource_classifier"]
+    print('b')
     classifier_dictionary = load_dictionary(datasource_classifier)
+    print('c')
     event = classification_config["selected_event"]
     classifier = classifier_dictionary[event]
     if classifier == "":
@@ -82,6 +67,7 @@ def load_dictionary(datasource_classifier):
         return pickle.load(file)
 
 
+
 def save_dictionary(classifier_dictionary, datasource_classifier):
     '''Name in Dokumentation: -
     Parameter:
@@ -92,4 +78,3 @@ def save_dictionary(classifier_dictionary, datasource_classifier):
         pickle.dump(classifier_dictionary, file)
 
 
-load_classifier(classification_config)
