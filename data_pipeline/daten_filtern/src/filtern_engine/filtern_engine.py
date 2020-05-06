@@ -1,12 +1,12 @@
 import pandas
 import numpy as np
 from data_pipeline.exception.exceptions import DBException, ConfigException
-import data_pipeline.log_writer.log_writer as log_writer
+#import data_pipeline.log_writer.log_writer as log_writer
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
 from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
 
-logger = log_writer.LogWriter()
+#logger = log_writer.LogWriter()
 
 
 def filter():
@@ -30,7 +30,7 @@ def filter():
                     filtern_data = interpolation(method, curve, filtern_data)
 
     except:
-        logger.influx_logger.error("Config is wrong.")
+        #logger.influx_logger.error("Config is wrong.")
         raise ConfigException("Config is wrong.", 900)
 
     persist_data(filtern_data)
@@ -48,7 +48,7 @@ def get_data():
         # TODO Query für klassifizierte Daten
         klassifizierte_daten = reader.read_query("Klassifizierte Daten", "KOMPLETTE KLASSIFIZIERTE DATEN!")
     except:
-        logger.influx_logger.error("Database not available.")
+        #logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
 
 
@@ -62,12 +62,11 @@ def tag_drop(curve, cycle, filtern_data):
     :return: the klassified data with one cycle of one curve deleted
     """
 
-    filtern_data = filtern_data.loc[filtern_data.cycle == True, curve] = np.nan
-
+    filtern_data.loc[filtern_data[cycle] == True, curve] = np.nan
     return filtern_data
 
 
-def interpolation(method, curve, zyklenfreie_daten):
+def interpolation(methode, curve, zyklenfreie_daten):
     """
     Name in documentation: 'interpolation'
     Interpolate one curve, after a cycle was deletet. The method has already been read from config file.
@@ -77,9 +76,9 @@ def interpolation(method, curve, zyklenfreie_daten):
     :return: The klassified data after filtering a cycle.
     """
 
-    gefilterte_daten = zyklenfreie_daten[curve].interpolate(method=method, inplace=True)
+    zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
 
-    return gefilterte_daten
+    return zyklenfreie_daten
 
 
 def persist_data(filtern_data):
@@ -93,7 +92,7 @@ def persist_data(filtern_data):
         # TODO Query für klassifizierte Daten
         writer.write_query("Gefilterte Daten", filtern_data)
     except:
-        logger.influx_logger.error("Database not available.")
+        #logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
 
     pass
