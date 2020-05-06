@@ -6,28 +6,6 @@ import data_pipeline.daten_erheben.src.exception as exc
 app = Flask(__name__)
 
 
-@app.route('/')
-def start():
-
-    '''
-    Forwards to the URL '/index' when the server gets called for the first time.
-    :return: Redirects to '/index'
-    '''
-
-    return redirect(url_for('index'))
-
-
-@app.route('/index')
-def index():
-
-    '''
-    Opens 'index.html' to allow using the application.
-    :return: Opens 'index.html'
-    '''
-
-    return render_template('index.html')
-
-
 @app.route('/historischeDatenerhebung', methods = ['POST'])
 def get_historic_data():
 
