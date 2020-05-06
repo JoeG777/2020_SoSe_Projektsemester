@@ -84,7 +84,31 @@ def get_temp_data(url):
     return returnData
 
 
+def find_start_date(temperatures):
+
+    '''
+    This method searches for the start-date of the query depending on the datenerhebung_tmp.txt-file.
+    :param temperatures: Holds the weather data.
+    :return: Start-date for the query.
+    '''
+    
+    try:
+
+        for i in range(len(temperatures)):
+
+            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
+
+                start_date = i
+
+    except:
+        logger.influx_logger.error("incorrect passed data.")
+        raise RawDataException("incorrect passed data.", 905)
+
+    return start_date
+
+
 def get_dwd_data(url):
+
     '''
     Temperature data from the extracted CSV file are formatted appropriately for the InfluxDB,
     stored in a JSON array and returned.
@@ -94,38 +118,23 @@ def get_dwd_data(url):
     :return: Json-Array with all the formatted weather entries and their formatted time stamps
     '''
 
-    jsonWeatherArray = []
     temperatures = get_temp_data(url)
-    start_date_gefunden = False
-    lastDateRead = ""
-    
-    try:
+    jsonWeatherArray = []
 
-        for i in range(len(temperatures)):
+    for counter in range(find_start_date(temperatures), len(temperatures)):
 
-            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
+        timeString = get_timestamp_dwd(temperatures[counter][0])
+        jsonBody = [
+            {'measurement': 'temperaturDWD',
+             "time": utils.get_converted_date(timeString),
+             "fields":{"temperature":float(temperatures[counter][1])}
+             }
+        ]
 
-                start_date_gefunden = True
+        jsonWeatherArray.append(jsonBody)
 
-            if start_date_gefunden:
+        lastDateRead = get_timestamp_dwd(temperatures[counter][0])
 
-                timeString = get_timestamp_dwd(temperatures[i][0])
-                jsonBody = [
-                    {'measurement': 'temperaturDWD',
-                    "time": utils.get_converted_date(timeString),
-                    "fields":{"temperature":float(temperatures[i][1])}
-                    }
-                ]
-
-                jsonWeatherArray.append(jsonBody)
-
-            lastDateRead = get_timestamp_dwd(temperatures[i][0])
-
-    except:
-        logger.influx_logger.error("incorrect passed data.")
-        raise RawDataException("incorrect passed data.", 905)
-
-    
     try:
         tmp = open(dateTmpFile, "w")
         tmp.write(lastDateRead)
@@ -136,7 +145,6 @@ def get_dwd_data(url):
         raise FileException("Inadequate read and write rights.", 903)
 
     return jsonWeatherArray
-
 
 def raise_historic_data(url):
     '''
