@@ -6,7 +6,7 @@ import data_pipeline.exception.exceptions as exc
 app = Flask(__name__)
 
 
-@app.route('/historischeDatenerhebung', methods = ['POST'])
+@app.route('/historische_datenerhebung', methods = ['POST'])
 def get_historic_data():
 
     '''
@@ -23,9 +23,9 @@ def get_historic_data():
         if int(request.headers.get('Content-Length')) == 0:
             raise exc.UrlException("URL incorrect", 904)
 
-        urlHistorisch = request.get_json()['historischURL']
+        url_historisch = request.get_json()['historischURL']
 
-        his.raise_historic_data(urlHistorisch)
+        his.raise_historic_data(url_historisch)
 
         response['statuscode'] = 200
 
@@ -39,7 +39,7 @@ def get_historic_data():
         return Response(status=response['statuscode'])
 
 
-@app.route('/forecastDatenerhebung', methods = ['POST'])
+@app.route('/forecast_datenerhebung', methods = ['POST'])
 def get_forecast_data():
 
     '''
@@ -56,9 +56,9 @@ def get_forecast_data():
         if int(request.headers.get('Content-Length')) == 0:
             raise exc.UrlException("URL incorrect", 904)
 
-        urlForecast = request.get_json()['forecastURL']
+        url_forecast = request.get_json()['forecastURL']
 
-        forc.raise_forecast_data(urlForecast)
+        forc.raise_forecast_data(url_forecast)
 
         response['statuscode'] = 200
 

@@ -7,7 +7,7 @@ import data_pipeline.daten_erheben.src.utils.utils as utils
 from data_pipeline.exception.exceptions import FileException, UrlException, RawDataException
 import data_pipeline.daten_erheben.src.log_writer as log_writer
 
-dateTmpFile = "/tmp/datenerhebung_tmp.txt"
+date_tmp_file = "/tmp/datenerhebung_tmp.txt"
 logger = log_writer.LogWriter()
 
 
@@ -33,17 +33,17 @@ def get_start_date():
     '''
 
     try:
-        if not os.path.exists(dateTmpFile):
-            open(dateTmpFile, "w")
+        if not os.path.exists(date_tmp_file):
+            open(date_tmp_file, "w")
 
-        tmp = open(dateTmpFile, "r")
-        startDate = tmp.read()
+        tmp = open(date_tmp_file, "r")
+        start_date = tmp.read()
 
-        if startDate == "":
-            startDate = "2020-01-05T00:00:00Z"
+        if start_date == "":
+            start_date = "2020-01-05T00:00:00Z"
         tmp.close()
 
-        return startDate
+        return start_date
 
     except:
         logger.influx_logger.error("Inadequate read and write rights.")
@@ -59,7 +59,7 @@ def get_temp_data(url):
     :return: Array with all weather entries and their time stamps
     '''
 
-    returnData = []
+    return_data = []
 
     try:
         response = requests.get(url)
@@ -79,9 +79,9 @@ def get_temp_data(url):
         for i in range(len(temperatures)):
 
             element = [str(timestamp[i]), str(temperatures[i])]
-            returnData.append(element)
+            return_data.append(element)
 
-    return returnData
+    return return_data
 
 
 def find_start_date(temperatures):
@@ -119,32 +119,32 @@ def get_dwd_data(url):
     '''
 
     temperatures = get_temp_data(url)
-    jsonWeatherArray = []
+    json_weather_array = []
 
     for counter in range(find_start_date(temperatures), len(temperatures)):
 
-        timeString = get_timestamp_dwd(temperatures[counter][0])
+        time_string = get_timestamp_dwd(temperatures[counter][0])
         jsonBody = [
-            {'measurement': 'temperaturDWD',
-             "time": utils.get_converted_date(timeString),
+            {'measurement': 'temperatur_DWD',
+             "time": utils.get_converted_date(time_string),
              "fields":{"temperature":float(temperatures[counter][1])}
              }
         ]
 
-        jsonWeatherArray.append(jsonBody)
+        json_weather_array.append(jsonBody)
 
-        lastDateRead = get_timestamp_dwd(temperatures[counter][0])
+        last_date_read = get_timestamp_dwd(temperatures[counter][0])
 
     try:
-        tmp = open(dateTmpFile, "w")
-        tmp.write(lastDateRead)
+        tmp = open(date_tmp_file, "w")
+        tmp.write(last_date_read)
         tmp.close()
 
     except:
         logger.influx_logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
-    return jsonWeatherArray
+    return json_weather_array
 
 def raise_historic_data(url):
     '''

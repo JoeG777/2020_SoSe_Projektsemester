@@ -23,7 +23,7 @@ def get_forecast_data(url)  :
     root = tree.getroot() # XML-Dokument in XML-Tree umwandeln
 
     timestamps = []
-    timestampsFormatted = []
+    timestamps_formatted = []
     temperatures = []
     data = []
 
@@ -41,34 +41,34 @@ def get_forecast_data(url)  :
                             for i in grandgrandgrandchild.text.split(" "):
                                 timestamps.append(i)
 
-    # Timestamps umformatieren (YYYY-MM-DDT00:00:00.000Z -> YYYY-MM-DDT00:00:00Z)
+    # Format Timestamps (YYYY-MM-DDT00:00:00.000Z -> YYYY-MM-DDT00:00:00Z)
     for i in timestamps:
-        timestampsFormatted.append(i[:19] + "Z")
+        timestamps_formatted.append(i[:19] + "Z")
 
-    # 2D-Array bestehend aus Tupeln mit je einem Timestamp und einer Temperaturmessung zusammensetzen
+    # 2D-Array consisting out of tuples of a timestamp and temperatur_data, each
     for i in range(len(temperatures)):
-        data.append([timestampsFormatted[i], temperatures[i]])
+        data.append([timestamps_formatted[i], temperatures[i]])
         
-    jsonWeatherArray = []
+    json_weather_array = []
 
     try:
 
         for i in range(len(data)):
 
             jsonBody = [
-                {'measurement': 'temperaturForecastDWD',
+                {'measurement': 'temperatur_forecast_DWD',
                 "time": utils.get_converted_date(data[i][0]),
-                "fields":{"temperatureForecast":(float(data[i][1])-273.15)} # Umrechnung von Kelvin zu Celsius (°C = K - 273,15)
+                "fields":{"temperature_forecast":(float(data[i][1])-273.15)} # Umrechnung von Kelvin zu Celsius (°C = K - 273,15)
                 }
             ]
 
-            jsonWeatherArray.append(jsonBody)
+            json_weather_array.append(jsonBody)
 
     except:
         logger.influx_logger.error("incorrect passed data.")
         raise RawDataException("incorrect passed data.", 905)
 
-    return jsonWeatherArray
+    return json_weather_array
 
 
 def get_forecast(url):
