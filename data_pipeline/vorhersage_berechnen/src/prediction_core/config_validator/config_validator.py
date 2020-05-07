@@ -1,9 +1,4 @@
-from data_pipeline.exception.exceptions import (
-    InvalidTrainingPercentageException,
-    RedundantConfigException,
-    IncompleteConfigException,
-    InconsistentConfigException,
-    InvalidConfigException)
+from data_pipeline.exception.exceptions import *
 
 import collections
 import copy
@@ -36,7 +31,7 @@ def check_general_constraints(config):
             for key in prediction_options:
                 if key == selected_value:
                     if selected_value_is_valid:
-                        raise InvalidConfigException("The selected value appears twice in prediction options.")
+                        raise AmbiguousConfigException("The selected value appears twice in prediction options.")
                     else:
                         selected_value_is_valid = True
 
@@ -49,13 +44,13 @@ def check_general_constraints(config):
                         if (not set(prediction_unit["independent"]).issubset(valid_independent_values) # TODO might need to check if value is in there more than once
                                 or not set(prediction_unit["dependent"]).issubset(valid_dependent_values)
                                 or not isinstance(prediction_unit["test_sample_size"], Number)):
-                            raise InvalidConfigException("One prediction unit of the config has invalid values.")
+                            raise InvalidConfigValueException("One prediction unit of the config has invalid values.")
                     else:
-                        raise InvalidConfigException("One prediction unit of the config has invalid keys.")
+                        raise InvalidConfigKeyException("One prediction unit of the config has invalid keys.")
         else:
-            raise InvalidConfigException("Config does not have prediction options defined.")
+            raise InvalidConfigKeyException("Config does not have prediction options defined.")
     else:
-        raise InvalidConfigException("Config does not have the field selected value.")
+        raise InvalidConfigKeyException("Config does not have the field selected value.")
 
     return True
 
@@ -70,7 +65,7 @@ def check_completeness(config):
                 if element in to_be_predicted:
                     to_be_predicted.remove(element)
         else:
-            raise InvalidConfigException('An entry of the config does not contain a dependent curve.')
+            raise InvalidConfigKeyException('An entry of the config does not contain a dependent curve.')
     if to_be_predicted:
         raise IncompleteConfigException('In the current config not every curve is dependent')
 
@@ -87,7 +82,7 @@ def check_redundancies(config):
                 else:
                     to_be_predicted.append(element)
         else:
-            raise InvalidConfigException('An entry of the config does not contain a dependent curve.')
+            raise InvalidConfigKeyException('An entry of the config does not contain a dependent curve.')
 
 
 def check_prediction_chain(config):
@@ -123,6 +118,6 @@ def check_training_percentage(config):
                 raise InvalidTrainingPercentageException('An entry of the config contains a invalid test sample size: '
                                                          + str(curr_test_sample_size))
         else:
-            raise InvalidConfigException('An entry of the config does not contain a test sample size.')
+            raise InvalidConfigKeyException('An entry of the config does not contain a test sample size.')
 
 

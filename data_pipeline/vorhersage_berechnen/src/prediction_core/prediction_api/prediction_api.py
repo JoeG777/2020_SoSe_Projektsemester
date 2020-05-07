@@ -32,12 +32,10 @@ def train():
     status_code = 200
     if request.is_json:
         try:
-            #training_engine.train(request.get_json())
-            # TODO CALL FUNCTION ABOVE AND REMOVE RAISE BELOW
-            raise PersistorException
-        except InvalidConfigException: # TODO replace with generic config exception
+            training_engine.train(request.get_json())
+        except ConfigException:
             status_code = http_status_codes.get("ConfigException")
-        except IndexError: # TODO replace with DBException
+        except DBException:
             status_code = http_status_codes.get("DBException")
         except PersistorException:
             status_code = http_status_codes.get("PersistorException")
@@ -48,20 +46,20 @@ def train():
 
     return Response(status=status_code)
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
     """
     Name in documentation: 'vorhersagen'
 
     """
+    status_code = 200
     if request.is_json:
         try:
-            #prediction_engine.predict(request.get_json())
-            # TODO CALL FUNCTION ABOVE AND REMOVE RAISE BELOW
-            raise PersistorException
-        except InvalidConfigException: # TODO replace with generic config exception
+            prediction_engine.calculate_prediction(request.get_json())
+        except ConfigException:
             status_code = http_status_codes.get("ConfigException")
-        except IndexError: # TODO replace with DBException
+        except DBException:
             status_code = http_status_codes.get("DBException")
         except PersistorException:
             status_code = http_status_codes.get("PersistorException")
