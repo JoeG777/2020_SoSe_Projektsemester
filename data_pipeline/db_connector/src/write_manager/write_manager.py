@@ -49,13 +49,13 @@ def write_single_value(db, value, **kwargs):
     :param value: the value to write as String.
     """
     measurement = default_measurement
-    if kwargs["measurement"]:
+    if "measurement" in kwargs.keys():
         measurement = kwargs["measurement"]
     value_name = default_value_name
-    if kwargs["value_name"]:
+    if "value_name" in kwargs.keys():
         value_name = kwargs["value_name"]
     time = datetime.utcnow()
-    if kwargs["time_utc"]:
+    if "time_utc" in kwargs.keys():
         time = kwargs["time_utc"]
     write_query(db, build_write_json(measurement, value, value_name, time))
 
@@ -77,13 +77,13 @@ def write_multiple_values(db, values, **kwargs):
     index = 0
     for value in values:
         measurement = default_measurement
-        if kwargs["measurement"]:
+        if "measurement" in kwargs.keys():
             measurement = kwargs["measurement"][index]
         value_name = default_value_name
-        if kwargs["value_name"]:
+        if "value_name" in kwargs.keys():
             value_name = kwargs["value_name"][index]
         time = datetime.utcnow()
-        if kwargs["time_utc"]:
+        if "time_utc" in kwargs.keys():
             time = kwargs["time_utc"][index]
         write_single_value(db, value, value_name=value_name, measurement=measurement, time=time)
 
