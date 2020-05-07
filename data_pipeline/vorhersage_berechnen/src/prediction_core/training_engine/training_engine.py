@@ -12,6 +12,7 @@ curves = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"
 
 def get_all_data():
     """
+    Name in  documentation: TODO ADD TO DOCS
     Retrieves all data from the database defined in nilan_db and temp_db and merges this data into a dataframe.
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
@@ -34,6 +35,7 @@ def get_all_data():
 
 def model_data_to_dict(score, model, dependent_data_keys):
     """
+    Name in  documentation: TODO ADD TO DOCS
     Takes a score, a model and the keys of the dependent data this model was created with and returns a dictionary.
     The structure of the dictionary is defined in 3.4.1.5.3 of the architecture documentation.
     :param score: The score this model reached.
@@ -50,6 +52,7 @@ def model_data_to_dict(score, model, dependent_data_keys):
 
 def train_model(all_data, prediction_unit):
     """
+    Name in  documentation: modell_trainieren
     Takes a list of dataframes and a prediction unit. Creates a model according to the prediction unit.
     :param all_data: A Dictionary of dataframes. Each independent curve of the prediction unit needs to be present here.
     :param prediction_unit: The prediction unit the model should be based on.
@@ -74,6 +77,7 @@ def train_model(all_data, prediction_unit):
 
 def calculate_average_score(all_models):
     """
+    Name in  documentation: score_durchschnitt_berechnen
     Takes a list of models and calculates their average score.
     :param all_models: The list of models.
     :return: The average score.
@@ -86,6 +90,7 @@ def calculate_average_score(all_models):
 
 def save_prediction_model(all_models, config):
     """
+    Name in  documentation: vorhersagemodell_speichern()
     Takes a list of models and the corresponding configuration. Persists these as a dictionary as defined in 3.4.1.5.3.
     :param all_models: All models to be persisted.
     :param config: The config these models where created with.
@@ -101,6 +106,7 @@ def save_prediction_model(all_models, config):
 
 def train(config):
     """
+    Name in  documentation: trainieren
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
