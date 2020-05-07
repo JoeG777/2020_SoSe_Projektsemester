@@ -1,6 +1,7 @@
 import unittest
 import data_pipeline.daten_klassifizieren.model_persistor as model_persistor
 
+
 class test_load_classifier(unittest.TestCase):
 
 
