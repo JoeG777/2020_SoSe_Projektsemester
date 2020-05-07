@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
+from data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator import config_validator
 
 default_measurement = "measurement"
 nilan_db = "nilan"
@@ -110,6 +111,7 @@ def train(config):
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
+    config_validator.validate_config(config)
     all_models = []
     all_data = get_all_data()
     selected_value = config.get("selected_value")
