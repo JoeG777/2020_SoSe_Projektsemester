@@ -21,7 +21,12 @@ def get_historic_data():
     try:
 
         if int(request.headers.get('Content-Length')) == 0:
-            raise exc.UrlException("URL incorrect", 904)
+            raise exc.IncompleteConfigException('Config-JSON empty.', 900)
+
+        try:
+            json.load(['historischURL'])
+        except:
+            raise exc.IncompleteConfigException('Historisch-URL missing in Config-JSON.', 900)
 
         url_historisch = request.get_json()['historischURL']
 
@@ -54,7 +59,12 @@ def get_forecast_data():
     try:
 
         if int(request.headers.get('Content-Length')) == 0:
-            raise exc.UrlException("URL incorrect", 904)
+            raise exc.IncompleteConfigException('Config-JSON empty.', 900)
+        
+        try:
+            json.load(['forecastURL'])
+        except:
+            raise exc.IncompleteConfigException('Forecast-URL missing in Config-JSON.', 900)
 
         url_forecast = request.get_json()['forecastURL']
 
@@ -62,6 +72,8 @@ def get_forecast_data():
 
         response['statuscode'] = 200
 
+    except exc.IncompleteConfigException as uexc:
+        response['statuscode'] = uexc.args[1]
     except exc.UrlException as uexc:
         response['statuscode'] = uexc.args[1]
     except exc.FileException as fexc:
