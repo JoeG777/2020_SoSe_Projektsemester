@@ -3,10 +3,10 @@ classification_config = {
     "datasource_raw_data": 'nilan',
     "datasource_training_data": 'database',
     "datasource_classified_data": 'classified_data',
-    "datasource_classifier": 'model_np4.txt',
+    "datasource_classifier": 'model.txt',
     "timeframe": ("2020-01-10 00:00:00", "2020-01-12 00:00:00"),
     "selected_event": "abtauzyklus",
-    "new_classifier_method": "",
+    "new_classifier_method": "kNN",
     "measurement": "temperature_register",
     "abtauzyklus": 206,
     # TODO : in ChangeLog eintragen

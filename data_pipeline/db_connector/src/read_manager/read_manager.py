@@ -3,10 +3,22 @@ import pandas as pd
 from influxdb import InfluxDBClient
 from ..db_config import db_config
 
+default_measurement = "temperature"
+default_register = "201"
+
 url = db_config.params.get("url")
 port = db_config.params.get("port")
 user = db_config.params.get("user")
 password = db_config.params.get("password")
+
+register_dict = {
+    "freshAirIntake": "201",
+    "inlet": "202",
+    "room": "210",
+    "outlet": "204",
+    "condenser": "205",
+    "evaporator": "206"
+}
 
 
 def read_query(db, query):
@@ -19,42 +31,46 @@ def read_query(db, query):
     """
     client = InfluxDBClient(url, port, user, password, db)
     data = client.query(query)
-    points = list(data.get_points())
-    result = []
-
-    for p in points:
-        result.append(p.get('valueScaled'))
-
-    return format_data(result)
+    return format_data(data.get_points())
 
 
-def read_register_of_measurement(db, measurement, register):
+def read_data(db, **kwargs):
     """
-    Takes a measurement and a register, both as Strings, and returns the value present in these.
+    Takes a String that resembles the database the influx client should connect to. Further takes these
+    optional arguments (note that ALL arguments need to be provided as Strings):
+    measurement: define a specific measurement the data should be retrived from.
+    register: The number of the register the data should be read from.
+    resolve_register: If this variable is set, you can just use the curves names as defined in the register_dict.
+                      The register names are mapped to the respective numbers.
+    start_utc: The start date and time formatted in utc.
+    end_utc: The start date and time formatted in utc.
     :param db: The database the data should be read from.
-    :param measurement: The measurement the data should be retrieved from.
-    :param register: The register the data should be retrieved from.
     :return: The retrieved data.
     """
-    query = 'select * from ' + measurement + ' where register = \'' + register + '\''
-    return format_data(read_query(db, query))
-
-
-def read_register_of_measurement_from_to(db, measurement, register, start, end):
-    """
-    Equal functionality as read_register_of_measurement, but does also take a start and an end time.
-    Make sure to format time as "yyyy-mm-dd hh:mm:ss".
-    :param measurement: The measurement the data should be retrieved from.
-    :param register: The register the data should be retrieved from.
-    :param start: The start date of the data set.
-    :param end: The end date of the data set.
-    :return: The retrieved data.
-    """
-    query = 'select * from ' + measurement \
-            + 'where time > \'' + start \
-            + '\' and time < \'' + end \
-            + '\' and register = \'' + register + '\''
-    return format_data(read_query(db, query))
+    measurement = default_measurement
+    if kwargs["measurement"]:
+        measurement = kwargs["measurement"]
+    register = default_register
+    query = 'select * from ' + measurement
+    if kwargs["register"]:
+        if kwargs["resolve_register"]:
+            register = register_dict[register]
+        else:
+            register = kwargs["register"]
+        query += ' where register = \'' + register + '\''
+    if kwargs["start_utc"]:
+        if kwargs["register"]:
+            query += ' AND '
+        else:
+            query += ' WHERE '
+        query += 'AND time >' + kwargs["start"]
+    if kwargs["end_utc"]:
+        if kwargs["register"] | kwargs["end_utc"]:
+            query += ' AND '
+        else:
+            query += ' WHERE '
+        query += 'AND time <' + kwargs["end"]
+    return read_query(db, query)
 
 
 def format_data(dataset):
@@ -63,4 +79,7 @@ def format_data(dataset):
     :param dataset: The dataset to format.
     :return: The given dataset as a DataFrame.
     """
-    return pd.DataFrame(dataset)
+    df = pd.DataFrame(dataset)
+    df['time'] = pd.to_datetime(df['time'])
+    df = df.set_index('time')
+    return df

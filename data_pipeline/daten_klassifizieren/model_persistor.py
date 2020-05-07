@@ -1,5 +1,4 @@
 import sklearn
-from sklearn.externals import joblib
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 import pickle
@@ -18,6 +17,7 @@ def load_classifier(classification_config):
     Returns:
         sklearn object: Ein Klassifizierungsalgorithmus aus dem sklearn Paket'''
     new_classifier_method = classification_config["new_classifier_method"]
+    print(new_classifier_method)
     if new_classifier_method != "":
         print('a')
         exec_string = classification_config["classification_method_options"][new_classifier_method]
