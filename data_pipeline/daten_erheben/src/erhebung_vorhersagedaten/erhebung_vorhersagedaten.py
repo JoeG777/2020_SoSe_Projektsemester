@@ -8,7 +8,7 @@ import data_pipeline.daten_erheben.src.log_writer as log_writer
 
 logger = log_writer.LogWriter()
 
-def get_forecast_data(url)  :
+def get_forecast_data(url):
 
     '''
     The KML-file including the forecast weatherdata is being processed as XML. The Method searches and saves the Temperature data,
@@ -27,32 +27,36 @@ def get_forecast_data(url)  :
     temperatures = []
     data = []
 
-    for element in root:
-        for child in element:
-            for grandchild in child:
-                for grandgrandchild in grandchild.findall('{https://opendata.dwd.de/weather/lib/pointforecast_dwd_extension_V1_0.xsd}Forecast'): # Nur durch jende children Iterieren, welche den Tag 'Forecast' besitzen       
-                    if grandgrandchild.attrib['{https://opendata.dwd.de/weather/lib/pointforecast_dwd_extension_V1_0.xsd}elementName'] == "T5cm": # Das Element finden, welches das Attribut "T5cm" besitzt
+    try:
+        for element in root:
+            for child in element:
+                for grandchild in child:
+                    for grandgrandchild in grandchild.findall('{https://opendata.dwd.de/weather/lib/pointforecast_dwd_extension_V1_0.xsd}Forecast'): # Nur durch jende children Iterieren, welche den Tag 'Forecast' besitzen
+                        if grandgrandchild.attrib['{https://opendata.dwd.de/weather/lib/pointforecast_dwd_extension_V1_0.xsd}elementName'] == "T5cm": # Das Element finden, welches das Attribut "T5cm" besitzt
+                            for grandgrandgrandchild in grandgrandchild:
+                                for i in range(len(grandgrandgrandchild.text.split("     "))-1):
+                                    temperatures.append(float(grandgrandgrandchild.text.split("     ")[i+1]))
+                    for grandgrandchild in grandchild:
                         for grandgrandgrandchild in grandgrandchild:
-                            for i in range(len(grandgrandgrandchild.text.split("     "))-1):
-                                temperatures.append(float(grandgrandgrandchild.text.split("     ")[i+1]))
-                for grandgrandchild in grandchild:
-                    for grandgrandgrandchild in grandgrandchild:
-                        if grandgrandgrandchild.tag == "{https://opendata.dwd.de/weather/lib/pointforecast_dwd_extension_V1_0.xsd}TimeStep": # Das Element finden, welches den Tag "TimeStemp" besitzt
-                            for i in grandgrandgrandchild.text.split(" "):
-                                timestamps.append(i)
+                            if grandgrandgrandchild.tag == "{https://opendata.dwd.de/weather/lib/pointforecast_dwd_extension_V1_0.xsd}TimeStep": # Das Element finden, welches den Tag "TimeStemp" besitzt
+                                for i in grandgrandgrandchild.text.split(" "):
+                                    timestamps.append(i)
 
-    # Format Timestamps (YYYY-MM-DDT00:00:00.000Z -> YYYY-MM-DDT00:00:00Z)
-    for i in timestamps:
-        timestamps_formatted.append(i[:19] + "Z")
+        # Format Timestamps (YYYY-MM-DDT00:00:00.000Z -> YYYY-MM-DDT00:00:00Z)
+        for i in timestamps:
+            timestamps_formatted.append(i[:19] + "Z")
 
-    # 2D-Array consisting out of tuples of a timestamp and temperatur_data, each
-    for i in range(len(temperatures)):
-        data.append([timestamps_formatted[i], temperatures[i]])
+        # 2D-Array consisting out of tuples of a timestamp and temperatur_data, each
+        for i in range(len(temperatures)):
+            data.append([timestamps_formatted[i], temperatures[i]])
+
+    except:
+        logger.influx_logger.error("Incorrect file format.")
+        raise FileException("Incorrect file format.", 903)
         
     json_weather_array = []
 
     try:
-
         for i in range(len(data)):
 
             jsonBody = [
