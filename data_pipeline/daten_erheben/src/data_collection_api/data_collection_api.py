@@ -24,7 +24,7 @@ def get_historic_data():
             raise exc.IncompleteConfigException('Config-JSON empty.', 900)
 
         try:
-            json.load(['historischURL'])
+            request.get_json()['historischURL']
         except:
             raise exc.IncompleteConfigException('Historisch-URL missing in Config-JSON.', 900)
 
@@ -62,7 +62,7 @@ def get_forecast_data():
             raise exc.IncompleteConfigException('Config-JSON empty.', 900)
         
         try:
-            json.load(['forecastURL'])
+            request.get_json()['forecastURL']
         except:
             raise exc.IncompleteConfigException('Forecast-URL missing in Config-JSON.', 900)
 
