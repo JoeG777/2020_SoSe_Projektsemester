@@ -1,5 +1,6 @@
 from flask import *
 from data_pipeline.daten_filtern.src.filtern_engine import filtern_engine
+from influxdb import InfluxDBClient
 
 app = Flask(__name__)
 
