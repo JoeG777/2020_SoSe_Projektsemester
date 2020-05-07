@@ -4,20 +4,18 @@ from data_pipeline.exception.exceptions import DBException, ConfigException
 #import data_pipeline.log_writer.log_writer as log_writer
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
-from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
+
 
 #logger = log_writer.LogWriter()
 
 
-def filter():
+def filter(config):
     """
     Name in documentation: 'filtern'
     Takes the config and load the klassified data. After that it delete and interpolate the marked intervall. Last it persist the filtered data.
     :raises ConfigExeption: If the config is wrong.
     :return: A http status code.
     """
-
-    config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
     filtern_data = get_data()
 
@@ -31,7 +29,7 @@ def filter():
 
     except:
         #logger.influx_logger.error("Config is wrong.")
-        raise ConfigException("Config is wrong.", 900)
+        raise ConfigException("Filtern Config is wrong.", 900)
 
     persist_data(filtern_data)
     pass
