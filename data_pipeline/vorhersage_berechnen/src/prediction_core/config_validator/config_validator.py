@@ -10,7 +10,7 @@ import copy
 from numbers import Number
 
 
-# TODO changes single quotes to double quotes
+# TODO change single quotes to double quotes
 def validate_config(config):
     check_general_constraints(config)
 
@@ -36,7 +36,7 @@ def check_general_constraints(config):
             for key in prediction_options:
                 if key == selected_value:
                     if selected_value_is_valid:
-                        raise InvalidConfigException  # TODO replace
+                        raise InvalidConfigException("The selected value appears twice in prediction options.")
                     else:
                         selected_value_is_valid = True
 
@@ -49,15 +49,16 @@ def check_general_constraints(config):
                         if (not set(prediction_unit["independent"]).issubset(valid_independent_values) # TODO might need to check if value is in there more than once
                                 or not set(prediction_unit["dependent"]).issubset(valid_dependent_values)
                                 or not isinstance(prediction_unit["test_sample_size"], Number)):
-                            raise InvalidConfigException # TODO replace
+                            raise InvalidConfigException("One prediction unit of the config has invalid values.")
                     else:
-                        raise InvalidConfigException # TODO replace
+                        raise InvalidConfigException("One prediction unit of the config has invalid keys.")
         else:
-            raise InvalidConfigException  # TODO replace
+            raise InvalidConfigException("Config does not have prediction options defined.")
     else:
-        raise InvalidConfigException  # TODO replace
+        raise InvalidConfigException("Config does not have the field selected value.")
 
     return True
+
 
 def check_completeness(config):
     to_be_predicted = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
