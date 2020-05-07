@@ -17,7 +17,7 @@ def get_historic_data():
     :return: statuscode
     '''
 
-    response = {}
+    response = None
     try:
 
         if int(request.headers.get('Content-Length')) == 0:
@@ -32,16 +32,16 @@ def get_historic_data():
 
         his.raise_historic_data(url_historisch)
 
-        response['statuscode'] = 200
+        response = 200
 
     except exc.UrlException as uexc:
-        response['statuscode'] = uexc.args[1]
+        response = uexc.args[1]
     except exc.FileException as fexc:
-        response['statuscode'] = fexc.args[1]
+        response = fexc.args[1]
     except exc.RawDataException as rexc:
-        response['statuscode'] = rexc.args[1]
+        response = rexc.args[1]
     finally:
-        return Response(status=response['statuscode'])
+        return Response(status=response)
 
 
 @app.route('/forecast_datenerhebung', methods = ['POST'])
@@ -55,7 +55,7 @@ def get_forecast_data():
     :return: statuscode
     '''
 
-    response = {}
+    response = None
     try:
 
         if int(request.headers.get('Content-Length')) == 0:
@@ -70,18 +70,18 @@ def get_forecast_data():
 
         forc.raise_forecast_data(url_forecast)
 
-        response['statuscode'] = 200
+        response = 200
 
     except exc.IncompleteConfigException as uexc:
-        response['statuscode'] = uexc.args[1]
+        response = uexc.args[1]
     except exc.UrlException as uexc:
-        response['statuscode'] = uexc.args[1]
+        response = uexc.args[1]
     except exc.FileException as fexc:
-        response['statuscode'] = fexc.args[1]
+        response = fexc.args[1]
     except exc.RawDataException as rexc:
-        response['statuscode'] = rexc.args[1]
+        response = rexc.args[1]
     finally:
-        return Response(status=response['statuscode'])
+        return Response(status=response)
 
 if __name__ == '__main__':
     app.run(host='localhost', port='8000')
