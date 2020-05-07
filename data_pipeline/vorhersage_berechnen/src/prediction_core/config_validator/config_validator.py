@@ -7,9 +7,13 @@ from data_pipeline.exception.exceptions import (
 
 import collections
 import copy
-#TODO changes single quotes to double quotes
+from numbers import Number
+
+
+# TODO changes single quotes to double quotes
 def validate_config(config):
-    # TODO validate config in general?
+    check_general_constraints(config)
+
     selected_value = config.get("selected_value")
 
     prediction_units = config.get("prediction_options").get(selected_value)
@@ -18,6 +22,42 @@ def validate_config(config):
     check_training_percentage(prediction_units)
     check_prediction_chain(prediction_units)
 
+
+def check_general_constraints(config):
+    selected_value_is_valid = False
+    valid_independent_values = ['outdoor', 'freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
+    valid_dependent_values = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
+    if "selected_value" in config:
+        selected_value = config["selected_value"]
+
+        if "prediction_options" in config:
+            prediction_options = config["prediction_options"]
+
+            for key in prediction_options:
+                if key == selected_value:
+                    if selected_value_is_valid:
+                        raise InvalidConfigException  # TODO replace
+                    else:
+                        selected_value_is_valid = True
+
+                prediction_units = prediction_options.get(key)
+
+                for prediction_unit in prediction_units:
+                    if ("independent" in prediction_unit
+                            and "dependent" in prediction_unit
+                            and "test_sample_size" in prediction_unit):
+                        if (not set(prediction_unit["independent"]).issubset(valid_independent_values) # TODO might need to check if value is in there more than once
+                                or not set(prediction_unit["dependent"]).issubset(valid_dependent_values)
+                                or not isinstance(prediction_unit["test_sample_size"], Number)):
+                            raise InvalidConfigException # TODO replace
+                    else:
+                        raise InvalidConfigException # TODO replace
+        else:
+            raise InvalidConfigException  # TODO replace
+    else:
+        raise InvalidConfigException  # TODO replace
+
+    return True
 
 def check_completeness(config):
     to_be_predicted = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
