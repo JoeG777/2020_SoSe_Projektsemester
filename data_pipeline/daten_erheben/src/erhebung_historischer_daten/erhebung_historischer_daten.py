@@ -70,16 +70,21 @@ def get_temp_data(url):
         logger.influx_logger.error("Incorrect URL.")
         raise UrlException("Incorrect URL.", 904)
 
-    with zip_file.open(files[0]) as csvfile:   
+    try:
+        with zip_file.open(files[0]) as csvfile:
 
-        data = pd.read_csv(csvfile, encoding='utf8', sep=";")
-        temperatures = data['TT_10']
-        timestamp = data['MESS_DATUM']
+            data = pd.read_csv(csvfile, encoding='utf8', sep=";")
+            temperatures = data['TT_10']
+            timestamp = data['MESS_DATUM']
 
-        for i in range(len(temperatures)):
+            for i in range(len(temperatures)):
 
-            element = [str(timestamp[i]), str(temperatures[i])]
-            return_data.append(element)
+                element = [str(timestamp[i]), str(temperatures[i])]
+                return_data.append(element)
+
+    except:
+        logger.influx_logger.error("Inadequate read and write rights.")
+        raise FileException("Inadequate read and write rights.", 903)
 
     return return_data
 
@@ -138,9 +143,13 @@ def get_dwd_data(url):
         tmp.write(last_date_read)
         tmp.close()
 
-    except:
+    except FileException:
         logger.influx_logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
+
+    except UrlException:
+        logger.influx_logger.error("Incorrect URL.")
+        raise UrlException("Incorrect URL.", 904)
 
     return json_weather_array
 
