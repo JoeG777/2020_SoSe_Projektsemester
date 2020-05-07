@@ -118,24 +118,22 @@ def get_dwd_data(url):
     :return: Json-Array with all the formatted weather entries and their formatted time stamps
     '''
 
-    temperatures = get_temp_data(url)
-    json_weather_array = []
-
-    for counter in range(find_start_date(temperatures), len(temperatures)):
-
-        time_string = get_timestamp_dwd(temperatures[counter][0])
-        jsonBody = [
-            {'measurement': 'temperatur_DWD',
-             "time": utils.get_converted_date(time_string),
-             "fields":{"temperature":float(temperatures[counter][1])}
-             }
-        ]
-
-        json_weather_array.append(jsonBody)
-
-        last_date_read = get_timestamp_dwd(temperatures[counter][0])
-
     try:
+        temperatures = get_temp_data(url)
+        json_weather_array = []
+        for counter in range(find_start_date(temperatures), len(temperatures)):
+
+            time_string = get_timestamp_dwd(temperatures[counter][0])
+            jsonBody = [
+                {'measurement': 'temperatur_DWD',
+                 "time": utils.get_converted_date(time_string),
+                 "fields":{"temperature":float(temperatures[counter][1])}
+                 }
+            ]
+
+            json_weather_array.append(jsonBody)
+
+            last_date_read = get_timestamp_dwd(temperatures[counter][0])
         tmp = open(date_tmp_file, "w")
         tmp.write(last_date_read)
         tmp.close()
