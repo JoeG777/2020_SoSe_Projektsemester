@@ -1,7 +1,7 @@
 import unittest
 import data_pipeline.daten_klassifizieren.model_persistor as mp
 from data_pipeline.daten_klassifizieren.config import classification_config as config
-
+import data_pipeline.exception.exceptions as ex
 from sklearn.svm import SVC
 
 
@@ -18,76 +18,90 @@ class test_persist_classifier (unittest.TestCase):
 
         self.assertEqual(mp.persist_classifier(self.model,  self.config_test), 0)
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
+
+    def test_wrong_structure_congfig(self):
+        str = "Hallo"
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model, str)
+
+
     def test_param_not_a_sklearn_model(self):
         self.beforeTest(self.model_dictionary)
         model_wrong = "Hallo"
 
-        self.assertEqual(mp.persist_classifier(model_wrong, self.config_test), "ModelPersistorException" )
+        with self.assertRaises(ex.PersistorException):
+            mp.persist_classifier(model_wrong, self.config_test)
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
+
     def test_no_model_dictionary_in_datasource_classifier(self):
         wrong_config = self.config_test.copy()
         wrong_config['datasource_classifier'] = 'model_empty.txt'
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model, wrong_config)
 
-        self.assertEqual(mp.persist_classifier(self.model, wrong_config), "ConfigError")
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
     def test_param_datasource_classifier_wrong(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
         wrong_config['datasource_classifier'] = "Hallo" # <- not valid source
 
-        self.assertEqual(mp.persist_classifier(self.model,  wrong_config), "ConfigError")
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model,  wrong_config)
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
+
     def test_param_datasource_classifier_empty(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
         wrong_config['datasource_classifier'] = "" # <- not valid source
 
-        self.assertEqual(mp.persist_classifier(self.model,  wrong_config), "ConfigError")
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model,  wrong_config)
 
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
     def test_param_datasource_classifier_key_not_there(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
         del wrong_config['datasource_classifier']
 
-        self.assertEqual(mp.persist_classifier(self.model, wrong_config), "ConfigError")
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model, wrong_config)
 
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
     def test_param_event_no_key(self):
         self.beforeTest(self.model_dictionary)
         wrong_key_config = self.config_test.copy()
         del wrong_key_config['selected_event']
 
-        self.assertEqual(mp.persist_classifier(self.model,  wrong_key_config), "ConfigError")
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model,  wrong_key_config)
 
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
     def test_param_event_none_value(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
         wrong_config['selected_event'] = None
 
-        self.assertEqual(mp.persist_classifier(self.model,  wrong_config), "ConfigError")
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model,  wrong_config)
 
 
-    # TODO: Sollte ein Test auf Exception sein, wenn Exception implementiert sind
     def test_param_event_empty_string_value(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
         wrong_config['selected_event'] = ""
         print("Hier", wrong_config['selected_event'])
 
-        self.assertEqual(mp.persist_classifier(self.model,  wrong_config), "ConfigError")
+        with self.assertRaises(ex.InvalidConfigException):
+            mp.persist_classifier(self.model,  wrong_config)
 
 
     def test_param_event_no_valid_value(self):
-        pass
+        self.beforeTest(self.model_dictionary)
+        wrong_config = self.config_test.copy()
+        wrong_config['selected_event'] = "Hallo"
+
+        with self.assertRaises(ex.InvalidConfigException):
+                mp.persist_classifier(self.model, wrong_config)
 
 
 
