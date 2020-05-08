@@ -72,6 +72,7 @@ def format_data(dataset):
     :return: The given dataset as a DataFrame.
     """
     df = pd.DataFrame(dataset)
+    print(df)
     df['time'] = pd.to_datetime(df['time'])
     df = df.set_index('time')
     return df
