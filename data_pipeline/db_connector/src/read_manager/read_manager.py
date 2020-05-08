@@ -21,10 +21,6 @@ register_dict = {
 }
 
 
-def get_client(db):
-    return InfluxDBClient(url, port, user, password, db)
-
-
 def read_query(db, query):
     """
     Takes a query in the influx sql dialect. Sends this query to the client provided by the current config and returns
@@ -33,7 +29,7 @@ def read_query(db, query):
     :param query: The query for the data retrieval.
     :return: The result of the query.
     """
-    client = get_client(db)
+    client = InfluxDBClient(url, port, user, password, db)
     data = client.query(query)
     return format_data(data.get_points())
 
@@ -60,11 +56,12 @@ def read_data(db, **kwargs):
             register = register_dict[register]
         else:
             register = kwargs["register"]
-    query = 'select * from ' + measurement + ' where register = \'' + register + '\''
+    query = 'select from ' + measurement + ' where register = \'' + register + '\''
     if "start_utc" in kwargs.keys():
-        query += ' AND time >' + kwargs["start"]
+        query += ' AND time > ' + kwargs["start_utc"]+'ms'
     if "end_utc" in kwargs.keys():
-        query += ' AND time <' + kwargs["end"]
+        query += ' AND time < ' + kwargs["end_utc"]+'ms'
+    print(query)
     return read_query(db, query)
 
 
