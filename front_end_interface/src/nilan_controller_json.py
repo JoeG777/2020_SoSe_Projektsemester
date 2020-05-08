@@ -5,6 +5,6 @@ nilan_json = {
     "raumtemperatur": 20,
     "luefterstufe_zuluft": 2,
     "luefterstufe_abluft": 2,
-    "bestriebsmodus": 0
+    "betriebsmodus": 0
 }
 
