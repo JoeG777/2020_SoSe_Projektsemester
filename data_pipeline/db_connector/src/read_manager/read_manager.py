@@ -48,28 +48,20 @@ def read_data(db, **kwargs):
     :return: The retrieved data.
     """
     measurement = default_measurement
-    if kwargs["measurement"]:
+    if "measurement" in kwargs.keys():
         measurement = kwargs["measurement"]
     register = default_register
-    query = 'select * from ' + measurement
-    if kwargs["register"]:
-        if kwargs["resolve_register"]:
+    if "register" in kwargs.keys():
+        if "resolve_register" in kwargs.keys():
             register = register_dict[register]
         else:
             register = kwargs["register"]
-        query += ' where register = \'' + register + '\''
-    if kwargs["start_utc"]:
-        if kwargs["register"]:
-            query += ' AND '
-        else:
-            query += ' WHERE '
-        query += 'AND time >' + kwargs["start"]
-    if kwargs["end_utc"]:
-        if kwargs["register"] | kwargs["end_utc"]:
-            query += ' AND '
-        else:
-            query += ' WHERE '
-        query += 'AND time <' + kwargs["end"]
+    query = 'select mean("valueScaled") from ' + measurement + ' where register = \'' + register + '\''
+    if "start_utc" in kwargs.keys():
+        query += ' AND time > ' + kwargs["start_utc"]+'ms'
+    if "end_utc" in kwargs.keys():
+        query += ' AND time < ' + kwargs["end_utc"]+'ms GROUP BY time(1m) fill(none)'
+    print(query)
     return read_query(db, query)
 
 
