@@ -1,6 +1,6 @@
 params = {
-    "url": "localhost",
+    "url": "2ewntqz9kql97pxr.myfritz.net",
     "port": 8086,
-    "user": "admin",
-    "password": "admin"
+    "user": "UIP",
+    "password": "UIP2020"
 }
