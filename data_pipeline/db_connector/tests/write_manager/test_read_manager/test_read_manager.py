@@ -11,12 +11,10 @@ from influxdb import DataFrameClient
 class test_build_write_json(unittest.TestCase):
 
     def test_adds_all_values(self):
-        mock_client = mock(InfluxDBClient, {
-            "_host": "localhost"
-        })
-        when2(InfluxDBClient.__init__(mock_client, "localhost", 8086, "admin", "admin")).thenReturn(mock_client)
-        when2(mock_client.query("test_measurement")).thenReturn("test")
-        when2(rm.format_data, "test").thenReturn("success!")
+        #mock_client = mock(InfluxDBClient())
+        #when2(InfluxDBClient.__init__(mock_client, "localhost", 8086, "admin", "admin")).thenReturn(mock_client)
+        when2(InfluxDBClient.query).thenReturn(None)
+        #when2(rm.format_data, "test").thenReturn("success!")
 
         output = rm.read_query("test", "test_measurement")
 
