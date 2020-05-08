@@ -70,6 +70,13 @@ class AmbiguousConfigException(ConfigException):
             return 'AmbiguousConfigException has been raised'
 
 
+class ConfigTypeException(ConfigException):
+    def __str__(self):
+        if self.message:
+            return 'ConfigTypeException: {0}'.format(self.message)
+        else:
+            return 'ConfigTypeException has been raised'
+
 class PersistorException(DataPipelineException):
     def __str__(self):
         if self.message:
