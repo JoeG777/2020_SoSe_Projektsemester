@@ -4,8 +4,22 @@ import data_pipeline.daten_klassifizieren.model_persistor as model_persistor
 
 class test_load_classifier(unittest.TestCase):
 
+    '''
+    #Blackbox-Testing
+        Äquivalenzklassen
+        Randwertanalyse
+    #Whitebox-Testing
+        Codecoverage
+    '''
 
-
+    ###Blackbox
+    # 1. config not a JSON/dictionary
+    # 2. config does not contain a value
+    # - config does not contain a key
+    # - code cannot evaluate string from "classification_method_options
+    # - code cannot find "datasource_classifier"
+    # - load dictionary exception
+    # 4.
     def test_returns_existing_classifier(self):
         classification_config = {
             "selected_event": "abtauzyklus",
@@ -13,8 +27,6 @@ class test_load_classifier(unittest.TestCase):
             "new_classifier_method": ""
         }
         self.assertTrue(model_persistor.load_classifier(classification_config))
-
-
 
 
     def test_returns_not_existing_classifier(self):
@@ -31,3 +43,4 @@ class test_load_classifier(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

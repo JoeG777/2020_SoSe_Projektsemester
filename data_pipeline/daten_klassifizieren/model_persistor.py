@@ -4,37 +4,38 @@ from sklearn.neighbors import KNeighborsClassifier
 import pickle
 #import logWriter
 from data_pipeline.daten_klassifizieren.config import classification_config as config
+import data_pipeline.exception.exceptions as ex
 
 
 # TODO: logWriter noch einbinden
 
 
 def load_classifier(classification_config):
-    '''Name in Dokumentation: klassifizierer_laden
-    Parameter:
-        classification_config (dictionary): Konfigurationsdatei mit benoetigten Parametern
+    '''
+    Name in documentation: 'klassifizierer_laden'
+    This method loads either an existing model for a specifice event or creates an entirely new one from a specified
+    algorithm
 
-    Returns:
-        sklearn object: Ein Klassifizierungsalgorithmus aus dem sklearn Paket'''
-    new_classifier_method = classification_config["new_classifier_method"]
-    print(new_classifier_method)
+    :param classification_config: provided by the API
+
+    :raises PersistorException BESCHREIBUNG
+    :return sklearn-model: a trained or untrained model from the sklearn-classification package
+
+    '''
+
+    new_classifier_method, datasource_classifier, event = get_config_parameter(classification_config)
+
     if new_classifier_method != "":
-        print('a')
         exec_string = classification_config["classification_method_options"][new_classifier_method]
         return eval(exec_string)
 
-    datasource_classifier = classification_config["datasource_classifier"]
-    print('b')
     classifier_dictionary = load_dictionary(datasource_classifier)
-    print('c')
-    event = classification_config["selected_event"]
-    classifier = classifier_dictionary[event]
-    if classifier == "":
-        return sklearn.svm.SVC()
+    model = classifier_dictionary[event]
+
+    if model == "":
+        return sklearn.svm.SVC()  # TODO: hardcoden oder noch entscheiden durch Analyse
     else:
-        return classifier_dictionary[event]
-    # TODO: welche klassifizierungsmethode soll genommen werden, wenn beim laden in dem dictionary kein klassifizierer
-    #  vorhanden ist
+        return model
 
 
 def persist_classifier(classifier, classification_config):
@@ -45,14 +46,30 @@ def persist_classifier(classifier, classification_config):
 
     Returns:
           int: Statuscode, der angibt ob Perstistierung erfolgreich war(0 Erfolg, 1 Misserfolg)'''
+    # TODO: bundle exceptions, implement ModelPersistorException, ConfigError, raise with message
+    try:
+        new_classifier_method, datasource_classifier, event = get_config_parameter(classification_config)
+    except KeyError:
+        return "ConfigError"
+        # TODO: exception noch einbinden
+
     if not isinstance(classifier, sklearn.svm.SVC):
-        print()
+        return "ModelPersistorException"
         #raise ModelPersistorException
         # TODO: exception noch einbinden
-    event = classification_config["selected_event"]
-    datasource_classifier = classification_config["datasource_classifier"]
-    classifier_dictionary = load_dictionary(datasource_classifier)
-    classifier_dictionary[event] = classifier
+
+    try:
+        classifier_dictionary = load_dictionary(datasource_classifier)
+    except Exception:
+        return "ConfigError"
+        # TODO: Exception: Was passiert bei falscher Source?
+
+    if event in classifier_dictionary.keys():
+        classifier_dictionary[event] = classifier
+    else:
+        return "ConfigError"
+    # TODO: Exception einbinden
+
     save_dictionary(classifier_dictionary, datasource_classifier)
     return 0
 
@@ -67,7 +84,6 @@ def load_dictionary(datasource_classifier):
         return pickle.load(file)
 
 
-
 def save_dictionary(classifier_dictionary, datasource_classifier):
     '''Name in Dokumentation: -
     Parameter:
@@ -78,3 +94,8 @@ def save_dictionary(classifier_dictionary, datasource_classifier):
         pickle.dump(classifier_dictionary, file)
 
 
+def get_config_parameter(config):
+    new_classifier_method = config["new_classifier_method"]
+    datasource_classifier = config["datasource_classifier"]
+    event = config["selected_event"]
+    return new_classifier_method, datasource_classifier, event
