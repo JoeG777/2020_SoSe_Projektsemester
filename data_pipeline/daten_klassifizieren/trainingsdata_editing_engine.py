@@ -3,21 +3,30 @@ from data_pipeline.log_writer import log_writer
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 from data_pipeline.daten_klassifizieren.config import classification_config as config
+from datetime import datetime
+import time
 
 
 def enrich_data(config):
+
     selected_event, datasource_raw_data, measurement, start_time, end_time = get_config_parameter(config)
-    df = read_manager.read_data(datasource_raw_data, measurement=measurement, register=None, resolve_register=None,
-                                start_utc=start_time, end_utc=end_time)
-    print(df.head(5))
+    start = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f %Z")
+    start = int((time.mktime(start.timetuple())))*1000
+    print(start)
+    end = datetime.strptime(end_time, "%Y-%m-%d %H:%M:%S.%f %Z")
+    end = int((time.mktime(end.timetuple())))*1000
+    print(end)
+    df = read_manager.read_data(datasource_raw_data, measurement=measurement, register='206',
+                                start_utc=str(start), end_utc=str(end))
+
+    df = df.rename(columns={'mean':'evaporator'})
+    df['evaporator_deriv'] = (df['evaporator'].shift(-1) - (df['evaporator'].shift(1))) / 2
+    print(df.head(100))
     return
 
 
 def mark_data():
     return
-
-
-
 
 
 def get_config_parameter(config):
@@ -27,8 +36,6 @@ def get_config_parameter(config):
     start_time = config['timeframe'][0]
     end_time = config['timeframe'][1]
     return selected_event, datasource_raw_data, measurement, start_time, end_time
-
-
 
 
 enrich_data(config)
