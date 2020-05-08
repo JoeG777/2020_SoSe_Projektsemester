@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 # TODO: Fehlerhandling in der API?
 
+
 @app.route('/classify', methods=['POST'])
 def classify():
     response = 200
