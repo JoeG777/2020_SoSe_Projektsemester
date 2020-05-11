@@ -31,7 +31,7 @@ def train_classifier(config):
         return exce.PersistorException
     start_time = convert_time(start_time)
     end_time = convert_time(end_time)
-    df = read_manager.read_data(datasource_marked_data, measurement='training', start_utc=str(start_time), end_utc=str(end_time))
+    df = read_manager.read_data(datasource_marked_data, measurement=selected_event, start_utc=str(start_time), end_utc=str(end_time))
     df.dropna(inplace=True)
     y = np.array(df[selected_event])
     X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))

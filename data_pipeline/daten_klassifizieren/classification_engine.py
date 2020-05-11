@@ -18,14 +18,13 @@ def apply_classifier(config):
         = get_config_parameter(config)
     start = convert_time(timeframe[0])
     end = convert_time(timeframe[1])
-    df_query = read_manager.read_data(datasource_enriched_data, measurement='training',
+    df_query = read_manager.read_data(datasource_enriched_data, measurement=measurement,
                                       start_utc=str(start), end_utc=str(end))
-    print(df_query.columns)
     model = model_persistor.load_classifier(config)
+    df_query.dropna(inplace=True)
     classified_data_df = df_query.copy()
     classified_data_df[selected_event] = model.predict(df_query)
-    pd.set_option('display.max_rows', None)
-    print(classified_data_df.loc[classified_data_df['abtauzyklus']==True])
+    print(classified_data_df.loc[classified_data_df[selected_event]])
     write_manager.write_dataframe(datasource_classified_data, classified_data_df, measurement)
     return 0
 

@@ -13,16 +13,13 @@ def enrich_data(config):
      start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
      del_marker = get_config_parameter(config)
     start = convert_time(start_time)
-    print(start)
     end = convert_time(end_time)
-    print(end)
     counter = 0
     for register in required_registers:
         df_query = read_manager.read_data(datasource_raw_data, measurement="temperature_register",
                                           register=register, start_utc=str(start), end_utc=str(end))
-        print(df_query.columns)
-        df_query = df_query.rename(columns={'temperature': f'{register_dict[register]}'})#test
-        #df_query = df_query.rename(columns={'mean': f'{register_dict[register]}'})
+        df_query = df_query.drop(['register'], axis=1)
+        df_query = df_query.rename(columns={'temperature': f'{register_dict[register]}'})
         df_query[f'{register_dict[register]}_deriv'] = (df_query[f'{register_dict[register]}'].shift(-1) -
                                                         (df_query[f'{register_dict[register]}'].shift(1))) / 2
         df_query[f'{register_dict[register]}_pct_ch'] = df_query[f'{register_dict[register]}'].pct_change(1)
@@ -52,13 +49,17 @@ def mark_data(config):
         df['abtaumarker'] = 0
         df.loc[(df['evaporator_deriv']>= start_deriv) & (df['evaporator_deriv'].shift(1) < start_deriv) & (df['evaporator'] <= start_evap), 'abtaumarker'] = start_marker
         df.loc[(abs(df['evaporator_deriv']) <= end_deriv) & (df['evaporator_deriv'].shift(3) < end_deriv_n3), 'abtaumarker'] = end_marker
+        pd.set_option("display.max_rows", None)
+
         df.loc[df['abtaumarker'].shift(1) == end_marker, 'abtaumarker'] = 0
         df['abtauzyklus'] = False
+        print((df['abtaumarker'][(df['abtaumarker'] == start_marker) | (df['abtaumarker']  == end_marker)]))
         spaces = df.loc[(df['abtaumarker'] == start_marker) | (df['abtaumarker'] == end_marker)].index.tolist()
-
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'abtauzyklus'] = True
-        print(spaces)
+
+        #print(df.loc[df['abtauzyklus'] == True].tail(200))
+
     elif selected_event == 'warmwasseraufbereitung':
         df['warmwassermarker'] = 0
         df.loc[(df['inlet'].shift(1) > start_abtau) & (df['room_deriv'] <= start_deriv) & (df['room_deriv'] <= start_ch), 'warmwassermarker'] = start_marker
@@ -73,11 +74,9 @@ def mark_data(config):
 
         df.loc[(df['warmwassermarker'].index.hour > 8) & (df['warmwassermarker'].index.hour < 22), 'warmwassermarker'] = 0
         spaces = df.loc[(df['warmwassermarker'] == start_marker) | (df['warmwassermarker'] == end_marker)].index.tolist()
-        print(df.loc[df['warmwassermarker'] == 1])
-        print(df.columns)
+
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'warmwasserzyklus'] = True
-
     write_manager.write_dataframe(datasource_marked_data, df, selected_event)
     return 0
 
