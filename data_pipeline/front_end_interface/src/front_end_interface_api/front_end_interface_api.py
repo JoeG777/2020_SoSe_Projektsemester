@@ -1,8 +1,8 @@
 from flask import *
-import data_pipeline.front_end_interface.src.nilan_control_service as ncs
-import data_pipeline.front_end_interface.src.pipeline_control_service as pcs
+import data_pipeline.front_end_interface.src.nilan_control_service.nilan_control_service as ncs
+import data_pipeline.front_end_interface.src.pipeline_control_service.pipeline_control_service as pcs
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as logger
+from data_pipeline.log_writer.log_writer import Logger
 
 app = Flask(__name__)
 response = None
@@ -29,7 +29,7 @@ def pipeline_control_service():
 
     try:
         json_validation()
-        pcs.write_to_nilan(request.args)
+        ncs.write_to_nilan(request.args)
 
         response = 200
 
@@ -39,7 +39,7 @@ def pipeline_control_service():
     except exc.IncompleteConfigException as icxc:
         response = icxc.args[1]
 
-return Response(status=response)
+    return Response(status=response)
 
 def json_validation():
 
@@ -57,5 +57,5 @@ def json_validation():
         request.get_json()['betriebsmodus']
 
     except:
-        logger.influx_logger.error('Incomplete Config-JSON')
+        Logger.influx_logger.error('Incomplete Config-JSON')
         raise exc.IncompleteConfigException('Incomplete Config-JSON.', 900)
