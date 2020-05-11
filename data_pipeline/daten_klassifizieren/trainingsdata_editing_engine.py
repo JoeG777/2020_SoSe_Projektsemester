@@ -9,18 +9,20 @@ import time
 
 def enrich_data(config):
     selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
-    required_registers, datasource_enriched_data, measurement_training, datasource_marked_data, \
-    start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
-    del_marker = get_config_parameter(config)
+     required_registers, datasource_enriched_data, measurement_training, datasource_marked_data, \
+     start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
+     del_marker = get_config_parameter(config)
     start = convert_time(start_time)
     print(start)
     end = convert_time(end_time)
     print(end)
     counter = 0
     for register in required_registers:
-        df_query = read_manager.read_data(datasource_raw_data, measurement=measurement_raw, register=register,
-                                          start_utc=str(start), end_utc=str(end))
-        df_query = df_query.rename(columns={'mean': f'{register_dict[register]}'})
+        df_query = read_manager.read_data(datasource_raw_data, measurement="temperature_register",
+                                          register=register, start_utc=str(start), end_utc=str(end))
+        print(df_query.columns)
+        df_query = df_query.rename(columns={'temperature': f'{register_dict[register]}'})#test
+        #df_query = df_query.rename(columns={'mean': f'{register_dict[register]}'})
         df_query[f'{register_dict[register]}_deriv'] = (df_query[f'{register_dict[register]}'].shift(-1) -
                                                         (df_query[f'{register_dict[register]}'].shift(1))) / 2
         df_query[f'{register_dict[register]}_pct_ch'] = df_query[f'{register_dict[register]}'].pct_change(1)
@@ -35,7 +37,7 @@ def enrich_data(config):
             df[f'{register_dict[register]}_pct_ch'] = df_query[f'{register_dict[register]}_pct_ch']
             df[f'{register_dict[register]}_ch_abs'] = df_query[f'{register_dict[register]}_ch_abs']
     write_manager.write_dataframe(datasource_enriched_data, df, selected_event)
-    return 0
+    mark_data(config)
 
 
 def mark_data(config):
@@ -56,7 +58,7 @@ def mark_data(config):
 
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'abtauzyklus'] = True
-        write_manager.write_dataframe(datasource_marked_data, df, selected_event)
+        print(spaces)
     elif selected_event == 'warmwasseraufbereitung':
         df['warmwassermarker'] = 0
         df.loc[(df['inlet'].shift(1) > start_abtau) & (df['room_deriv'] <= start_deriv) & (df['room_deriv'] <= start_ch), 'warmwassermarker'] = start_marker
@@ -75,7 +77,8 @@ def mark_data(config):
         print(df.columns)
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'warmwasserzyklus'] = True
-        print(df.head())
+
+    write_manager.write_dataframe(datasource_marked_data, df, selected_event)
     return 0
 
 
@@ -110,8 +113,10 @@ def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
 
-mark_data(config)
-#enrich_data(config)
+
+#mark_data(config)
+enrich_data(config)
+
 '''
 
  elif event == 'Warmwasseraufbereitung':
