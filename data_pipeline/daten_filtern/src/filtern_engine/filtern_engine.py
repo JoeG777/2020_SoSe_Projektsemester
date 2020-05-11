@@ -87,8 +87,7 @@ def persist_data(filtern_data):
     :return: A http status code.
     '''
     try:
-        # TODO Query für klassifizierte Daten
-        writer.write_query("Gefilterte Daten", filtern_data)
+        writer.write_dataframe(filtern_data, 'temperature_register', 'gefilterte_daten')
     except:
         #logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
