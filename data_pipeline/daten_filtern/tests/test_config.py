@@ -42,6 +42,8 @@ class Filtern_engine_tests(unittest.TestCase):
 
         self.assertCountEqual(expected_data, expected_data)
 
+if __name__ == '__main__':
+    unittest.main()
 
 
 

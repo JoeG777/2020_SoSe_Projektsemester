@@ -3,7 +3,6 @@ import pandas
 import numpy as np
 from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import DBException, ConfigException
-#import data_pipeline.log_writer as log_writer
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
 
