@@ -8,7 +8,8 @@ import data_pipeline.log_writer as log_writer
 from data_pipeline.daten_klassifizieren.config import classification_config as config
 from sklearn.model_selection import train_test_split
 import numpy as np
-
+from datetime import datetime
+import time
 
 def train_classifier(config):
     '''Name in documentation: klassifizierer_trainieren()
@@ -21,19 +22,16 @@ def train_classifier(config):
     :return
         int: Status code that indicates whether the training was successful(0 Success, 1 Failure)'''
     try:
-        selected_event, required_score, test_size, datasource_training_data = get_config_parameter(config)
+        selected_event, required_score, test_size, datasource_marked_data, start_time, end_time = get_config_parameter(config)
     except Exception:
         return exce.InvalidConfigException()
     try:
         classifier = model_persistor.load_classifier(config)
     except Exception:
         return exce.PersistorException
-
-    df = read_manager.read_data(datasource_training_data, measurement='training', register=None, resolve_register=None,
-                                start_utc=None, end_utc=None)
-    selected_event, required_score, test_size, datasource_marked_data = get_config_parameter(config)
-    classifier = model_persistor.load_classifier(config)
-    df = read_manager.read_data(datasource_marked_data, measurement='training')
+    start_time = convert_time(start_time)
+    end_time = convert_time(end_time)
+    df = read_manager.read_data(datasource_marked_data, measurement='training', start_utc=str(start_time), end_utc=str(end_time))
     df.dropna(inplace=True)
     y = np.array(df[selected_event])
     X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))
@@ -71,8 +69,14 @@ def get_config_parameter(config):
     selected_event = config['selected_event']
     required_score = config['required_score'][selected_event]
     test_size = config['test_size']
+    timeframe = config['timeframe']
     datasource_marked_data = config['datasource_marked_data']['database']
-    return selected_event, required_score, test_size, datasource_marked_data
+    return selected_event, required_score, test_size, datasource_marked_data, timeframe[0], timeframe[1]
+
+
+def convert_time(time_var):
+    time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
+    return int((time.mktime(time_var.timetuple())))*1000
 
 
 train_classifier(config)

@@ -18,7 +18,7 @@ def apply_classifier(config):
         = get_config_parameter(config)
     start = convert_time(timeframe[0])
     end = convert_time(timeframe[1])
-    df_query = read_manager.read_data(datasource_enriched_data, measurement=measurement,
+    df_query = read_manager.read_data(datasource_enriched_data, measurement='training',
                                       start_utc=str(start), end_utc=str(end))
     print(df_query.columns)
     model = model_persistor.load_classifier(config)
