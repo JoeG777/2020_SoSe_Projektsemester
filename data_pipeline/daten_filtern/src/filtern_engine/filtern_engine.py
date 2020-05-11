@@ -1,12 +1,14 @@
+from influxdb import *
 import pandas
 import numpy as np
+from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import DBException, ConfigException
-#import data_pipeline.log_writer.log_writer as log_writer
+#import data_pipeline.log_writer as log_writer
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
 
 
-#logger = log_writer.LogWriter()
+logger = Logger()
 
 
 def filter(config):
@@ -28,7 +30,7 @@ def filter(config):
                     filtern_data = interpolation(method, curve, filtern_data)
 
     except:
-        #logger.influx_logger.error("Config is wrong.")
+        logger.influx_logger.error("Config is wrong.")
         raise ConfigException("Filtern Config is wrong.", 900)
         statuscode = 900
 
@@ -47,7 +49,7 @@ def get_data():
     try:
         klassifizierte_daten = reader.read_data('klassifizierte_daten')
     except:
-        #logger.influx_logger.error("Database not available.")
+        logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
 
     return klassifizierte_daten
@@ -91,10 +93,10 @@ def persist_data(filtern_data):
     '''
     statuscode = None
     try:
-        writer.write_dataframe('gefilterte_daten', filtern_data, 'temperature_register')#
+        writer.write_dataframe('gefilterte_daten', filtern_data, 'temperature_register')
         statuscode = 200
     except:
-        #logger.influx_logger.error("Database not available.")
+        logger.influx_logger.error("Database not available.")
         statuscode = 901
         raise DBException("Database not available.", 901)
 
