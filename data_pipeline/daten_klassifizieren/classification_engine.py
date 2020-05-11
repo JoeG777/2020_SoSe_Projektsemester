@@ -42,5 +42,5 @@ def get_config_parameter(config):
     return datasource_raw_data, datasource_classified_data, timeframe_unix, selected_event, measurement, register
 
 
-apply_classifier(config)
+
 

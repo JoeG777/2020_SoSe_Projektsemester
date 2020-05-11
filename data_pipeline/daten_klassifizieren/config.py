@@ -5,7 +5,7 @@ classification_config = {
     "datasource_marked_data": {'database': 'nilan_marked', 'measurement': 'training'},
     "datasource_classified_data": 'classified_data',
     "datasource_classifier": 'model.txt',
-    "timeframe": ("2020-01-10 00:00:00.100 UTC", "2020-01-12 12:00:00.100 UTC"),
+    "timeframe": ["2020-01-10 00:00:00.100 UTC", "2020-01-12 12:00:00.100 UTC"],
     "selected_event": "warmwasseraufbereitung",
     "new_classifier_method": "kNN",
     "test_size": 0.3,

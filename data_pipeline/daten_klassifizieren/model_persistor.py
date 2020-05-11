@@ -13,14 +13,16 @@ def load_classifier(classification_config):
     This method loads either an existing model for a specific event or creates an entirely new one from a specified
     algorithm
 
-    :raises InvalidConfigurationException: Raised if no access or wrong values inside of the configuration
+    :raises ConfigTypeException: Raised if configuration not of type 'dict'
+    :raises InvalidConfigKeyException: Raised if a key in the config does not exist
+    :raises InvalidConfigValueException: Raised if a value inside of the config is wrong
 
     :param classification_config: provided by the API
     :return: a trained or untrained model from the sklearn-classification package
     """
 
     if not isinstance(classification_config, dict):
-        raise ex.InvalidConfigException("Wrong data structure of configuration: " + str(classification_config))
+        raise ex.ConfigTypeException("Wrong data structure of configuration: " + str(classification_config))
 
     try:
         new_classifier_method, datasource_classifier, event = get_config_parameter(classification_config)
@@ -29,17 +31,17 @@ def load_classifier(classification_config):
             exec_string = classification_config["classification_method_options"][new_classifier_method]
             return eval(exec_string)
     except KeyError:
-        raise ex.InvalidConfigException("No Key found in configuration ")#evtl. genauere aufteilung der Exception notwendig
+        raise ex.InvalidConfigKeyException("No Key found in configuration ")#evtl. genauere aufteilung der Exception notwendig
 
     try:
         classifier_dictionary = load_dictionary(datasource_classifier)
     except Exception:
-        raise ex.InvalidConfigException("Wrong configuration values for loading")
+        raise ex.InvalidConfigValueException("Wrong configuration values for loading")
 
     if event in classifier_dictionary.keys():
         model = classifier_dictionary[event]
     else:
-        raise ex.InvalidConfigException("No such key for event: " + str(event))
+        raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
 
     if model == "":
         return sklearn.svm.SVC()  # TODO: hardcoden oder noch entscheiden durch Analyse
@@ -57,18 +59,20 @@ def persist_classifier(classifier, classification_config):
     :param classifier:(sklearn-object) a classification algorithm form the sklearn package
     :param classification_config: configuration file with required parameters
 
-    :raises InvalidConfigException: Raised if no access or wrong values inside of the configuration
+    :raises ConfigTypeException: Raised if configuration not of type 'dict'
+    :raises InvalidConfigKeyException: Raised if a key in the config does not exist
+    :raises InvalidConfigValueException: Raised if a value inside of the config is wrong
     :raises PersistorException: Raised if classifier is not an instance of sklearn
     :return int: Statuscode, der angibt ob Perstistierung erfolgreich war(0 Erfolg, 1 Misserfolg)
     """
 
     if not isinstance(classification_config, dict):
-        raise ex.InvalidConfigException("Wrong data structure of configuration: " + str(classification_config))
+        raise ex.ConfigTypeException("Wrong data structure of configuration: " + str(classification_config))
 
     try:
         new_classifier_method, datasource_classifier, event = get_config_parameter(classification_config)
     except KeyError:
-        raise ex.InvalidConfigException("Wrong key for Configuration")
+        raise ex.InvalidConfigKeyException("Wrong key for Configuration")
 
     if not isinstance(classifier, sklearn.svm.SVC):
         raise ex.PersistorException("Not a valid classification model")
@@ -76,12 +80,12 @@ def persist_classifier(classifier, classification_config):
     try:
         classifier_dictionary = load_dictionary(datasource_classifier)
     except Exception:
-        raise ex.InvalidConfigException("Wrong configuration values for loading")
+        raise ex.InvalidConfigValueException("Wrong configuration values for loading")
 
     if event in classifier_dictionary.keys():
         classifier_dictionary[event] = classifier
     else:
-        raise ex.InvalidConfigException("No such key for event: " + str(event))
+        raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
 
     save_dictionary(classifier_dictionary, datasource_classifier)
     return 0
@@ -91,7 +95,7 @@ def load_dictionary(datasource_classifier):
     """
     Loads the dictionary containing all the available classifcation-models for the events with pickle.
 
-    :raises InvalidConfigException: Raised when there is nothing to unpickle e.g. the file is empty
+    :raises InvalidConfigValueException: Raised when there is nothing to unpickle e.g. the file is empty
 
     :param datasource_classifier: the file in which the dictionary is currently stored
     :return dictionary: unpickled dictionary {"event_name": sklearn-model}
@@ -100,8 +104,10 @@ def load_dictionary(datasource_classifier):
     with open(datasource_classifier, "rb") as file:
         try:
             content = pickle.load(file)
-        except EOFError:
-            raise ex.InvalidConfigException("No content in the specified file: " + str(datasource_classifier))
+        except pickle.UnpicklingError:
+            raise ex.InvalidConfigValueException("No content in the specified file: " + str(datasource_classifier))
+        except IOError:
+            raise ex.FileException("The specified file is not accessible: " + str(datasource_classifier))
 
     return content
 

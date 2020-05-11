@@ -21,7 +21,7 @@ class test_persist_classifier (unittest.TestCase):
 
     def test_wrong_structure_congfig(self):
         str = "Hallo"
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.ConfigTypeException):
             mp.persist_classifier(self.model, str)
 
 
@@ -35,8 +35,8 @@ class test_persist_classifier (unittest.TestCase):
 
     def test_no_model_dictionary_in_datasource_classifier(self):
         wrong_config = self.config_test.copy()
-        wrong_config['datasource_classifier'] = 'model_empty.txt'
-        with self.assertRaises(ex.InvalidConfigException):
+        wrong_config['datasource_classifier'] = 'test_models/model_empty.txt'
+        with self.assertRaises(ex.InvalidConfigValueException):
             mp.persist_classifier(self.model, wrong_config)
 
 
@@ -45,7 +45,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config = self.config_test.copy()
         wrong_config['datasource_classifier'] = "Hallo" # <- not valid source
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigValueException):
             mp.persist_classifier(self.model,  wrong_config)
 
 
@@ -54,7 +54,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config = self.config_test.copy()
         wrong_config['datasource_classifier'] = "" # <- not valid source
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigValueException):
             mp.persist_classifier(self.model,  wrong_config)
 
 
@@ -63,7 +63,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config = self.config_test.copy()
         del wrong_config['datasource_classifier']
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model, wrong_config)
 
 
@@ -72,7 +72,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_key_config = self.config_test.copy()
         del wrong_key_config['selected_event']
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model,  wrong_key_config)
 
 
@@ -81,7 +81,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config = self.config_test.copy()
         wrong_config['selected_event'] = None
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model,  wrong_config)
 
 
@@ -91,7 +91,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config['selected_event'] = ""
         print("Hier", wrong_config['selected_event'])
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model,  wrong_config)
 
 
@@ -100,7 +100,7 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config = self.config_test.copy()
         wrong_config['selected_event'] = "Hallo"
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
                 mp.persist_classifier(self.model, wrong_config)
 
 

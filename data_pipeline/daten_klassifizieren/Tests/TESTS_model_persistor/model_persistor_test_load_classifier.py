@@ -5,6 +5,9 @@ import data_pipeline.exception.exceptions as ex
 from sklearn.svm import SVC
 from sklearn import neighbors
 
+'''
+    Vergleichsweise wenige Tests, da einige private Methoden schon bei "persit_classifier" mitgetestet wurden
+'''
 
 class test_load_classifier(unittest.TestCase):
     model = SVC()
@@ -30,23 +33,26 @@ class test_load_classifier(unittest.TestCase):
 
     def test_wrong_structure_config(self):
         str = "Hallo"
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.ConfigTypeException):
             mp.load_classifier(str)
 
     def test_param_new_classifier_none(self):
         wrong_config = config.copy()
         wrong_config["new_classifier_method"] = None
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
             mp.load_classifier(wrong_config)
 
     def test_classifier_dictionary_for_event_is_none(self):
         wrong_config = config.copy()
+        wrong_config['datasource_classifier'] = 'model_returns_code_0.txt'
         wrong_config['new_classifier_method'] = ""
         wrong_config['selected_event'] = None
 
-        with self.assertRaises(ex.InvalidConfigException):
+        with self.assertRaises(ex.InvalidConfigKeyException):
             mp.load_classifier(wrong_config)
+            
+
 
 
 if __name__ == '__main__':
