@@ -5,26 +5,14 @@ import data_pipeline.exception.exceptions as exc
 import data_pipeline.log_writer.log_writer as logger
 
 app = Flask(__name__)
+response = None
 
 @app.route('/nilan_control_service')
 def nilan_control_service():
 
-    response = None
-
     try:
         json_validation()
-
-        nilan_json = {
-            "startdatum": request.get('start_datum'),
-            "enddatum": request.get('end_datum'),
-            "vorhersage": request.get('vorhersage'),
-            "raumtemperatur": request.get('raumtemperatur'),
-            "luefterstufe_zuluft": request.get('luefterstufe_zuluft'),
-            "luefterstufe_abluft": request.get('luefterstufe_abluft'),
-            "betriebsmodus": request.get('betriebsmodus')
-        }
-
-        ncs.write_to_nilan(nilan_json)
+        ncs.write_to_nilan(request.args)
 
         response = 200
 
@@ -32,12 +20,26 @@ def nilan_control_service():
         response = dpxc.args[1]
 
     except exc.IncompleteConfigException as icxc:
-        response = dpxc.args[1]
+        response = icxc.args[1]
 
     return Response(status=response)
 
 @app.route('/pipeline_control_service')
 def pipeline_control_service():
+
+    try:
+        json_validation()
+        pcs.write_to_nilan(request.args)
+
+        response = 200
+
+    except exc.DataPipelineException as dpxc:
+        response = dpxc.args[1]
+
+    except exc.IncompleteConfigException as icxc:
+        response = icxc.args[1]
+
+return Response(status=response)
 
 def json_validation():
 
