@@ -1,4 +1,5 @@
 import sklearn
+from sklearn import *
 import pickle
 #import logWriter
 import data_pipeline.exception.exceptions as ex
@@ -70,7 +71,7 @@ def persist_classifier(classifier, classification_config):
     except KeyError:
         raise ex.InvalidConfigException("Wrong key for Configuration")
 
-    if not isinstance(classifier, sklearn.svm.SVC):
+    if not (isinstance(classifier, sklearn.svm.SVC) | isinstance(classifier, sklearn.neighbors._classification.KNeighborsClassifier)):
         raise ex.PersistorException("Not a valid classification model")
 
     try:
