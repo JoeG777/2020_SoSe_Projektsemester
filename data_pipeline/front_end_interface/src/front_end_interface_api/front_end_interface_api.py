@@ -48,14 +48,12 @@ def json_validation():
         logger.influx_logger.error('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
 
+    parameter_names = ['start_datum', 'end_datum', 'vorhersage', 'raumtemperatur', 'luefterstufe_zuluft', 'luefterstufe_abluft', 'betriebsmodus']
+
     try:
-        request.get_json()['start_datum']
-        request.get_json()['end_datum']
-        request.get_json()['vorhersage']
-        request.get_json()['raumtemperatur']
-        request.get_json()['luefterstufe_zuluft']
-        request.get_json()['luefterstufe_abluft']
-        request.get_json()['betriebsmodus']
+
+        for i in parameter_names:
+            request.get_json()[i]
 
     except:
         logger.influx_logger.error('Incomplete Config-JSON')
