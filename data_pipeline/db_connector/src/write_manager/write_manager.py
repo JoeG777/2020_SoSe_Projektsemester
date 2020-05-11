@@ -50,15 +50,15 @@ def write_single_value(db, value, **kwargs):
     :param value: the value to write as String.
     """
     measurement = default_measurement
-    if "measurement" in kwargs:
+    if "measurement" in kwargs.keys():
         measurement = kwargs["measurement"]
     value_name = default_value_name
-    if "value_name" in kwargs:
+    if "value_name" in kwargs.keys():
         value_name = kwargs["value_name"]
-    time_value = calendar.timegm(time.gmtime())
-    if "time_utc" in kwargs:
-        time_value = kwargs["time_utc"]
-    write_query(db, build_write_json(measurement, value, value_name, time_value))
+    time = datetime.utcnow()
+    if "time_utc" in kwargs.keys():
+        time = kwargs["time_utc"]
+    write_query(db, build_write_json(measurement, value, value_name, time))
 
 
 def write_multiple_values(db, values, **kwargs):
@@ -81,16 +81,15 @@ def write_multiple_values(db, values, **kwargs):
     index = 0
     for value in values:
         measurement = default_measurement
-        if "measurement" in kwargs:
+        if "measurement" in kwargs.keys():
             measurement = kwargs["measurement"][index]
         value_name = default_value_name
-        if "value_name" in kwargs:
+        if "value_name" in kwargs.keys():
             value_name = kwargs["value_name"][index]
-        time_value = calendar.timegm(time.gmtime())
-        if "time_utc" in kwargs:
-            time_value = kwargs["time_utc"][index]
-        write_single_value(db, value, value_name=value_name, measurement=measurement, time=time_value)
-        index += 1
+        time = datetime.utcnow()
+        if "time_utc" in kwargs.keys():
+            time = kwargs["time_utc"][index]
+        write_single_value(db, value, value_name=value_name, measurement=measurement, time=time)
 
 
 def write_dataframe(db, dataframe, measurement):
