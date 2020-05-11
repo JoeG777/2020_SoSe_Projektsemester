@@ -16,7 +16,7 @@ def filter(config):
     :raises ConfigExeption: If the config is wrong.
     :return: A http status code.
     """
-
+    statuscode = None
     filtern_data = get_data()
 
     try:
@@ -30,10 +30,11 @@ def filter(config):
     except:
         #logger.influx_logger.error("Config is wrong.")
         raise ConfigException("Filtern Config is wrong.", 900)
+        statuscode = 900
 
-    persist_data(filtern_data)
-    pass
-    # return statuscode
+    statuscode = persist_data(filtern_data)
+
+    return statuscode
 
 
 def get_data():
@@ -42,12 +43,14 @@ def get_data():
     Load the klassified data.
     :return: The klassified data
     """
+    klassifizierte_daten = None
     try:
-        # TODO Query für klassifizierte Daten
-        klassifizierte_daten = reader.read_query("Klassifizierte Daten", "KOMPLETTE KLASSIFIZIERTE DATEN!")
+        klassifizierte_daten = reader.read_data('klassifizierte_daten')
     except:
         #logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
+
+    return klassifizierte_daten
 
 
 def tag_drop(curve, cycle, filtern_data):
@@ -86,10 +89,13 @@ def persist_data(filtern_data):
     :param filtern_data: the filtered data.
     :return: A http status code.
     '''
+    statuscode = None
     try:
-        writer.write_dataframe(filtern_data, 'temperature_register', 'gefilterte_daten')
+        writer.write_dataframe('gefilterte_daten', filtern_data, 'temperature_register')#
+        statuscode = 200
     except:
         #logger.influx_logger.error("Database not available.")
+        statuscode = 901
         raise DBException("Database not available.", 901)
 
-    pass
+    return statuscode

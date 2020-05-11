@@ -1,6 +1,5 @@
 from flask import *
 from data_pipeline.daten_filtern.src.filtern_engine import filtern_engine
-from influxdb import InfluxDBClient
 from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
 from data_pipeline.exception.exceptions import ConfigException
 
@@ -18,9 +17,8 @@ def filter():
 
         config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
-        filtern_engine.filtern(config)
+        response = filtern_engine.filtern(config)
 
-        response = 200
 
     except ConfigException:
         response = ConfigException.args[1]
