@@ -3,10 +3,10 @@ from unittest import TestCase
 from mockito import *
 from mockito.matchers import ANY, captor
 from data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine import *
-import data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator.config_validator as cfg_val
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 import data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor.model_persistor as model_persistor
+import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api
 import pandas as pd
 from sklearn import linear_model as lm, model_selection
 
@@ -87,6 +87,11 @@ class test_calculate_prediction(TestCase):
 
         weather_forecast_dataframe = pd.DataFrame(temperature)
 
+        # spies
+        spy2(pred_api.send_classification_request)
+        spy2(read_manager.read_data)
+        spy2(write_manager.write_dataframe)
+
         # when the function tries to get the weather forecast from database, return the custom forecast DataFrame above
         when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenReturn(weather_forecast_dataframe)
 
@@ -97,12 +102,10 @@ class test_calculate_prediction(TestCase):
         forecast_captor = captor(any(pd.DataFrame))
         when2(write_manager.write_dataframe, forecast_captor, ANY, ANY)
 
-        # TODO verify call to api
-
         # call function under test with custom config above
         calculate_prediction(valid_config)
 
-        # the prediction DataFrame
+        # the actual prediction DataFrame
         actual_forecasts = forecast_captor.value
 
         expected_forecasts = pd.DataFrame.from_dict({
@@ -116,8 +119,10 @@ class test_calculate_prediction(TestCase):
             "outlet": [3.0, 3.0, 3.0],  # 3
         })
 
-        print(actual_forecasts)
-        print(expected_forecasts)
+        # verify all interactions (default times is 1)
+        verify(pred_api).send_classification_request(ANY)
+        verify(read_manager).read_data(ANY, measurement=ANY, register=ANY)
+        verify(write_manager).write_dataframe(ANY, ANY, ANY)
 
         pd.testing.assert_frame_equal(actual_forecasts, expected_forecasts, check_dtype=False)
 

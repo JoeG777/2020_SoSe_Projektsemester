@@ -80,7 +80,7 @@ def get_logs():
     return 'logs'
 
 
-def send_classification_request():
+def send_classification_request(documentation):
     """
     Name in documentation: 'sende_klassifizierungsanfrage'
     """

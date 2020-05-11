@@ -3,6 +3,7 @@ import data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator.c
 import data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor.model_persistor as model_persistor
 import data_pipeline.db_connector.src.read_manager.read_manager as db_read
 import data_pipeline.db_connector.src.write_manager.write_manager as db_write
+import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api as pred_api
 
 OUTDOOR_REGISTER = "210"
 FILTER_MEASUREMENT = "temperature_register"
@@ -33,7 +34,8 @@ def calculate_prediction(config):
 
     db_write.write_dataframe(known_data_sources, PREDICTION_DATABASE_NAME, PREDICTION_MEASUREMENT)
 
-    # TODO classify prediction
+    # TODO send the actual database config to the api
+    pred_api.send_classification_request('')
 
 
 def apply_model(prediction_unit, known_data_sources, all_prediction_models):
