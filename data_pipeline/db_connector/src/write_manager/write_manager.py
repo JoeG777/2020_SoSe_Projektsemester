@@ -1,8 +1,9 @@
+import calendar
+import time
+
 from data_pipeline.db_connector.src.db_config import db_config
 from influxdb import InfluxDBClient
 from influxdb import DataFrameClient
-from datetime import datetime
-import pandas as pd
 
 url = db_config.params.get("url")
 port = db_config.params.get("port")
@@ -49,15 +50,15 @@ def write_single_value(db, value, **kwargs):
     :param value: the value to write as String.
     """
     measurement = default_measurement
-    if kwargs["measurement"]:
+    if "measurement" in kwargs:
         measurement = kwargs["measurement"]
     value_name = default_value_name
-    if kwargs["value_name"]:
+    if "value_name" in kwargs:
         value_name = kwargs["value_name"]
-    time = datetime.utcnow()
-    if kwargs["time_utc"]:
-        time = kwargs["time_utc"]
-    write_query(db, build_write_json(measurement, value, value_name, time))
+    time_value = calendar.timegm(time.gmtime())
+    if "time_utc" in kwargs:
+        time_value = kwargs["time_utc"]
+    write_query(db, build_write_json(measurement, value, value_name, time_value))
 
 
 def write_multiple_values(db, values, **kwargs):
@@ -71,21 +72,25 @@ def write_multiple_values(db, values, **kwargs):
     :param values: the value to write as String.
     """
     for argument in kwargs:
-        if len(argument) != len(values):
-            # TODO: Throw exception here!
-            return ""
+        if len(kwargs[argument]) != len(values):
+            raise ValueError("Argument length should be equal but was "
+                             + str(len(kwargs[argument]))
+                             + " and "
+                             + str(len(values))
+                             )
     index = 0
     for value in values:
         measurement = default_measurement
-        if kwargs["measurement"]:
+        if "measurement" in kwargs:
             measurement = kwargs["measurement"][index]
         value_name = default_value_name
-        if kwargs["value_name"]:
+        if "value_name" in kwargs:
             value_name = kwargs["value_name"][index]
-        time = datetime.utcnow()
-        if kwargs["time_utc"]:
-            time = kwargs["time_utc"][index]
-        write_single_value(db, value, value_name=value_name, measurement=measurement, time=time)
+        time_value = calendar.timegm(time.gmtime())
+        if "time_utc" in kwargs:
+            time_value = kwargs["time_utc"][index]
+        write_single_value(db, value, value_name=value_name, measurement=measurement, time=time_value)
+        index += 1
 
 
 def write_dataframe(db, dataframe, measurement):
@@ -104,20 +109,20 @@ def write_dataframe(db, dataframe, measurement):
     )
 
 
-def build_write_json(measurement, value, value_name, time):
+def build_write_json(measurement, value, value_name, time_value):
     """
     Takes a measurement, value, a value name and a time in utc and puts these variables into a json to be used with
     an influx client.
     :param measurement: the name of the measurement to write as String.
     :param value: the value to write as String.
     :param value_name: the name of the value to write as String.
-    :param time: the time to write in utc as String.
+    :param time_value: the time to write in utc as String.
     :return: the provided parameters in a json object.
     """
-    json = [
-        {'measurement': measurement,
-         "time": int(time),
-         "fields": {value_name: float(value)}
-         }
-    ]
+    json = {
+        'measurement': measurement,
+        "time": int(time_value),
+        "fields": {value_name: float(value)}
+    }
+
     return json

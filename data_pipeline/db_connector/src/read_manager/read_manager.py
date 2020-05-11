@@ -53,15 +53,14 @@ def read_data(db, **kwargs):
     register = default_register
     if "register" in kwargs.keys():
         if "resolve_register" in kwargs.keys():
-            register = register_dict[register]
+            register = register_dict[kwargs["register"]]
         else:
             register = kwargs["register"]
     query = 'select from ' + measurement + ' where register = \'' + register + '\''
     if "start_utc" in kwargs.keys():
-        query += ' AND time > ' + kwargs["start_utc"]+'ms'
+        query += ' AND time > ' + str(kwargs["start_utc"])+'ms'
     if "end_utc" in kwargs.keys():
-        query += ' AND time < ' + kwargs["end_utc"]+'ms'
-    print(query)
+        query += ' AND time < ' + str(kwargs["end_utc"])+'ms'
     return read_query(db, query)
 
 
@@ -72,7 +71,6 @@ def format_data(dataset):
     :return: The given dataset as a DataFrame.
     """
     df = pd.DataFrame(dataset)
-    print(df)
     df['time'] = pd.to_datetime(df['time'])
     df = df.set_index('time')
     return df
