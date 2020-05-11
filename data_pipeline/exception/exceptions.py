@@ -1,4 +1,4 @@
-class RedundantConfigException(Exception):
+class DataPipelineException(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -12,13 +12,15 @@ class RedundantConfigException(Exception):
             return 'RedundantConfigException has been raised'
 
 
-class IncompleteConfigException(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
+class ConfigException(DataPipelineException):
+    def __str__(self):
+        if self.message:
+            return 'ConfigException: {0}'.format(self.message)
         else:
-            self.message = None
+            return 'ConfigException has been raised'
 
+
+class IncompleteConfigException(ConfigException):
     def __str__(self):
         if self.message:
             return 'IncompleteConfigException: {0}'.format(self.message)
@@ -26,13 +28,7 @@ class IncompleteConfigException(Exception):
             return 'IncompleteConfigException has been raised'
 
 
-class InconsistentConfigException(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
+class InconsistentConfigException(ConfigException):
     def __str__(self):
         if self.message:
             return 'InconsistentConfigException: {0}'.format(self.message)
@@ -40,13 +36,7 @@ class InconsistentConfigException(Exception):
             return 'InconsistentConfigException has been raised'
 
 
-class InvalidTrainingPercentageException(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
+class InvalidTrainingPercentageException(ConfigException):
     def __str__(self):
         if self.message:
             return 'InvalidTrainingPercentageException: {0}'.format(self.message)
@@ -54,27 +44,39 @@ class InvalidTrainingPercentageException(Exception):
             return 'InvalidTrainingPercentageException has been raised'
 
 
-class InvalidConfigException(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
+class InvalidConfigKeyException(ConfigException):
     def __str__(self):
         if self.message:
-            return 'InvalidConfigException: {0}'.format(self.message)
+            return 'InvalidConfigKeyException: {0}'.format(self.message)
         else:
-            return 'InvalidConfigException has been raised'#
+            return 'InvalidConfigException has been raised'
 
 
-class PersistorException(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
+class InvalidConfigValueException(ConfigException):
+    def __str__(self):
+        if self.message:
+            return 'InvalidConfigValueException: {0}'.format(self.message)
         else:
-            self.message = None
+            return 'InvalidConfigException has been raised'
 
+
+class AmbiguousConfigException(ConfigException):
+    def __str__(self):
+        if self.message:
+            return 'AmbiguousConfigException: {0}'.format(self.message)
+        else:
+            return 'AmbiguousConfigException has been raised'
+
+
+class ConfigTypeException(ConfigException):
+    def __str__(self):
+        if self.message:
+            return 'ConfigTypeException: {0}'.format(self.message)
+        else:
+            return 'ConfigTypeException has been raised'
+
+
+class PersistorException(DataPipelineException):
     def __str__(self):
         if self.message:
             return 'PersistorException: {0}'.format(self.message)
@@ -82,79 +84,9 @@ class PersistorException(Exception):
             return 'PersistorException has been raised'
 
 
-class FileException(Exception):
-
-    def __init__(self, *args):
-
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
+class DBException(DataPipelineException):
     def __str__(self):
         if self.message:
-            return 'FileException, {0}'.format(self.message)
+            return 'DBException: {0}'.format(self.message)
         else:
-            return 'FileException'
-
-
-class UrlException(Exception):
-
-    def __init__(self, *args):
-
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
-    def __str__(self):
-        if self.message:
-            return 'UrlException, {0}'.format(self.message)
-        else:
-            return 'UrlException'
-
-
-class RawDataException(Exception):
-
-    def __init__(self, *args):
-
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
-    def __str__(self):
-        if self.message:
-            return 'RawDataException, {0}'.format(self.message)
-        else:
-            return 'RawDataException'
-
-class DBException(Exception):
-
-    def __init__(self, *args):
-
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
-    def __str__(self):
-        if self.message:
-            return 'DBException, {0}'.format(self.message)
-        else:
-            return 'DBException'
-
-class ConfigException(Exception):
-
-    def __init__(self, *args):
-
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
-    def __str__(self):
-        if self.message:
-            return 'ConfigException, {0}'.format(self.message)
-        else:
-            return 'ConfigException'
+            return 'DBException has been raised'
