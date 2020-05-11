@@ -1,7 +1,9 @@
 from flask import *
-import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
+#import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
 import data_pipeline.daten_klassifizieren.classification_engine as classification
-import data_pipeline.daten_klassifizieren.training_engine as training
+#import data_pipeline.daten_klassifizieren.training_engine as training
+import data_pipeline.exception.exceptions as ex
+
 
 app = Flask(__name__)
 
@@ -12,15 +14,18 @@ app = Flask(__name__)
 def classify():
     response = 200
     try:
-        config = request.get_json(force=True)
-        print(type(config))
-        if type(config) != dict:
-            print("raise: ConfigError")
-            response = 500
-
-        #classification.apply_classifier(config)
-    except Exception:
-        response = 500
+        extracted_config = request.get_json(force=True)
+        classification.apply_classifier(extracted_config)
+    except ex.ConfigException:
+        response = 900
+    except ex.DBException:
+        response = 901
+    except ex.PersistorException:
+        response = 902
+    """except ex.FileException:
+        response = 900
+    """
+    # TODO: noch nicht implementiert bei exceptions oder im Code
 
     status_code = Response(status=response)
     return status_code
@@ -37,12 +42,19 @@ def train():
             response = 500
 
         print(config)
-        # TODO: Welche Fehler können auftreten? Modellierung sagt gar keine ?!
         #trainingsdata.expand_data(config)
         #trainingsdata.mark_data(config)
         #training.train_classifier(config)
-    except Exception:
-        response = 500
+    except ex.ConfigException:
+        response = 900
+    except ex.DBException:
+        response = 901
+    except ex.PersistorException:
+        response = 902
+    """except ex.FileException:
+        response = 900
+    """
+    # TODO: noch nicht implementiert bei exceptions oder im Code
 
     status_code = Response(status=response)
     return status_code
