@@ -31,9 +31,12 @@ def train_classifier(config):
 
     df = read_manager.read_data(datasource_training_data, measurement='training', register=None, resolve_register=None,
                                 start_utc=None, end_utc=None)
+    selected_event, required_score, test_size, datasource_marked_data = get_config_parameter(config)
+    classifier = model_persistor.load_classifier(config)
+    df = read_manager.read_data(datasource_marked_data, measurement='training')
     df.dropna(inplace=True)
     y = np.array(df[selected_event])
-    X = np.array(df.drop(labels=[selected_event, selected_event+'_marker'], axis=1))
+    X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
     try:
@@ -43,7 +46,6 @@ def train_classifier(config):
 
     if evaluate_classifier(classifier, required_score, X_test, y_test):
         model_persistor.persist_classifier(classifier, config)
-
     return 0
 
 
@@ -55,7 +57,7 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
         required_score: Already existing score
         X_test: Test data for evaluation
         y_test: Test data for evaluation
-    :raises 
+    :raises
     :return
         boolean: True: New Classifier has a higher score and will be persist, False: New Classifier has a lower score and will not be persist)'''
     # TODO : ursprünglicher und neuer Score loggen
@@ -69,5 +71,8 @@ def get_config_parameter(config):
     selected_event = config['selected_event']
     required_score = config['required_score'][selected_event]
     test_size = config['test_size']
-    datasource_training_data = config['datasource_training_data']['database']
-    return selected_event, required_score, test_size, datasource_training_data
+    datasource_marked_data = config['datasource_marked_data']['database']
+    return selected_event, required_score, test_size, datasource_marked_data
+
+
+train_classifier(config)
