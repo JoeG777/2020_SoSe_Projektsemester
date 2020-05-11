@@ -1,4 +1,4 @@
-def prozess_starten(parameters):
+def start_process(parameters):
 
-    pipeline_controller.prozess_starten(parameters)
+    pipeline_controller.start_process(parameters)
 

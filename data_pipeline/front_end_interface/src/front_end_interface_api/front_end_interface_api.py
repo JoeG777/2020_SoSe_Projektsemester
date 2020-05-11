@@ -1,10 +1,11 @@
 from flask import *
-import data_pipeline.front_end_interface.src.nilan_control_service as ncs
-import data_pipeline.front_end_interface.src.pipeline_control_service as pcs
+import data_pipeline.front_end_interface.src.nilan_control_service.nilan_control_service as ncs
+import data_pipeline.front_end_interface.src.pipeline_control_service.pipeline_control_service as pcs
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as logger
+import data_pipeline.log_writer.log_writer as log_writer
 
 app = Flask(__name__)
+logger = log_writer.Logger()
 response = None
 
 @app.route('/nilan_control_service')
@@ -29,7 +30,7 @@ def pipeline_control_service():
 
     try:
         json_validation()
-        pcs.write_to_nilan(request.args)
+        pcs.start_process(request.args)
 
         response = 200
 
@@ -39,7 +40,7 @@ def pipeline_control_service():
     except exc.IncompleteConfigException as icxc:
         response = icxc.args[1]
 
-return Response(status=response)
+    return Response(status=response)
 
 def json_validation():
 
