@@ -1,7 +1,7 @@
 from datetime import datetime
 import data_pipeline.db_connector.src.write_manager.write_manager.py as wm
 import pytz
-
+import data_pipeline.exception.exceptions as exc
 
 def get_current_time_utc():
     '''
@@ -26,24 +26,28 @@ def format_json(json):
     :param json: Nilan-Ventilation Unit Parameters
     '''
 
-    json_nilan_array = [
-        {'measurement': 'raumtemperatur',
-         "time": get_current_time_utc(),
-         "fields": {"temperatur": json['raumtemperatur']}
-         },
-        {'measurement': 'luefterstufe_zuluft',
-         "time": get_current_time_utc(),
-         "fields": {"stufe": json['luefterstufe_zuluft']}
-         },
-        {'measurement': 'luefterstufe_abluft',
-         "time": get_current_time_utc(),
-         "fields": {"stufe": json['luefterstufe_abluft']}
-         },
-        {'measurement': 'betriebsmodus',
-         "time": get_current_time_utc(),
-         "fields": {"modus": json['betriebsmodus']}
-         }
-    ]
+    try:
+        json_nilan_array = [
+            {'measurement': 'raumtemperatur',
+             "time": get_current_time_utc(),
+             "fields": {"temperatur": json['raumtemperatur']}
+             },
+            {'measurement': 'luefterstufe_zuluft',
+             "time": get_current_time_utc(),
+             "fields": {"stufe": json['luefterstufe_zuluft']}
+             },
+            {'measurement': 'luefterstufe_abluft',
+             "time": get_current_time_utc(),
+             "fields": {"stufe": json['luefterstufe_abluft']}
+             },
+            {'measurement': 'betriebsmodus',
+             "time": get_current_time_utc(),
+             "fields": {"modus": json['betriebsmodus']}
+             }
+        ]
+
+    except:
+        raise exc.RawDataException('Config-JSON incomplete', 905)
 
     return json_nilan_array
 
@@ -56,4 +60,8 @@ def write_to_nilan(json):
     :raises
     '''
 
-    wm.write_to_influx_json("db_steuerungsparameter", format_json(json))
+    try:
+        wm.write_to_influx_json("db_steuerungsparameter", format_json(json))
+
+    except:
+        raise exc.DBException('Writing data to database was unsuccessful', 901)
