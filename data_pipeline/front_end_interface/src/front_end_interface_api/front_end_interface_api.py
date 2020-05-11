@@ -10,7 +10,13 @@ response = None
 
 @app.route('/nilan_control_service')
 def nilan_control_service():
-
+    '''
+    Name in documentation: 'nilan_control_service()'
+    Gets called when new Data has to be persisted.
+    The passed Data gets validated and afterwards calls the write_to_nilan method on
+    nilan_control_service.
+    :return: statuscode
+    '''
     try:
         json_validation()
         ncs.write_to_nilan(request.args)
@@ -27,7 +33,12 @@ def nilan_control_service():
 
 @app.route('/pipeline_control_service')
 def pipeline_control_service():
-
+    '''
+    Name in Documentation: 'pipeline_control_service'
+    Gets called when new Data has to be passed to the pipeline controller.
+    The passed Data gets validated and afterwards triggers the process in pipeline_control_service
+    :return: statuscode
+    '''
     try:
         json_validation()
         pcs.start_process(request.args)
@@ -44,6 +55,11 @@ def pipeline_control_service():
 
 def json_validation():
 
+    '''
+    Gets called in the beginning of either 'pipeline_control_service' or 'nilan_control_service' to proof wether the passed config data
+    is complete or not.
+    :param index: Depending on the passed index, the config gets checked for another tag. Either 'forecastURL' or 'historischURL'.
+    '''
     if int(request.headers.get('Content-Length')) == 0:
         logger.influx_logger.error('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
