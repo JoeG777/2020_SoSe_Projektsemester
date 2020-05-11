@@ -3,6 +3,11 @@ import data_pipeline.daten_filtern.src.filtern_engine.filtern_engine as fe
 import pandas as pd
 import numpy as np
 
+from mockito import *
+from mockito.matchers import ANY
+import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
+import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
+
 class Filtern_engine_tests(unittest.TestCase):
     def test_tag_drop(self):
         #opening_data
@@ -62,6 +67,25 @@ class Filtern_engine_tests(unittest.TestCase):
         #comparison real_data and exected_data
         self.assertEqual(real_data.room.all() , expected_data.room.all())
 
+
+    # klassififcate
+    temperature_data = {
+        "time": [1, 2, 3, 4, 5, 6, 7],
+        "valueScaled": [2, 4, 6, 8, 10, 12, 14]
+    }
+
+    klassificate_dataframe = pd.DataFrame(temperature_data)
+
+    # spies
+    spy2(read_manager.read_data)
+    spy2(write_manager.write_dataframe)
+
+    # when the function tries to get the weather forecast from database, return the custom forecast DataFrame above
+    when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenReturn(klassificate_dataframe)
+
+    # verify all interactions (default times is 1)
+    verify(read_manager).read_data(ANY, measurement=ANY, register=ANY)
+    verify(write_manager).write_dataframe(ANY, ANY, ANY)
 
 
 if __name__ == '__main__':
