@@ -24,7 +24,10 @@ def enrich_data(config):
                                                         (df_query[f'{register_dict[register]}'].shift(1))) / 2
         df_query[f'{register_dict[register]}_pct_ch'] = df_query[f'{register_dict[register]}'].pct_change(1)
         df_query[f'{register_dict[register]}_ch_abs'] = df_query[f'{register_dict[register]}'].diff(1)
-
+        #test
+        df_query[f'{register_dict[register]}_diff'] = df_query[f'{register_dict[register]}'] - \
+                                                       df_query[f'{register_dict[register]}'].shift(-1)
+        #test
         if counter == 0:
             df = df_query
             counter += 1
@@ -33,6 +36,9 @@ def enrich_data(config):
             df[f'{register_dict[register]}_deriv'] = df_query[f'{register_dict[register]}_deriv']
             df[f'{register_dict[register]}_pct_ch'] = df_query[f'{register_dict[register]}_pct_ch']
             df[f'{register_dict[register]}_ch_abs'] = df_query[f'{register_dict[register]}_ch_abs']
+            #test
+            df[f'{register_dict[register]}_diff'] = df_query[f'{register_dict[register]}_diff']
+            #test
     write_manager.write_dataframe(datasource_enriched_data, df, selected_event)
     mark_data(config)
 
@@ -46,20 +52,24 @@ def mark_data(config):
     end = convert_time(end_time)
     df = read_manager.read_data(datasource_enriched_data, measurement=selected_event, start_utc=str(start), end_utc=str(end))
     if selected_event == 'abtauzyklus':
-        df['abtaumarker'] = 0
-        df.loc[(df['evaporator_deriv']>= start_deriv) & (df['evaporator_deriv'].shift(1) < start_deriv) & (df['evaporator'] <= start_evap), 'abtaumarker'] = start_marker
-        df.loc[(abs(df['evaporator_deriv']) <= end_deriv) & (df['evaporator_deriv'].shift(3) < end_deriv_n3), 'abtaumarker'] = end_marker
+        #df['abtaumarker'] = 0
+        #df.loc[(df['evaporator_deriv']>= start_deriv) & (df['evaporator_deriv'].shift(1) < start_deriv) & (df['evaporator'] <= start_evap), 'abtaumarker'] = start_marker
+        #df.loc[(abs(df['evaporator_deriv']) <= end_deriv) & (df['evaporator_deriv'].shift(3) < end_deriv_n3), 'abtaumarker'] = end_marker
         pd.set_option("display.max_rows", None)
-
-        df.loc[df['abtaumarker'].shift(1) == end_marker, 'abtaumarker'] = 0
+        df['abtaumarker'] = 0.0
+        df.loc[df['condenser_diff'] > 4, 'abtaumarker'] = 1
+        df.loc[df['condenser_diff'] < -4, 'abtaumarker'] = -1
+        df.loc[(df['abtaumarker'] == 1) & (df['abtaumarker'].shift(1) == 1), 'abtaumarker'] = 0
+        df.loc[(df['abtaumarker'] == -1) & (df['abtaumarker'].shift(-1) == -1), 'abtaumarker'] = 0
+        print(len(df.loc[(df['abtaumarker']== start_marker)]))
+        print(len(df.loc[(df['abtaumarker']== end_marker)]))
+        #df.loc[df['abtaumarker'].shift(1) == end_marker, 'abtaumarker'] = 0
         df['abtauzyklus'] = False
         print((df['abtaumarker'][(df['abtaumarker'] == start_marker) | (df['abtaumarker']  == end_marker)]))
         spaces = df.loc[(df['abtaumarker'] == start_marker) | (df['abtaumarker'] == end_marker)].index.tolist()
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'abtauzyklus'] = True
-
-        #print(df.loc[df['abtauzyklus'] == True].tail(200))
-
+        print(df.loc[df['abtauzyklus'] == True])
     elif selected_event == 'warmwasseraufbereitung':
         df['warmwassermarker'] = 0
         df.loc[(df['inlet'].shift(1) > start_abtau) & (df['room_deriv'] <= start_deriv) & (df['room_deriv'] <= start_ch), 'warmwassermarker'] = start_marker
