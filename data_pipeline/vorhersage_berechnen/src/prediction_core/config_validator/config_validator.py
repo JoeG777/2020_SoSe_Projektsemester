@@ -4,6 +4,13 @@ import collections
 import copy
 from numbers import Number
 
+valid_independent_values = ['outdoor', 'freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
+valid_dependent_values = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
+
+mandatory_keys = ["selected_value", "prediction_options"]
+top_level_keys = ["selected_value", "prediction_options"]
+prediction_unit_keys = ["independent", "dependent", "test_sample_size"]
+
 
 # TODO change single quotes to double quotes
 def validate_config(config):
@@ -21,54 +28,44 @@ def validate_config(config):
         raise ConfigTypeException("Config is of wrong type: " + str(type(config)))
 
 
+def has_mandatory_keys(config, keys):
+    for key in keys:
+        if key not in config.keys():
+            raise InvalidConfigKeyException("Config does not contain mandatory field " + key + "!")
+
+
+def is_instance_of(to_check, value_key, type):
+    if not isinstance(to_check, type):
+        raise InvalidConfigValueException(value_key + " is not of type list")
+
+
+def has_valid_keys(config, valid_keys):
+    if not set(config).issubset(valid_keys):
+        raise InvalidConfigValueException("One prediction unit of the config has invalid values.")
+
+
+def validate_preidciton_unit(prediction_option):
+    is_instance_of(prediction_option, "Prediction Unit", list)
+    for prediction_unit in prediction_option:
+        is_instance_of(prediction_unit, "Prediction Unit", dict)
+        has_mandatory_keys(prediction_unit, prediction_unit_keys)
+        is_instance_of(prediction_unit["independent"], "independent list", list)
+        is_instance_of(prediction_unit["dependent"], "dependent list", list)
+        is_instance_of(prediction_unit["test_sample_size"], "Test sample size", Number)
+        has_valid_keys(prediction_unit["independent"], valid_independent_values)
+        has_valid_keys(prediction_unit["dependent"], valid_independent_values)
+
+
 def check_general_constraints(config):
-    # TODO this should be refactored
-    valid_independent_values = ['outdoor', 'freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
-    valid_dependent_values = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
-
-    option_found = False
-
-    if "selected_value" in config:
-        selected_value = config["selected_value"]
-
-        if "prediction_options" in config:
-            prediction_options = config["prediction_options"]
-
-            if isinstance(prediction_options, dict):
-                for key in prediction_options:
-                    if key == selected_value:
-                        prediction_units = prediction_options.get(key)
-                        option_found = True
-
-                        if isinstance(prediction_units, list):
-                            for prediction_unit in prediction_units:
-                                if isinstance(prediction_unit, dict):
-                                    if ("independent" in prediction_unit
-                                            and "dependent" in prediction_unit
-                                            and "test_sample_size" in prediction_unit):
-                                        if (not isinstance(prediction_unit["independent"], list) or
-                                                not set(prediction_unit["independent"]).issubset(valid_independent_values) or
-                                                not isinstance(prediction_unit["dependent"], list) or
-                                                not set(prediction_unit["dependent"]).issubset(valid_dependent_values) or
-                                                not isinstance(prediction_unit["test_sample_size"], Number)):
-                                            raise InvalidConfigValueException("One prediction unit of "
-                                                                              "the config has invalid values.")
-                                    else:
-                                        raise InvalidConfigKeyException("One prediction unit of the config has invalid keys.")
-                                else:
-                                    raise InvalidConfigValueException("One prediction unit is not of type dict")
-                        else:
-                            raise InvalidConfigValueException("The selected prediction option is not of type list")
-            else:
-                raise InvalidConfigValueException("Prediction option is not of type list")
-        else:
-            raise InvalidConfigKeyException("Config does not have prediction options defined.")
-    else:
-        raise InvalidConfigKeyException("Config does not have the field selected value.")
-
-    if not option_found:
+    has_mandatory_keys(config, top_level_keys)
+    selected_value = config["selected_value"]
+    prediction_options = config["prediction_options"]
+    is_instance_of(prediction_options, "Prediction Options", dict)
+    if selected_value not in prediction_options.keys():
         raise AmbiguousConfigException("The selected value is not present in prediction options")
-
+    has_mandatory_keys(prediction_options, [selected_value])
+    selected_prediction_unit = prediction_options[selected_value]
+    validate_preidciton_unit(selected_prediction_unit)
     return True
 
 
