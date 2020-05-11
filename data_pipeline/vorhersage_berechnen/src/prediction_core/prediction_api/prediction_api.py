@@ -17,8 +17,8 @@ http_status_codes = {
 @app.route('/')
 def default():
     """
-
-
+    Not featured in the documentation.
+    Just returns information about the API.
     """
     return '<h1>Endpoints</h1><p>/train - Train a model</p><p>/predict - Make a prediction</p><p>/log - Get the logs</p>'
 
@@ -27,7 +27,13 @@ def default():
 def train():
     """
     Name in documentation: 'trainieren'
-
+    This method is used to apply the trained models and create new predictions.
+    :return: a Flask response containg one of the following status codes
+    400 - Bad Request - e.g. if the request body is not a JSON
+    500 - Internal Server Error - in any error cases not described here
+    900 - Config Error - if the message body contains an invalid config
+    901 - DBException - if there are problems with the database connection
+    902 - PersistorException - if there are problems with persisting the new models
     """
     status_code = 200
     if request.is_json:
@@ -51,8 +57,15 @@ def train():
 def predict():
     """
     Name in documentation: 'vorhersagen'
-
+    This method is used to apply the trained models and create new predictions.
+    :return: a Flask response containg one of the following status codes
+    400 - Bad Request - e.g. if the request body is not a JSON
+    500 - Internal Server Error - in any error cases not described here
+    900 - Config Error - if the message body contains an invalid config
+    901 - DBException - if there are problems with the database connection
+    902 - PersistorException - if there are problems with the persisted models
     """
+
     status_code = 200
     if request.is_json:
         try:

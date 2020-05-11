@@ -230,7 +230,7 @@ class test_validate_config(TestCase):
         }
         self.assertRaises(RedundantConfigException, validate_config, invalid_config)
 
-    def test_config_has_invalid_prediction_chain(self):
+    def test_config_has_invalid_prediction_chain_should_raise_InconsistentConfigException(self):
         invalid_config = {
             "selected_value": "default",
             "prediction_options": {

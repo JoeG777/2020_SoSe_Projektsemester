@@ -7,10 +7,13 @@ PATH = os.path.dirname(__file__)
 
 
 def load():
-    '''
+    """
     Name in documentation: 'laden'
-    :return
-    '''
+    This method is used to load the persisted dictionary all_prediction_models containing the prediction_models,
+    their respective scores and the configuration.
+    :raises PersistorException - if there is any error with loading the model
+    :return all_prediction_models dictionary
+    """
     try:
         current_model = pickle.load(open(os.path.join(PATH, FILE_NAME), "rb"))
     except Exception as ex:
@@ -21,11 +24,13 @@ def load():
 
 
 def save(all_prediction_models):
-    '''
+    """
     Name in documentation: 'speichern'
-    :param all_prediction_models:
-    :return:
-    '''
+    This method is used to save the dictionary all_prediction_models containing the prediction_models,
+    their respective scores and the configuration.
+    :param all_prediction_models: the prediction model dictionary to be saved
+    :raises PersistorException - if there is any error with saving the models
+    """
     try:
         pickle.dump(all_prediction_models, open(os.path.join(PATH, FILE_NAME), "wb"))
     except Exception as ex:
