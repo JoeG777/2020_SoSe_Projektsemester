@@ -126,7 +126,7 @@ filtern_config = {
                     "Interpolation": "linear"
                 },
                 "abtauzyklus": {
-                    "delete": "True",
+                    "delete": "False",
                     "Interpolation": "linear"
                 }
             },
@@ -180,7 +180,7 @@ filtern_config = {
                     "Interpolation": "linear"
                 },
                 "abtauzyklus": {
-                    "delete": "True",
+                    "delete": "False",
                     "Interpolation": "linear"
                 }
             },
@@ -198,7 +198,7 @@ filtern_config = {
                     "Interpolation": "linear"
                 },
                 "abtauzyklus": {
-                    "delete": "True",
+                    "delete": "False",
                     "Interpolation": "linear"
                 }
             },
@@ -216,7 +216,7 @@ filtern_config = {
                     "Interpolation": "linear"
                 },
                 "abtauzyklus": {
-                    "delete": "True",
+                    "delete": "False",
                     "Interpolation": "linear"
                 }
             }

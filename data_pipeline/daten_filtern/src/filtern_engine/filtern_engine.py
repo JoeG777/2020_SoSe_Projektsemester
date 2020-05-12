@@ -1,5 +1,5 @@
 
-#import pandas as pd
+import pandas as pd
 import numpy as np
 from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import DBException, ConfigException
@@ -27,7 +27,7 @@ def filter(config):
 
     filtern_data = get_data()
 
-    filtern_data = configure_data(filtern_data)
+    #filtern_data = configure_data(filter_data)
 
     try:
         for curve in config:
@@ -36,6 +36,9 @@ def filter(config):
                     filtern_data = tag_drop(curve, cycle, filtern_data)
                     method = config[curve][cycle]["Interpolation"]
                     filtern_data = interpolation(method, curve, filtern_data)
+
+        print("Gefilterte Daten:")
+        print(filtern_data.loc[filtern_data.abtauzyklus == True])
 
     except:
         logger.influx_logger.error("Config is wrong.")
@@ -55,7 +58,7 @@ def get_data():
     try:
         classified_data = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' ,
                                            start_utc = str(convert_time('2020-01-14 00:00:00.000 UTC')),
-                                           end_utc = str(convert_time('2020-01-15 12:0:00.000 UTC')))
+                                           end_utc = str(convert_time('2020-01-20 12:00:00.000 UTC')))
         print("Get_Data Ausgabe:")
         print(classified_data)
         print("________________________________")
@@ -86,7 +89,8 @@ def tag_drop(curve, cycle, filtern_data):
     try:
         filtern_data.loc[filtern_data[cycle] == True, curve] = np.NaN
         print("Tag_Drop:")
-        print(filtern_data.loc[filtern_data.abtauzyklus == True])
+        print(curve)
+        print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
         print("________________________________")
 
     except:
@@ -109,7 +113,7 @@ def interpolation(methode, curve, zyklenfreie_daten):
     try:
         zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
         print("Interpoliert:")
-        print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True])
+        print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
         print("________________________________")
 
     except:
@@ -149,19 +153,17 @@ def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
 
-def configure_data(filtern_data):
+'''
+def configure_data(filter_data):
 
     time = None
-    for i in filtern_data:
-        if filtern_data[i]["abtauzyklus"] == True and filtern_data[i+1]["abtauzyklus"] == False:
-            filtern_data[i+1]["abtauzyklus"] = True
-            filtern_data[i+2]["abtauzyklus"] = True
+    for i in filter_data:
+        if filter_data.at[filter_data.index[i],filter_data.columns[1]] == True and filter_data.at[filter_data.index[i+1],filter_data.columns[1]] == False:
+            filter_data.at[filter_data.index[i+1],filter_data.columns[1]] = 5
+            filter_data.at[filter_data.index[i+2],filter_data.columns[1]] = 7
             i = i+3
 
-
-
-
-    return filtern_data
-
+    return filter_data
+'''
 
 filter(config)
