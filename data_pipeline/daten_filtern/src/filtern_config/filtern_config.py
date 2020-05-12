@@ -1,9 +1,9 @@
 filtern_config = {
-    "selected_value": "default",
+    "selected_value": "variante",
     "filter_options": {
         "default": {
             "room": {
-                "WarmWasserZyklus": {
+                "WarmwWasserZyklus": {
                     "delete": "True",
                     "Interpolation": "linear"
                 },
@@ -15,13 +15,13 @@ filtern_config = {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
-                "AbtauZyklus": {
+                "abtauzyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 }
             },
             "condenser": {
-                "WarmWasserZyklus": {
+                "WarmwWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -33,13 +33,13 @@ filtern_config = {
                     "delete": "True",
                     "Interpolation": "linear"
                 },
-                "AbtauZyklus": {
+                "abtauzyklus": {
                     "delete": "True",
                     "Interpolation": "linear"
                 }
             },
             "evaporator": {
-                "WarmWasserZyklus": {
+                "WarmwWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -51,13 +51,13 @@ filtern_config = {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
-                "AbtauZyklus": {
+                "abtauzyklus": {
                     "delete": "True",
                     "Interpolation": "linear"
                 }
             },
             "inlet": {
-                "WarmWasserZyklus": {
+                "WarmwWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -69,13 +69,13 @@ filtern_config = {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
-                "AbtauZyklus": {
+                "abtauzyklus": {
                     "delete": "True",
                     "Interpolation": "linear"
                 }
             },
             "outlet": {
-                "WarmWasserZyklus": {
+                "WarmwWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -87,13 +87,13 @@ filtern_config = {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
-                "AbtauZyklus": {
+                "abtauzyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 }
             },
             "freshAirIntake": {
-                "WarmWasserZyklus": {
+                "WarmwWasserZyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 },
@@ -105,7 +105,117 @@ filtern_config = {
                     "delete": "True",
                     "Interpolation": "linear"
                 },
-                "AbtauZyklus": {
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            }
+        },
+        "variante": {
+            "room": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "condenser": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "evaporator": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "True",
+                    "Interpolation": "linear"
+                }
+            },
+            "inlet": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "True",
+                    "Interpolation": "linear"
+                }
+            },
+            "outlet": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "freshAirIntake": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
                     "delete": "False",
                     "Interpolation": "linear"
                 }
