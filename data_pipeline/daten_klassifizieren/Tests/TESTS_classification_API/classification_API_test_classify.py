@@ -12,8 +12,8 @@ class test_classify(unittest.TestCase):
     url = 'http://127.0.0.1:5000/classify'
 
     def test_response_200(self):
-        request = requests.post(self.url, None, json=config)
-        when2(classification.apply_classifier, config).thenReturn(0)
+        request = requests.post(self.url, json=config)
+        #when2(classification.apply_classifier, config).thenReturn(0)
         response = request.status_code
         self.assertEqual(response, 200)
 

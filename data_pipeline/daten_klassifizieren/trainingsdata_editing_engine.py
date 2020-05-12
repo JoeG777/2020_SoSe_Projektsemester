@@ -124,7 +124,7 @@ def convert_time(time_var):
 
 
 #mark_data(config)
-enrich_data(config)
+#enrich_data(config)
 
 '''
 
