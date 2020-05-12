@@ -1,20 +1,17 @@
-from influxdb import InfluxDBClient
+
 import pandas as pd
 import numpy as np
 from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import DBException, ConfigException
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
+from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
 from datetime import datetime
 import time
 
-#Testdatenn ziehen
-client = InfluxDBClient(host='localhost', port=8086)
-client.get_list_database()
-client.switch_database('nilan')
-
 logger = Logger()
-
+config = filtern_config["filter_options"][filtern_config["selected_value"]]
+print(config)
 
 def filter(config):
     """
@@ -23,31 +20,32 @@ def filter(config):
     :raises ConfigExeption: If the config is wrong.
     :return: A http status code.
     """
-    statuscode = None
+    #statuscode = None
     filtern_data = get_data()
 
-    try:
-        for curve in config:
-            for cycle in config[curve]:
-                if config[curve][cycle]["delete"] == "True":
-                    filtern_data = tag_drop(cycle, curve, filtern_data)
-                    method = config[curve][cycle]["Interpolation"]
-                    filtern_data = interpolation(method, curve, filtern_data)
+    #try:
+    for curve in config:
+        for cycle in config[curve]:
+            if config[curve][cycle]["delete"] == "True":
+                filtern_data = tag_drop(curve, cycle, filtern_data)
+                method = config[curve][cycle]["Interpolation"]
+                filtern_data = interpolation(method, curve, filtern_data)
 
-    except:
-        logger.influx_logger.error("Config is wrong.")
-        raise ConfigException("Filtern Config is wrong.", 900)
-        statuscode = 900
+   # except:
+        #logger.influx_logger.error("Config is wrong.")
+        #raise ConfigException("Filtern Config is wrong.", 900)
+        #statuscode = 900
 
-    statuscode = persist_data(filtern_data)
+    #statuscode = persist_data(filtern_data)
 
-    return statuscode
+    #return statuscode
 
 
 def get_data():
 
     df = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' , start_utc = str(convert_time('2020-01-14 00:00:00.000 UTC')), end_utc = str(convert_time('2020-01-15 12:0:00.000 UTC')))
-    print(df)
+    #print(df)
+    print(df.loc[df.abtauzyklus == True])
     return df
 
     """
@@ -89,7 +87,8 @@ def tag_drop(curve, cycle, filtern_data):
     :return: the klassified data with one cycle of one curve deleted
     """
 
-    filtern_data.loc[filtern_data[cycle] == True, curve] = np.nan
+    filtern_data.loc[filtern_data[cycle] == True, curve] = np.NaN
+    print(filtern_data.loc[filtern_data.abtauzyklus == True])
     return filtern_data
 
 
@@ -104,10 +103,10 @@ def interpolation(methode, curve, zyklenfreie_daten):
     """
 
     zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
-
+    print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True])
     return zyklenfreie_daten
 
-
+"""
 def persist_data(filtern_data):
     '''
     Name in documentation: 'persist_data'
@@ -125,9 +124,10 @@ def persist_data(filtern_data):
         raise DBException("Database not available.", 901)
 
     return statuscode
+"""
 
 def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
 
-get_data()
+filter(config)
