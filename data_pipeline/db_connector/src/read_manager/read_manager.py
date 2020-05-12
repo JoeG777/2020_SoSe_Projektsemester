@@ -66,7 +66,6 @@ def read_data(db, **kwargs):
         query += ' time > ' + kwargs["start_utc"]+'ms'
     if "end_utc" in kwargs.keys():
         query += ' AND time < ' + kwargs["end_utc"]+'ms'
-    print(query)
     return read_query(db, query)
 
 def format_data(dataset):
