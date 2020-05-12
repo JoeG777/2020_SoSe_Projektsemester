@@ -18,8 +18,7 @@ def calculate_prediction(config):
     
     selected_value = config.get("selected_value")
     all_prediction_units = config.get("prediction_options").get(selected_value)
-    known_data_sources = db_read.read_data(
-        datasource_forecast_dbname, measurement=datasource_forecast_measurement, register=datasource_forecast_register)
+    known_data_sources = db_read.read_data(datasource_forecast_dbname, measurement=datasource_forecast_measurement)
 
     known_data_sources = known_data_sources.rename(columns={'temperature': 'outdoor'})
 
