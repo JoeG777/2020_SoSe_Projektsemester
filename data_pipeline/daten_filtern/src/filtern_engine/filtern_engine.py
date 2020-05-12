@@ -45,14 +45,20 @@ def filter(config):
 
 
 def get_data():
+
+    df = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' , start_utc = str(convert_time('2020-01-14 00:00:00.000 UTC')), end_utc = str(convert_time('2020-01-15 12:0:00.000 UTC')))
+    print(df)
+    return df
+
     """
     Name in documentation: 'get_data'
     Load the klassified data.
     :return: The klassified data
     """
-    klassifizierte_daten = None
-    try:
-        """
+    #klassifizierte_daten = None
+    #try:
+
+    """
         roomQueryTemp = 'SELECT "valueScaled" FROM "temperature_register" WHERE register=\'210\' AND time >= 1582497763413ms and time <= 1582614984756ms'
         room = pd.DataFrame(client.query(roomQueryTemp).get_points())
         client.close()
@@ -62,17 +68,15 @@ def get_data():
         room['time'] = pd.to_datetime(room['time'])
         room = room.set_index('time')
         room = room.rename(columns={'valueScaled' : 'room'})
-        """
-        df = reader.read_data('nilan_classified' ,measurement = 'classified' , start_utc = str(convert_time('2020-01-14 00:00:00.000 UTC')), end_utc = str(convert_time('2020-01-20 12:0:00.000 UTC')))
-        print(df)
+    """
 
 
         #klassifizierte_daten = reader.read_data('klassifizierte_daten')
-    except:
-        logger.influx_logger.error("Database not available.")
-        raise DBException("Database not available.", 901)
+   # except:
+        #logger.influx_logger.error("Database not available.")
+        #raise DBException("Database not available.", 901)
 
-    return df
+
 
 
 def tag_drop(curve, cycle, filtern_data):
@@ -125,3 +129,5 @@ def persist_data(filtern_data):
 def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
+
+get_data()
