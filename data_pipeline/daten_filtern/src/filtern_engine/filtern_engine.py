@@ -27,6 +27,8 @@ def filter(config):
 
     filtern_data = get_data()
 
+    filtern_data = configure_data(filtern_data)
+
     try:
         for curve in config:
             for cycle in config[curve]:
@@ -146,6 +148,20 @@ def convert_time(time_var):
 
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
+
+def configure_data(filtern_data):
+
+    time = None
+    for i in filtern_data:
+        if filtern_data[i]["abtauzyklus"] == True and filtern_data[i+1]["abtauzyklus"] == False:
+            filtern_data[i+1]["abtauzyklus"] = True
+            filtern_data[i+2]["abtauzyklus"] = True
+            i = i+3
+
+
+
+
+    return filtern_data
 
 
 filter(config)
