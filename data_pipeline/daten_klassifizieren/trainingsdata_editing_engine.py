@@ -40,7 +40,7 @@ def enrich_data(config):
             df[f'{register_dict[register]}_diff'] = df_query[f'{register_dict[register]}_diff']
             #test
     write_manager.write_dataframe(datasource_enriched_data, df, selected_event)
-    mark_data(config)
+    return 0
 
 
 def mark_data(config):

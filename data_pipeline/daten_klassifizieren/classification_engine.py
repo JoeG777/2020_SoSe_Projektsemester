@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 import sklearn
 import data_pipeline.daten_klassifizieren.model_persistor as model_persistor
+import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata_editing_engine
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 import data_pipeline.log_writer as log_writer
@@ -14,6 +15,7 @@ import time
 # TODO: daten erweitern mit np.array
 # TODO: ergebnis von predict wahrscheinlich array, das man wieder in df umwandeln muss zum speichern
 def apply_classifier(config):
+    trainingsdata_editing_engine.enrich_data(config)
     datasource_enriched_data, datasource_classified_data, timeframe, selected_event, measurement, \
      datasource_raw_data, measurement_raw, register_dict = get_config_parameter(config)
     start = convert_time(timeframe[0])
