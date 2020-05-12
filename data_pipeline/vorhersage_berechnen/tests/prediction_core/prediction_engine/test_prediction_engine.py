@@ -31,6 +31,23 @@ class test_calculate_prediction(TestCase):
         # valid config
         valid_config = {
             "selected_value": "default",
+            "database_options": {
+                "training": {
+                    "datasource_nilan_dbname": "name",
+                    "datasource_nilan_measurement": "name",
+                    "datasource_weatherdata_dbname": "name",
+                    "datasource_weatherdata_measurement": "name"
+
+
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "yalla",
+                    "datasource_forecast_measurement": "name",
+                    "datasource_forecast_register": "name",
+                    "datasink_prediction_dbname": "name",
+                    "datasink_prediction_measurement": "name"
+                }
+            },
             "prediction_options": {
                 "default": [
                     {
@@ -98,6 +115,8 @@ class test_calculate_prediction(TestCase):
 
         weather_forecast_dataframe = pd.DataFrame(temperature)
 
+        # just say config is valid
+        when2(cfg_validator.validate_config, ANY).thenReturn(True)
         # when the function tries to get the weather forecast from database, return the custom forecast DataFrame above
         when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenReturn(weather_forecast_dataframe)
 
@@ -151,6 +170,23 @@ class test_calculate_prediction(TestCase):
         # valid config
         valid_config = {
             "selected_value": "default",
+            "database_options": {
+                "training": {
+                    "datasource_nilan_dbname": "name",
+                    "datasource_nilan_measurement": "name",
+                    "datasource_weatherdata_dbname": "name",
+                    "datasource_weatherdata_measurement": "name"
+
+
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "yalla",
+                    "datasource_forecast_measurement": "name",
+                    "datasource_forecast_register": "name",
+                    "datasink_prediction_dbname": "name",
+                    "datasink_prediction_measurement": "name"
+                }
+            },
             "prediction_options": {
                 "default": [
                     {
@@ -172,6 +208,9 @@ class test_calculate_prediction(TestCase):
             }
         }
 
+        # just say config is valid
+        when2(cfg_validator.validate_config, ANY).thenReturn(True)
+
         # when the function tries to get the weather forecast from database, raise a DB Exception
         when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenRaise(DBException)
 
@@ -189,6 +228,21 @@ class test_calculate_prediction(TestCase):
         # valid config
         valid_config = {
             "selected_value": "default",
+            "database_options": {
+                "training": {
+                    "datasource_nilan_dbname": "name",
+                    "datasource_nilan_measurement": "name",
+                    "datasource_weatherdata_dbname": "name",
+                    "datasource_weatherdata_measurement": "name"
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "yalla",
+                    "datasource_forecast_measurement": "name",
+                    "datasource_forecast_register": "name",
+                    "datasink_prediction_dbname": "name",
+                    "datasink_prediction_measurement": "name"
+                }
+            },
             "prediction_options": {
                 "default": [
                     {
@@ -239,6 +293,23 @@ class test_calculate_prediction(TestCase):
         # valid config
         valid_config = {
             "selected_value": "default",
+            "database_options": {
+                "training": {
+                    "datasource_nilan_dbname": "name",
+                    "datasource_nilan_measurement": "name",
+                    "datasource_weatherdata_dbname": "name",
+                    "datasource_weatherdata_measurement": "name"
+
+
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "yalla",
+                    "datasource_forecast_measurement": "name",
+                    "datasource_forecast_register": "name",
+                    "datasink_prediction_dbname": "name",
+                    "datasink_prediction_measurement": "name"
+                }
+            },
             "prediction_options": {
                 "default": [
                     {
@@ -303,6 +374,9 @@ class test_calculate_prediction(TestCase):
         }
 
         weather_forecast_dataframe = pd.DataFrame(temperature)
+
+        # just say config is valid
+        when2(cfg_validator.validate_config, ANY).thenReturn(True)
 
         # when the function tries to get the weather forecast from database, return the custom forecast DataFrame above
         when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenReturn(weather_forecast_dataframe)

@@ -5,21 +5,22 @@ import data_pipeline.db_connector.src.read_manager.read_manager as db_read
 import data_pipeline.db_connector.src.write_manager.write_manager as db_write
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api as pred_api
 
-OUTDOOR_REGISTER = "210"
-FILTER_MEASUREMENT = "temperature_register"
-FILTER_DATABASE_NAME = "nilan"
-PREDICTION_DATABASE_NAME = "nilan"
-PREDICTION_MEASUREMENT = "temperature_register"
-
 
 def calculate_prediction(config):
     cfg_validator.validate_config(config)
 
+    database_options = config["database_options"]
+    datasource_forecast_dbname = database_options.get("datasource_forecast_dbname")
+    datasource_forecast_measurement = database_options.get("datasource_forecast_measurement")
+    datasource_forecast_register = database_options.get("datasource_forecast_register")
+    datasink_prediction_dbname = database_options.get("datasink_prediction_dbname")
+    datasink_prediction_measurement = database_options.get("datasink_prediction_measurement")
+    
     selected_value = config.get("selected_value")
     all_prediction_units = config.get("prediction_options").get(selected_value)
 
     known_data_sources = db_read.read_data(
-        FILTER_DATABASE_NAME, measurement=FILTER_MEASUREMENT, register=OUTDOOR_REGISTER)
+        datasource_forecast_dbname, measurement=datasource_forecast_measurement, register=datasource_forecast_register)
 
     known_data_sources = known_data_sources.rename(columns={'valueScaled': 'outdoor'})
 
@@ -32,7 +33,7 @@ def calculate_prediction(config):
                 apply_model(prediction_unit, known_data_sources, all_prediction_models)
                 all_prediction_units.remove(prediction_unit)
 
-    db_write.write_dataframe(known_data_sources, PREDICTION_DATABASE_NAME, PREDICTION_MEASUREMENT)
+    db_write.write_dataframe(known_data_sources, datasink_prediction_dbname, datasink_prediction_measurement)
 
     # TODO send the actual database config to the api
     pred_api.send_classification_request('')
