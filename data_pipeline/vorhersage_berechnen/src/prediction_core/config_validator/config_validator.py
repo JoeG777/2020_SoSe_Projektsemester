@@ -8,8 +8,11 @@ valid_independent_values = ['outdoor', 'freshAirIntake', 'condenser', 'evaporato
 valid_dependent_values = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
 
 mandatory_keys = ["selected_value", "prediction_options"]
-top_level_keys = ["selected_value", "prediction_options"]
+top_level_keys = ["selected_value", "prediction_options", "database_options"]
 prediction_unit_keys = ["independent", "dependent", "test_sample_size"]
+database_options_training_keys = ["datasource_nilan_dbname", "datasource_nilan_measurement", "datasource_weatherdata_dbname", "datasource_weatherdata_measurement"]
+database_options_prediction_keys = ["datasource_forecast_dbname", "datasource_forecast_measurement", "datasource_forecast_register", "datasink_prediction_dbname", "datasink_prediction_measurement"]
+database_options_mandatory_keys = ["training", "prediction"]
 
 
 # TODO change single quotes to double quotes
@@ -56,7 +59,7 @@ def has_mandatory_keys(config, keys):
 def is_instance_of(to_check, value_key, type):
     # implementation detail, so there is no corresponding method in documentation
     if not isinstance(to_check, type):
-        raise InvalidConfigValueException(value_key + " is not of type list")
+        raise InvalidConfigValueException(value_key + " is not of type " + str(type))
 
 
 def has_valid_keys(config, valid_keys):
@@ -78,6 +81,27 @@ def validate_prediciton_unit(prediction_option):
         has_valid_keys(prediction_unit["dependent"], valid_independent_values)
 
 
+def validate_database_options(database_options):
+    is_instance_of(database_options, top_level_keys[2], dict)
+    if database_options_mandatory_keys[0] in database_options.keys() \
+            and database_options_mandatory_keys[1] in database_options.keys():
+        training = database_options.get(database_options_mandatory_keys[0])
+        prediction = database_options.get(database_options_mandatory_keys[1])
+
+        is_instance_of(training, database_options_mandatory_keys[0], dict)
+        is_instance_of(prediction, database_options_mandatory_keys[1], dict)
+
+        has_mandatory_keys(training, database_options_training_keys)
+        has_mandatory_keys(prediction, database_options_prediction_keys)
+
+        for key, value in training.items():
+            is_instance_of(value, key, str)
+        for key, value in prediction.items():
+            is_instance_of(value, key, str)
+    else:
+        raise InvalidConfigKeyException("Database option of the config does not contain training/prediction")
+
+
 def check_general_constraints(config):
     """
     Name in documentation: TBD
@@ -86,6 +110,7 @@ def check_general_constraints(config):
     :param config: The config to be checked
     """
     has_mandatory_keys(config, top_level_keys)
+    validate_database_options(config["database_options"])
     selected_value = config["selected_value"]
     prediction_options = config["prediction_options"]
     is_instance_of(prediction_options, "Prediction Options", dict)
