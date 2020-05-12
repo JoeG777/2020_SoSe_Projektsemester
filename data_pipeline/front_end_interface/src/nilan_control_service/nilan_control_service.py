@@ -1,5 +1,5 @@
 from datetime import datetime
-import data_pipeline.db_connector.src.write_manager.write_manager.py as wm
+import data_pipeline.db_connector.src.write_manager.write_manager as wm
 import pytz
 import data_pipeline.exception.exceptions as exc
 

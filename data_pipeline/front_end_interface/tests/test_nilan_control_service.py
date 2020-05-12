@@ -1,10 +1,12 @@
 import unittest
-import data_pipeline.front_end_interface.src.nilan_control_service as ncs
 from datetime import datetime, timedelta
+from data_pipeline.front_end_interface.src.nilan_control_service import nilan_control_service
+
 
 class MyTestCase(unittest.TestCase):
     def get_current_time_utc(self):
-        self.assertEqual(ncs.get_current_time_utc(), calculate_time())
+        self.assertEqual(nilan_control_service.get_current_time_utc(), calculate_time())
+
 
 def calculate_time():
 
@@ -13,6 +15,7 @@ def calculate_time():
     time_new = time_now - time_difference
 
     return time_new
+
 
 if __name__ == '__main__':
     unittest.main()
