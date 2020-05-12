@@ -31,6 +31,7 @@ def filter(config):
                 method = config[curve][cycle]["Interpolation"]
                 filtern_data = interpolation(method, curve, filtern_data)
 
+    persist_data(filtern_data)
    # except:
         #logger.influx_logger.error("Config is wrong.")
         #raise ConfigException("Filtern Config is wrong.", 900)
@@ -106,7 +107,7 @@ def interpolation(methode, curve, zyklenfreie_daten):
     print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True])
     return zyklenfreie_daten
 
-"""
+
 def persist_data(filtern_data):
     '''
     Name in documentation: 'persist_data'
@@ -115,16 +116,17 @@ def persist_data(filtern_data):
     :return: A http status code.
     '''
     statuscode = None
-    try:
-        writer.write_dataframe('gefilterte_daten', filtern_data, 'temperature_register')
-        statuscode = 200
-    except:
-        logger.influx_logger.error("Database not available.")
-        statuscode = 901
-        raise DBException("Database not available.", 901)
+    #try:
+    writer.write_dataframe('filtered_data', filtern_data, measurement = 'temperature_register')
+    print("GUUUUUUUUT")
+        #statuscode = 200
+    #except:
+        #logger.influx_logger.error("Database not available.")
+        #statuscode = 901
+        #raise DBException("Database not available.", 901)
 
-    return statuscode
-"""
+    #return statuscode
+
 
 def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
