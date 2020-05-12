@@ -23,7 +23,6 @@ def get_all_data(db_config):
         current_dataset = rm.read_data(
             db_config["datasource_nilan_dbname"],
             measurement=db_config["datasource_nilan_measurement"],
-            register=key,
             resolve_register="True")
         current_dataset = current_dataset.rename(columns={'valueScaled': key})
 

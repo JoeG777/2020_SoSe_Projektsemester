@@ -1,5 +1,4 @@
-import calendar
-import time
+import datetime
 
 from data_pipeline.db_connector.src.db_config import db_config
 from influxdb import InfluxDBClient
