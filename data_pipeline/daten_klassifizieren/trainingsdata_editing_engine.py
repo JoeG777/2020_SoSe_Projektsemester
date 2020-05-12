@@ -16,8 +16,12 @@ def enrich_data(config):
     end = convert_time(end_time)
     counter = 0
     for register in required_registers:
-        df_query = read_manager.read_data(datasource_raw_data, measurement="temperature_register",
-                                          register=register, start_utc=str(start), end_utc=str(end))
+        df_query = read_manager.read_query(datasource_raw_data, f"SELECT * FROM temperature_register WHERE (register = "
+                                                                f"'{register}')  AND time >= {start}ms AND time <= "
+                                                                f"{end}ms")
+
+        #df_query = read_manager.read_data(datasource_raw_data, measurement="temperature_register",
+                                          #register=register, start_utc=str(start), end_utc=str(end))
         df_query = df_query.drop(['register'], axis=1)
         df_query = df_query.rename(columns={'temperature': f'{register_dict[register]}'})
         df_query[f'{register_dict[register]}_deriv'] = (df_query[f'{register_dict[register]}'].shift(-1) -
@@ -50,7 +54,9 @@ def mark_data(config):
     del_marker = get_config_parameter(config)
     start = convert_time(start_time)
     end = convert_time(end_time)
-    df = read_manager.read_data(datasource_enriched_data, measurement=selected_event, start_utc=str(start), end_utc=str(end))
+    df = read_manager.read_query(datasource_enriched_data, f"SELECT * FROM {selected_event} WHERE time >= {start}ms "
+                                                           f"AND time <= {end}ms")
+    #df = read_manager.read_data(datasource_enriched_data, measurement=selected_event, start_utc=str(start), end_utc=str(end))
     if selected_event == 'abtauzyklus':
         #df['abtaumarker'] = 0
         #df.loc[(df['evaporator_deriv']>= start_deriv) & (df['evaporator_deriv'].shift(1) < start_deriv) & (df['evaporator'] <= start_evap), 'abtaumarker'] = start_marker
@@ -118,9 +124,6 @@ def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
 
-
-#mark_data(config)
-#enrich_data(config)
 
 '''
 

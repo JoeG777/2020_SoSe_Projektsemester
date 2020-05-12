@@ -20,8 +20,11 @@ def apply_classifier(config):
      datasource_raw_data, measurement_raw, register_dict = get_config_parameter(config)
     start = convert_time(timeframe[0])
     end = convert_time(timeframe[1])
-    df_query = read_manager.read_data(datasource_enriched_data, measurement=measurement,
-                                      start_utc=str(start), end_utc=str(end))
+    df_query = read_manager.read_query(datasource_enriched_data, f"SELECT * FROM {measurement} WHERE time >= {start}ms "
+                                                                 f"AND time <= {end}ms")
+
+    #df_query = read_manager.read_data(datasource_enriched_data, measurement=measurement,
+                                      #start_utc=str(start), end_utc=str(end))
     model = model_persistor.load_classifier(config)
     pd.set_option("display.max_rows", None)
     pd.set_option("display.max_columns", None)
