@@ -56,7 +56,7 @@ def read_data(db, **kwargs):
             register = register_dict[register]
         else:
             register = kwargs["register"]
-    query = 'select * from ' + measurement + ' where register = \'' + register + '\''
+    query = 'select * from ' + str(measurement) + ' where register = \'' + str(register) + '\''
     if "start_utc" in kwargs.keys():
         query += 'AND time >' + kwargs["start"]
     if "end_utc" in kwargs.keys():

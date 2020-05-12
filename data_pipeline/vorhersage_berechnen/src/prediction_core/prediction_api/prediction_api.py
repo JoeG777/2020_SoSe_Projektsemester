@@ -35,6 +35,8 @@ def train():
     901 - DBException - if there are problems with the database connection
     902 - PersistorException - if there are problems with persisting the new models
     """
+    print("Starting training-----")
+    print(request)
     status_code = 200
     if request.is_json:
         try:
@@ -45,7 +47,8 @@ def train():
             status_code = http_status_codes.get("DBException")
         except PersistorException:
             status_code = http_status_codes.get("PersistorException")
-        except Exception:
+        except Exception as e:
+            print(e)
             status_code = http_status_codes.get("HTTPInternalServerError")
     else:
         status_code = http_status_codes.get("HTTPBadRequest")
@@ -76,7 +79,8 @@ def predict():
             status_code = http_status_codes.get("DBException")
         except PersistorException:
             status_code = http_status_codes.get("PersistorException")
-        except Exception:
+        except Exception as e:
+            print(e.with_traceback())
             status_code = http_status_codes.get("HTTPInternalServerError")
     else:
         status_code = http_status_codes.get("HTTPBadRequest")

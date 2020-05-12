@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
 from data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator import config_validator
 
+
 curves = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"]
 
 
@@ -69,7 +70,7 @@ def train_model(all_data, prediction_unit):
         random_state=0)
     model.fit(independent_train, dependent_train)
     score = model.score(independent_test, dependent_test)
-
+    print("Trained model for" + dependent_data_keys[0] + " with score " + str(score))
     return model_data_to_dict(score, model, dependent_data_keys)
 
 
@@ -108,9 +109,11 @@ def train(config):
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
+    print("------starting training--------------")
     config_validator.validate_config(config)
     all_models = []
     all_data = get_all_data(config["database_options"]["training"])
+    print(all_data)
     selected_value = config.get("selected_value")
     all_prediction_units = config.get("prediction_options").get(selected_value)
     for prediction_unit in all_prediction_units:

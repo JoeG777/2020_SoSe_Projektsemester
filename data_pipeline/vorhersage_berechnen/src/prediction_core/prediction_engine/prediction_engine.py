@@ -9,7 +9,7 @@ import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.pre
 def calculate_prediction(config):
     cfg_validator.validate_config(config)
 
-    database_options = config["database_options"]
+    database_options = config["database_options"]["prediction"]
     datasource_forecast_dbname = database_options.get("datasource_forecast_dbname")
     datasource_forecast_measurement = database_options.get("datasource_forecast_measurement")
     datasource_forecast_register = database_options.get("datasource_forecast_register")
@@ -18,14 +18,12 @@ def calculate_prediction(config):
     
     selected_value = config.get("selected_value")
     all_prediction_units = config.get("prediction_options").get(selected_value)
-
     known_data_sources = db_read.read_data(
         datasource_forecast_dbname, measurement=datasource_forecast_measurement, register=datasource_forecast_register)
 
-    known_data_sources = known_data_sources.rename(columns={'valueScaled': 'outdoor'})
+    known_data_sources = known_data_sources.rename(columns={'temperature': 'outdoor'})
 
     all_prediction_models = model_persistor.load()
-
     while all_prediction_units:
         for prediction_unit in all_prediction_units:
             independent_data = prediction_unit.get("independent")
@@ -33,7 +31,7 @@ def calculate_prediction(config):
                 apply_model(prediction_unit, known_data_sources, all_prediction_models)
                 all_prediction_units.remove(prediction_unit)
 
-    db_write.write_dataframe(known_data_sources, datasink_prediction_dbname, datasink_prediction_measurement)
+    db_write.write_dataframe(datasink_prediction_dbname, known_data_sources, datasink_prediction_measurement)
 
     # TODO send the actual database config to the api
     pred_api.send_classification_request('')

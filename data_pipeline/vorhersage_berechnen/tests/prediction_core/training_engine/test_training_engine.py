@@ -6,9 +6,6 @@ from mockito import mockito, ANY, captor
 from mockito.mockito import when2
 from data_pipeline.exception.exceptions import PersistorException, DBException
 from data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine import training_engine as te
-
-#TODO EXCEPTION BEI DBCONNECTOR
-#TODO FEHLER BEIM PERSISTIEREN
 from prediction_core.model_persistor import model_persistor
 
 
