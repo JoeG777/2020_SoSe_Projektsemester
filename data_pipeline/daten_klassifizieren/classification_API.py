@@ -15,6 +15,7 @@ def classify():
     response = 200
     try:
         extracted_config = request.get_json()
+        print(type(extracted_config))
         classification.apply_classifier(extracted_config)
     except ex.ConfigException:
         response = 900
