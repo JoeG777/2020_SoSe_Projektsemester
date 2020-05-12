@@ -53,21 +53,14 @@ def read_data(db, **kwargs):
     register = default_register
     if "register" in kwargs.keys():
         if "resolve_register" in kwargs.keys():
-            register = register_dict[register]
+            register = register_dict[kwargs["register"]]
         else:
             register = kwargs["register"]
-    query = 'select * from ' + measurement
-    if "register" in kwargs.keys():
-        query += " where register = \'" + register
-        if "start_utc" in kwargs.keys() or "end_utc" in kwargs.keys():
-            query += '\' and'
-    else:
-        if "start_utc" in kwargs.keys() or "end_utc" in kwargs.keys():
-            query += " where"
+    query = 'select from ' + measurement + ' where register = \'' + register + '\''
     if "start_utc" in kwargs.keys():
-        query += ' time > ' + kwargs["start_utc"]+'ms'
+        query += ' AND time > ' + str(kwargs["start_utc"])+'ms'
     if "end_utc" in kwargs.keys():
-        query += ' AND time < ' + kwargs["end_utc"]+'ms'
+        query += ' AND time < ' + str(kwargs["end_utc"])+'ms'
     return read_query(db, query)
 
 
