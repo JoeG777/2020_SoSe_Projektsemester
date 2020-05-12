@@ -27,7 +27,7 @@ classification_config = {
         "end_deriv": 0.5,
         "end_deriv_n3": -0.65,
         "end_shift": -1.0,
-        "del_marker": 0.0,
+        "del_marker": 0.0
     },
     "test_sample_size": 0.2,
     "classification_method": "kNN",

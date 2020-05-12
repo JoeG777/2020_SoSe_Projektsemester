@@ -78,5 +78,3 @@ def convert_time(time_var):
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
 
-
-train_classifier(config)

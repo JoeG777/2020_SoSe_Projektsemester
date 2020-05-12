@@ -1,7 +1,7 @@
 from flask import *
-#import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
+import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
 import data_pipeline.daten_klassifizieren.classification_engine as classification
-#import data_pipeline.daten_klassifizieren.training_engine as training
+import data_pipeline.daten_klassifizieren.training_engine as training
 import data_pipeline.exception.exceptions as ex
 
 
@@ -36,10 +36,9 @@ def train():
     response = 200
     try:
         config = request.get_json(force=True)
-        print(type(config))
-        #trainingsdata.expand_data(config)
-        #trainingsdata.mark_data(config)
-        #training.train_classifier(config)
+        trainingsdata.enrich_data(config)
+        trainingsdata.mark_data(config)
+        training.train_classifier(config)
     except ex.ConfigException:
         response = 900
     except ex.DBException:

@@ -61,15 +61,11 @@ def mark_data(config):
         df.loc[df['condenser_diff'] < -4, 'abtaumarker'] = -1
         df.loc[(df['abtaumarker'] == 1) & (df['abtaumarker'].shift(1) == 1), 'abtaumarker'] = 0
         df.loc[(df['abtaumarker'] == -1) & (df['abtaumarker'].shift(-1) == -1), 'abtaumarker'] = 0
-        print(len(df.loc[(df['abtaumarker']== start_marker)]))
-        print(len(df.loc[(df['abtaumarker']== end_marker)]))
         #df.loc[df['abtaumarker'].shift(1) == end_marker, 'abtaumarker'] = 0
         df['abtauzyklus'] = False
-        print((df['abtaumarker'][(df['abtaumarker'] == start_marker) | (df['abtaumarker']  == end_marker)]))
         spaces = df.loc[(df['abtaumarker'] == start_marker) | (df['abtaumarker'] == end_marker)].index.tolist()
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'abtauzyklus'] = True
-        print(df.loc[df['abtauzyklus'] == True])
     elif selected_event == 'warmwasseraufbereitung':
         df['warmwassermarker'] = 0
         df.loc[(df['inlet'].shift(1) > start_abtau) & (df['room_deriv'] <= start_deriv) & (df['room_deriv'] <= start_ch), 'warmwassermarker'] = start_marker
