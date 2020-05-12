@@ -1,7 +1,7 @@
 from flask import *
-#import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
+import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
 import data_pipeline.daten_klassifizieren.classification_engine as classification
-#import data_pipeline.daten_klassifizieren.training_engine as training
+import data_pipeline.daten_klassifizieren.training_engine as training
 import data_pipeline.exception.exceptions as ex
 
 
@@ -14,7 +14,8 @@ app = Flask(__name__)
 def classify():
     response = 200
     try:
-        extracted_config = request.get_json(force=True)
+        extracted_config = request.get_json()
+        print(type(extracted_config))
         classification.apply_classifier(extracted_config)
     except ex.ConfigException:
         response = 900
@@ -25,26 +26,19 @@ def classify():
     """except ex.FileException:
         response = 900
     """
-    # TODO: noch nicht implementiert bei exceptions oder im Code
 
     status_code = Response(status=response)
     return status_code
 
 
-@app.route('/train', methods=['POST', 'GET'])
+@app.route('/train', methods=['POST'])
 def train():
     response = 200
     try:
         config = request.get_json(force=True)
-        print(type(config))
-        if type(config) != dict:
-            print("raise: ConfigError")
-            response = 500
-
-        print(config)
-        #trainingsdata.expand_data(config)
-        #trainingsdata.mark_data(config)
-        #training.train_classifier(config)
+        trainingsdata.enrich_data(config)
+        trainingsdata.mark_data(config)
+        training.train_classifier(config)
     except ex.ConfigException:
         response = 900
     except ex.DBException:
@@ -54,7 +48,6 @@ def train():
     """except ex.FileException:
         response = 900
     """
-    # TODO: noch nicht implementiert bei exceptions oder im Code
 
     status_code = Response(status=response)
     return status_code

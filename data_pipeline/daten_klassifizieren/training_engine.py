@@ -12,7 +12,7 @@ from datetime import datetime
 import time
 
 def train_classifier(config):
-    '''Name in documentation: klassifizierer_trainieren()
+    """Name in documentation: klassifizierer_trainieren()
     Train a classifier to identify a specific event.
     :param
         config: Contains parameters for training the classifier
@@ -20,7 +20,7 @@ def train_classifier(config):
         InvalidConfigException
         PersistorException
     :return
-        int: Status code that indicates whether the training was successful(0 Success, 1 Failure)'''
+        int: Status code that indicates whether the training was successful(0 Success, 1 Failure)"""
     try:
         selected_event, required_score, test_size, datasource_marked_data, start_time, end_time = get_config_parameter(config)
     except Exception:
@@ -31,7 +31,8 @@ def train_classifier(config):
         return exce.PersistorException
     start_time = convert_time(start_time)
     end_time = convert_time(end_time)
-    df = read_manager.read_data(datasource_marked_data, measurement=selected_event, start_utc=str(start_time), end_utc=str(end_time))
+    df = read_manager.read_query(datasource_marked_data, f"SELECT * FROM {selected_event} WHERE time >= {start_time}ms "
+                                                      f"AND time <= {end_time}ms")
     df.dropna(inplace=True)
     y = np.array(df[selected_event])
     X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))
@@ -48,7 +49,7 @@ def train_classifier(config):
 
 
 def evaluate_classifier(classifier, required_score, X_test, y_test):
-    '''Name in documentation: klassifizierer_bewerten()
+    """Name in documentation: klassifizierer_bewerten()
     After the classifier has already been optimized based on the training data, a scoring based on test data takes place
     :param
         classifier: Classifier intended for evaluation
@@ -57,7 +58,7 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
         y_test: Test data for evaluation
     :raises
     :return
-        boolean: True: New Classifier has a higher score and will be persist, False: New Classifier has a lower score and will not be persist)'''
+        boolean: True: New Classifier has a higher score and will be persist, False: New Classifier has a lower score and will not be persist)"""
     # TODO : ursprünglicher und neuer Score loggen
     score = classifier.score(X_test, y_test)
     if score >= required_score:
@@ -66,6 +67,12 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
 
 
 def get_config_parameter(config):
+    """Extract relevant parameters from the config dictionary
+    :param
+        config: dictionary from which the parameters will be extracted
+    :raises
+    :return
+        int: #########################"""
     selected_event = config['selected_event']
     required_score = config['required_score'][selected_event]
     test_size = config['test_size']
@@ -75,8 +82,11 @@ def get_config_parameter(config):
 
 
 def convert_time(time_var):
+    """Convert a given date and time to unix timestamp
+    :param
+        time_var: date and time to convert
+    :raises
+    :return
+        int: The converted time as unix timestamp"""
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
-
-
-train_classifier(config)
