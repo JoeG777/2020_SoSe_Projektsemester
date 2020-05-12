@@ -31,7 +31,7 @@ def validate_config(config):
     or independent lists, or if there is a curve defined as dependent twice
     :raises InconsistentConfigException - if the prediction chain cannot be built with the config
     :raises InvalidTrainingPercentageException - if the training percentage is not in (0,1)
-    :raises Config type exception - if one element of the config has a wrong type
+    :raises Config type exception - if the config has the wrong type
     :raises InvalidConfigKeyException - if a key in the config is invalid
     :raises InvalidConfigValueException if a value in the config is invalid
     """
