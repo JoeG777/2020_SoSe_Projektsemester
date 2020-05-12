@@ -15,6 +15,13 @@ import time
 # TODO: daten erweitern mit np.array
 # TODO: ergebnis von predict wahrscheinlich array, das man wieder in df umwandeln muss zum speichern
 def apply_classifier(config):
+    """Name in documentation: klassifizierer_anwenden()
+    Marks the occurrences of the selected event in the data with the use of the classifier
+    :param
+        config: Contains parameters for classifying the data
+    :raises
+    :return
+        int: Status code that indicates whether the marking was successful(0 Success, 1 Failure)"""
     trainingsdata_editing_engine.enrich_data(config)
     datasource_enriched_data, datasource_classified_data, timeframe, selected_event, measurement, \
      datasource_raw_data, measurement_raw, register_dict = get_config_parameter(config)
@@ -47,6 +54,12 @@ def apply_classifier(config):
 
 
 def get_config_parameter(config):
+    """Extract relevant parameters from the config dictionary
+    :param
+        config: dictionary from which the parameters will be extracted
+    :raises
+    :return
+        int: #########################"""
     datasource_enriched_data = config['datasource_enriched_data']['database']
     datasource_classified_data = config['datasource_classified_data']['database']
     timeframe = config['timeframe']
@@ -60,5 +73,11 @@ def get_config_parameter(config):
 
 
 def convert_time(time_var):
+    """Convert a given date and time to unix timestamp
+   :param
+       time_var: date and time to convert
+   :raises
+   :return
+       int: The converted time as unix timestamp"""
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000

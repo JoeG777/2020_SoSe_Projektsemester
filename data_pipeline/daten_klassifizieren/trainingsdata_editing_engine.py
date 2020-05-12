@@ -8,6 +8,13 @@ import time
 
 
 def enrich_data(config):
+    """Name in documentation: daten_erweitern()
+    Enrich data to include values to be able to train the classifier or to classify the data afterwards
+    :param
+        config: Contains parameters for enriching the data
+    :raises
+    :return
+        int: Status code that indicates whether the enriching was successful(0 Success, 1 Failure)"""
     selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
      required_registers, datasource_enriched_data, measurement_training, datasource_marked_data, \
      start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
@@ -45,6 +52,13 @@ def enrich_data(config):
 
 
 def mark_data(config):
+    """Name in documentation: daten_markieren()
+    Mark the data with the occurrences of the selected event
+    :param
+        config: Contains parameters for marking the data
+    :raises
+    :return
+        int: Status code that indicates whether the marking was successful(0 Success, 1 Failure)"""
     selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
     required_registers, datasource_enriched_data, measurement_training, datasource_marked_data, \
     start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
@@ -90,6 +104,12 @@ def mark_data(config):
 
 
 def get_config_parameter(config):
+    """Extract relevant parameters from the config dictionary
+    :param
+        config: dictionary from which the parameters will be extracted
+    :raises
+    :return
+        int: #########################"""
     selected_event = config['selected_event']
     datasource_raw_data = config['datasource_raw_data']['database']
     measurement_raw = config['datasource_raw_data']['measurement']
@@ -117,6 +137,12 @@ def get_config_parameter(config):
 
 
 def convert_time(time_var):
+    """Convert a given date and time to unix timestamp
+   :param
+       time_var: date and time to convert
+   :raises
+   :return
+       int: The converted time as unix timestamp"""
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
 
