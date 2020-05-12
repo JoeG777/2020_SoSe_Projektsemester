@@ -5,26 +5,23 @@ from sklearn.model_selection import train_test_split
 from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
 from data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator import config_validator
 
-default_measurement = "measurement"
-nilan_db = "nilan"
-temp_db = "darkSkyDaten"
 curves = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"]
 
 
-def get_all_data():
+def get_all_data(db_config):
     """
     Name in  documentation: TODO ADD TO DOCS
     Retrieves all data from the database defined in nilan_db and temp_db and merges this data into a dataframe.
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
     """
-    df = rm.read_data(temp_db, measurement="weatherTest")
+    df = rm.read_data(db_config["datasource_weatherdata_dbname"], measurement=db_config["datasource_weatherdata_measurement"])
     df = df.rename(columns={'temperature': "outdoor"})
 
     for key in curves:
         current_dataset = rm.read_data(
-            nilan_db,
-            measurement="temperature_register",
+            db_config["datasource_nilan_dbname"],
+            measurement=db_config["datasource_nilan_measurement"],
             register=key,
             resolve_register="True")
         current_dataset = current_dataset.rename(columns={'valueScaled': key})
@@ -66,14 +63,14 @@ def train_model(all_data, prediction_unit):
     test_sample_size = prediction_unit["test_sample_size"]
 
     independent_train, independent_test, dependent_train, dependent_test = train_test_split(
-        # TODO IS HERE A BUG?
         all_data[independent_data_keys],
         all_data[dependent_data_keys],
         test_size=test_sample_size,
         random_state=0)
     model.fit(independent_train, dependent_train)
+    score = model.score(independent_test, dependent_test)
 
-    return model_data_to_dict(model.score(independent_test, dependent_test), model, dependent_data_keys)
+    return model_data_to_dict(score, model, dependent_data_keys)
 
 
 def calculate_average_score(all_models):
@@ -113,7 +110,7 @@ def train(config):
     """
     config_validator.validate_config(config)
     all_models = []
-    all_data = get_all_data()
+    all_data = get_all_data(config["database_options"]["training"])
     selected_value = config.get("selected_value")
     all_prediction_units = config.get("prediction_options").get(selected_value)
     for prediction_unit in all_prediction_units:

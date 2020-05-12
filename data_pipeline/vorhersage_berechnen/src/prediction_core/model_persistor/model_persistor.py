@@ -2,7 +2,7 @@ import pickle
 import os
 from data_pipeline.exception.exceptions import PersistorException
 
-FILE_NAME= "current_model.p"
+FILE_NAME = "current_model.p"
 PATH = os.path.dirname(__file__)
 
 
