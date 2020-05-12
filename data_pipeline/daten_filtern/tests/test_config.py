@@ -4,9 +4,10 @@ import unittest
 
 class Filtern_engine_tests(unittest.TestCase):
 
-    config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
-    def test_all_curve(self, config):
+    def test_all_curve(self):
+
+        config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
         #expected_data
         expected_data = (["room","condenser","evaporator","inlet","outlet","freshAirIntake"])
@@ -18,7 +19,9 @@ class Filtern_engine_tests(unittest.TestCase):
 
         self.assertCountEqual(expected_data, expected_data)
 
-    def test_all_cycle(self, config):
+    def test_all_cycle(self):
+
+        config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
         #expected_data
         expected_data = (["WarmWasserZyklus","OfenZyklus","LüfterZyklus","AbtauZyklus"])
@@ -30,7 +33,9 @@ class Filtern_engine_tests(unittest.TestCase):
 
         self.assertCountEqual(expected_data, expected_data)
 
-    def test_in_cycle(self, config):
+    def test_in_cycle(self):
+
+        config = filtern_config["filter_options"][filtern_config["selected_value"]]
 
         #expected_data
         expected_data = (["delete","Interpolation"])
