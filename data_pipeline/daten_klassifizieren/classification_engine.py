@@ -22,9 +22,6 @@ def apply_classifier(config):
     end = convert_time(timeframe[1])
     df_query = read_manager.read_query(datasource_enriched_data, f"SELECT * FROM {measurement} WHERE time >= {start}ms "
                                                                  f"AND time <= {end}ms")
-
-    #df_query = read_manager.read_data(datasource_enriched_data, measurement=measurement,
-                                      #start_utc=str(start), end_utc=str(end))
     model = model_persistor.load_classifier(config)
     pd.set_option("display.max_rows", None)
     pd.set_option("display.max_columns", None)
@@ -32,15 +29,11 @@ def apply_classifier(config):
     df_query = df_query.drop(df_query.index[-1])
     classified_data_df = df_query.copy()
     classified_data_df[selected_event] = model.predict(df_query)
-
-    #print(classified_data_df.loc[classified_data_df[selected_event]])
     counter = 0
     for register in register_dict:
         df_raw = read_manager.read_query(datasource_raw_data, f"SELECT * FROM {measurement_raw} WHERE (register = "
                                                                 f"'{register}')  AND time >= {start}ms AND time <= "
                                                                 f"{end}ms")
-        #df_raw = read_manager.read_data(datasource_raw_data, measurement=measurement_raw, register=register,
-                                        #start_utc=str(start), end_utc=str(end))
         df_raw = df_raw.drop(df_raw.index[-1])
         df_raw = df_raw.drop(labels='register', axis=1)
         if counter == 0:
