@@ -5,7 +5,7 @@ from data_pipeline.exception.exceptions import ConfigException
 
 app = Flask(__name__)
 
-@app.route('/filtern')
+@app.route('/filtern', methods =['POST'])
 def filter():
     '''
     Name in documentation: 'filtern'
