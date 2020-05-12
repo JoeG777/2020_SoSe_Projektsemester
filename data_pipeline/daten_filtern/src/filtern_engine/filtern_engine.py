@@ -1,11 +1,17 @@
-from influxdb import *
-import pandas
+from influxdb import InfluxDBClient
+import pandas as pd
 import numpy as np
 from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import DBException, ConfigException
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
+from datetime import datetime
+import time
 
+#Testdatenn ziehen
+client = InfluxDBClient(host='localhost', port=8086)
+client.get_list_database()
+client.switch_database('nilan')
 
 logger = Logger()
 
@@ -46,12 +52,27 @@ def get_data():
     """
     klassifizierte_daten = None
     try:
-        klassifizierte_daten = reader.read_data('klassifizierte_daten')
+        """
+        roomQueryTemp = 'SELECT "valueScaled" FROM "temperature_register" WHERE register=\'210\' AND time >= 1582497763413ms and time <= 1582614984756ms'
+        room = pd.DataFrame(client.query(roomQueryTemp).get_points())
+        client.close()
+        room['time'] = pd.to_datetime(room['time'], utc = True)
+        room['WarmWasserZyklus'] = False
+        room.loc[(room.time >= pd.Timestamp('2020-02-24 22:30:00').tz_localize('UTC')) & (room.time <= pd.Timestamp('2020-02-25 05:05:00').tz_localize('UTC')), 'WarmWasserZyklus'] = True
+        room['time'] = pd.to_datetime(room['time'])
+        room = room.set_index('time')
+        room = room.rename(columns={'valueScaled' : 'room'})
+        """
+        df = reader.read_data('nilan_classified' ,measurement = 'classified' , start_utc = str(convert_time('2020-01-14 00:00:00.000 UTC')), end_utc = str(convert_time('2020-01-20 12:0:00.000 UTC')))
+        print(df)
+
+
+        #klassifizierte_daten = reader.read_data('klassifizierte_daten')
     except:
         logger.influx_logger.error("Database not available.")
         raise DBException("Database not available.", 901)
 
-    return klassifizierte_daten
+    return df
 
 
 def tag_drop(curve, cycle, filtern_data):
@@ -100,3 +121,7 @@ def persist_data(filtern_data):
         raise DBException("Database not available.", 901)
 
     return statuscode
+
+def convert_time(time_var):
+    time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
+    return int((time.mktime(time_var.timetuple())))*1000
