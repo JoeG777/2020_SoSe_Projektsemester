@@ -1,10 +1,10 @@
 from flask import *
-from data_pipeline.konfiguration.bereinigungs_config import bereinigungs_config as be_con
-from data_pipeline.konfiguration.erhebungs_config import erhebungs_config as er_con
-from data_pipeline.konfiguration.filterungs_config import filtern_config as fi_con
-from data_pipeline.konfiguration.klassifikations_config import classification_config as kl_con
-from data_pipeline.konfiguration.vorhersage_config import vorhersage_config as vs_con
-from data_pipeline.konfiguration.frontend_interface_config import frontend_interface_config as fei_con
+from data_pipeline.konfiguration.src.bereinigungs_config import bereinigungs_config as be_con
+from data_pipeline.konfiguration.src.erhebungs_config import erhebungs_config as er_con
+from data_pipeline.konfiguration.src.filterungs_config import filtern_config as fi_con
+from data_pipeline.konfiguration.src.klassifikations_config import classification_config as kl_con
+from data_pipeline.konfiguration.src.vorhersage_config import vorhersage_config as vs_con
+from data_pipeline.konfiguration.src.frontend_interface_config import frontend_interface_config as fei_con
 
 app = Flask(__name__)
 
