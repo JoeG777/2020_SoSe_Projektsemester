@@ -6,13 +6,128 @@ from mockito import *
 
 class test_api(unittest.TestCase):
 
-    url = "127.0.0.1:5000/filtern"
-    config =
-#def test_empty_request(self):
-    #self.app = api.app.test_client()
-    #resp = self.app.post('/filtern')
-    #self.assertEqual(resp , 200)
+    url = "http://localhost:8000/filtern"
 
-def test_response_200(self):
+    config = {
+        "variante": {
+            "room": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "condenser": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "True",
+                    "Interpolation": "linear"
+                }
+            },
+            "evaporator": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "True",
+                    "Interpolation": "linear"
+                }
+            },
+            "inlet": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "outlet": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "freshAirIntake": {
+                "WarmwWasserZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "OfenZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "LüfterZyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            }
+        }
+    }
 
-    request = requests.post(self.url, json = self.config)
+    def test_response_200(self):
+
+        request = requests.post(self.url, json = self.config)
+        when2(api.filter).thenReturn(0)
+        response = request.status_code
+        self.assertEqual(response, 200)
+
+
+if __name__ == "__main__":
+    unittest.main()
