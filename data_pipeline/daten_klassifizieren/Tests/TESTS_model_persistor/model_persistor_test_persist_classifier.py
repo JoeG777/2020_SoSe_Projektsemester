@@ -18,12 +18,10 @@ class test_persist_classifier (unittest.TestCase):
 
         self.assertEqual(mp.persist_classifier(self.model,  self.config_test), 0)
 
-
     def test_wrong_structure_congfig(self):
         str = "Hallo"
         with self.assertRaises(ex.ConfigTypeException):
             mp.persist_classifier(self.model, str)
-
 
     def test_param_not_a_sklearn_model(self):
         self.beforeTest(self.model_dictionary)
@@ -32,13 +30,11 @@ class test_persist_classifier (unittest.TestCase):
         with self.assertRaises(ex.PersistorException):
             mp.persist_classifier(model_wrong, self.config_test)
 
-
     def test_no_model_dictionary_in_datasource_classifier(self):
         wrong_config = self.config_test.copy()
         wrong_config['datasource_classifier'] = 'test_models/model_empty.txt'
         with self.assertRaises(ex.InvalidConfigValueException):
             mp.persist_classifier(self.model, wrong_config)
-
 
     def test_param_datasource_classifier_wrong(self):
         self.beforeTest(self.model_dictionary)
@@ -48,7 +44,6 @@ class test_persist_classifier (unittest.TestCase):
         with self.assertRaises(ex.InvalidConfigValueException):
             mp.persist_classifier(self.model,  wrong_config)
 
-
     def test_param_datasource_classifier_empty(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
@@ -56,7 +51,6 @@ class test_persist_classifier (unittest.TestCase):
 
         with self.assertRaises(ex.InvalidConfigValueException):
             mp.persist_classifier(self.model,  wrong_config)
-
 
     def test_param_datasource_classifier_key_not_there(self):
         self.beforeTest(self.model_dictionary)
@@ -66,7 +60,6 @@ class test_persist_classifier (unittest.TestCase):
         with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model, wrong_config)
 
-
     def test_param_event_no_key(self):
         self.beforeTest(self.model_dictionary)
         wrong_key_config = self.config_test.copy()
@@ -74,7 +67,6 @@ class test_persist_classifier (unittest.TestCase):
 
         with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model,  wrong_key_config)
-
 
     def test_param_event_none_value(self):
         self.beforeTest(self.model_dictionary)
@@ -84,16 +76,13 @@ class test_persist_classifier (unittest.TestCase):
         with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model,  wrong_config)
 
-
     def test_param_event_empty_string_value(self):
         self.beforeTest(self.model_dictionary)
         wrong_config = self.config_test.copy()
         wrong_config['selected_event'] = ""
-        print("Hier", wrong_config['selected_event'])
 
         with self.assertRaises(ex.InvalidConfigKeyException):
             mp.persist_classifier(self.model,  wrong_config)
-
 
     def test_param_event_no_valid_value(self):
         self.beforeTest(self.model_dictionary)
@@ -101,9 +90,17 @@ class test_persist_classifier (unittest.TestCase):
         wrong_config['selected_event'] = "Hallo"
 
         with self.assertRaises(ex.InvalidConfigKeyException):
-                mp.persist_classifier(self.model, wrong_config)
+            mp.persist_classifier(self.model, wrong_config)
+            
+    def test_for_UnpicklingError(self):
+        test_config = config.copy()
+        test_config['datasource_classifier'] = "test_models/unpicklable_model.txt"
+        
+        with self.assertRaises(ex.InvalidConfigValueException):
+            mp.persist_classifier(self.model, test_config)
 
-
+    def test_for_IOError(self):
+        pass
 
     '''
     Sets the parameter of the pickled-file to a test file and saves a test dictionary in it
