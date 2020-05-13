@@ -133,7 +133,7 @@ def persist_data(filtern_data):
     '''
 
     try:
-        writer.write_dataframe('filtered_data', filtern_data, measurement = 'temperature_register')
+        writer.write_dataframe('filtered_data', filtern_data, measurement = 'test_measurement')
         print("Persistiert")
         print("________________________________")
 
