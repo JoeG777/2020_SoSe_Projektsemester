@@ -1,6 +1,7 @@
 import data_pipeline.exception.exceptions as exceptions
 
-def check_request(req_json, expected_keys):
+
+def check_keys_in_request(req_json, expected_keys):
     """
     Given the valid schema of a http-Post-requests, this function extracts all keys from the users request
     'req_json' and compares them to the given schema-keys. Only if both lists contain the same
@@ -10,7 +11,8 @@ def check_request(req_json, expected_keys):
     :return True if the ecepted keys match the given keys in the request.
     """
 
-    expected_keys = set(['value_name', 'measurement', 'frame_width', 'freq', 'register', 'time', 'from', 'to', 'threshold'])
+    expected_keys = set(
+        ['value_name', 'measurement', 'frame_width', 'freq', 'register', 'time', 'from', 'to', 'threshold'])
 
     def get_keys(json_req):
 

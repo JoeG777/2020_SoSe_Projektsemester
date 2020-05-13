@@ -1,3 +1,1 @@
-erhebungs_config = {
-
-}
+erhebungs_config ={}

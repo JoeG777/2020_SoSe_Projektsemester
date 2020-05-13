@@ -9,7 +9,7 @@ from data_pipeline.konfiguration.src.frontend_interface_config import frontend_i
 app = Flask(__name__)
 
 
-@app.route('/erhebung_config', methods=['POST'])
+@app.route('/erhebung_config', methods=['GET'])
 def erhebung_config():
     """
     Name in documentation: erhebung_config()
@@ -20,7 +20,7 @@ def erhebung_config():
     return make_response(er_con)
 
 
-@app.route('/bereinigung_config', methods=['POST'])
+@app.route('/bereinigung_config', methods=['GET'])
 def bereinigung_config():
     """
    Name in documentation: bereinigung_config()
@@ -31,7 +31,7 @@ def bereinigung_config():
     return make_response(be_con)
 
 
-@app.route('/filterung_config', methods=['POST'])
+@app.route('/filterung_config', methods=['GET'])
 def filterung_config():
     """
    Name in documentation: filterung_config()
@@ -42,7 +42,7 @@ def filterung_config():
     return make_response(fi_con)
 
 
-@app.route('/klassifikation_config', methods=['POST'])
+@app.route('/klassifikation_config', methods=['GET'])
 def klassifikation_config():
     """
    Name in documentation: klassifikation_config()
@@ -53,7 +53,7 @@ def klassifikation_config():
     return make_response(kl_con)
 
 
-@app.route('/vorhersage_config', methods=['POST'])
+@app.route('/vorhersage_config', methods=['GET'])
 def vorhersage_config():
     """
    Name in documentation: vorhersage_config()
@@ -64,7 +64,7 @@ def vorhersage_config():
     return make_response(vs_con)
 
 
-@app.route('/frontend_interface_config', methods=['POST'])
+@app.route('/frontend_interface_config', methods=['GET'])
 def frontend_interface_config():
     """
    Name in documentation: frontend_interface_config()
