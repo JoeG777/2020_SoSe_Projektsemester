@@ -1,4 +1,7 @@
 import data_pipeline.exception.exceptions as exc
+import data_pipeline.log_writer.log_writer as log_writer
+
+logger = log_writer.Logger()
 
 def start_process(parameters):
     '''
@@ -11,5 +14,6 @@ def start_process(parameters):
         pipeline_controller.start_process(parameters)
 
     except:
+        logger.influx_logger.error('Unable to start process')
         raise exc.DataPipelineException('Unable to start process')
 

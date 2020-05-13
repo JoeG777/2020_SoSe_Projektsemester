@@ -2,6 +2,9 @@ from datetime import datetime
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
 import pytz
 import data_pipeline.exception.exceptions as exc
+import data_pipeline.log_writer.log_writer as log_writer
+
+logger = log_writer.Logger()
 
 def get_current_time_utc():
     '''
@@ -47,6 +50,7 @@ def format_json(json):
         ]
 
     except:
+        logger.influx_logger.error('Config-JSON incomplete')
         raise exc.RawDataException('Config-JSON incomplete', 905)
 
     return json_nilan_array
@@ -61,7 +65,8 @@ def write_to_nilan(json):
     '''
 
     try:
-        wm.write_to_influx_json("db_steuerungsparameter", format_json(json))
+        wm.write_query_array("db_steuerungsparameter", format_json(json))
 
     except:
+        logger.influx_logger.error('Writing data to database was unsuccessful')
         raise exc.DBException('Writing data to database was unsuccessful', 901)

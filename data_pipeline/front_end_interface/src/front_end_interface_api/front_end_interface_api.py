@@ -8,7 +8,7 @@ app = Flask(__name__)
 logger = log_writer.Logger()
 response = None
 
-@app.route('/nilan_control_service')
+@app.route('/nilan_control_service', methods=['POST'])
 def nilan_control_service():
     '''
     Name in documentation: 'nilan_control_service()'
@@ -31,7 +31,7 @@ def nilan_control_service():
 
     return Response(status=response)
 
-@app.route('/pipeline_control_service')
+@app.route('/pipeline_control_service', methods=['POST'])
 def pipeline_control_service():
     '''
     Name in Documentation: 'pipeline_control_service'
@@ -64,13 +64,13 @@ def json_validation():
         logger.influx_logger.error('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
 
-    parameter_names = ['start_datum', 'end_datum', 'vorhersage', 'raumtemperatur', 'luefterstufe_zuluft', 'luefterstufe_abluft', 'betriebsmodus']
+    parameter_names = ["start_datum", "end_datum", "vorhersage", "raumtemperatur", "luefterstufe_zuluft", "luefterstufe_abluft", "betriebsmodus"]
 
-    try:
+    for i in range(len(parameter_names)):
 
-        for i in parameter_names:
-            request.get_json()[i]
+        try:
+            request.get_json()[parameter_names[i]]
 
-    except:
-        logger.influx_logger.error('Incomplete Config-JSON')
-        raise exc.IncompleteConfigException('Incomplete Config-JSON.', 900)
+        except:
+            logger.influx_logger.error('Incomplete Config-JSON')
+            raise exc.IncompleteConfigException('Incomplete Config-JSON.', 900)
