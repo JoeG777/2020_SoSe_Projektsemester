@@ -15,10 +15,11 @@ def filter():
     response = None
     try:
 
-        config = filtern_config["filter_options"][filtern_config["selected_value"]]
-
-        response = filtern_engine.filtern(config)
-
+        #config = filtern_config["filter_options"][filtern_config["selected_value"]]
+        config = request.get_json()["variante"]
+        print(config)
+        filtern_engine.filter(config)
+        response = 200
 
     except ConfigException:
         response = ConfigException.args[1]

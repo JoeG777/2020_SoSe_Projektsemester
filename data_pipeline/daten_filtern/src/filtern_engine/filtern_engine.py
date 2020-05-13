@@ -5,15 +5,15 @@ from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import DBException, ConfigException
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
-from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
+#from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
 from datetime import datetime
 import time
 
 logger = Logger()
-config = filtern_config["filter_options"][filtern_config["selected_value"]]
-print("Config-Variante:")
-print(config)
-print("________________________________")
+#config = filtern_config["filter_options"][filtern_config["selected_value"]]
+#print("Config-Variante:")
+#print(config)
+#print("________________________________")
 
 
 def filter(config):
@@ -165,5 +165,3 @@ def configure_data(filter_data):
 
     return filter_data
 '''
-
-filter(config)
