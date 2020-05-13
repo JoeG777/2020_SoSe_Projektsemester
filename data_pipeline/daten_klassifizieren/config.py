@@ -1,11 +1,11 @@
 classification_config = {
 
-    "datasource_raw_data": {'database': 'nilan_cleaned', 'measurement': 'temperature_register'},
+    "datasource_raw_data": {'database': 'test', 'measurement': 'temperature'},
     "datasource_enriched_data": {'database': 'nilan_enriched', 'measurement': 'training'},
     "datasource_marked_data": {'database': 'nilan_marked', 'measurement': 'training'},
     "datasource_classified_data": {'database': 'nilan_classified', 'measurement': 'classified'},
     "datasource_classifier": 'model.txt',
-    "timeframe": ["2020-01-14 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
+    "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
     "selected_event": "abtauzyklus",
     "new_classifier_method": "",
     "test_size": 0.3,

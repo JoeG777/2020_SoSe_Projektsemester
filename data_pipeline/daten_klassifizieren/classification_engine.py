@@ -32,26 +32,17 @@ def apply_classifier(config):
     model = model_persistor.load_classifier(config)
     pd.set_option("display.max_rows", None)
     pd.set_option("display.max_columns", None)
-    #df_query.dropna(inplace=True)
     df_query = df_query.drop(df_query.index[-1])
     df_query = df_query.drop(df_query.index[0])
     classified_data_df = df_query.copy()
     classified_data_df[selected_event] = model.predict(df_query)
-    counter = 0
-    for register in register_dict:
-        df_raw = read_manager.read_query(datasource_raw_data, f"SELECT * FROM {measurement_raw} WHERE (register = "
-                                                                f"'{register}')  AND time >= {start}ms AND time <= "
-                                                                f"{end}ms")
-        df_raw = df_raw.drop(df_raw.index[-1])
-        df_raw = df_raw.drop(df_raw.index[0])
-        df_raw = df_raw.drop(labels='register', axis=1)
-        if counter == 0:
-            df_return = df_raw.rename(columns={'temperature': f'{register_dict[register]}'})
-            counter += 1
-        else:
-            df_return[f'{register_dict[register]}'] = df_raw.rename(columns={'temperature': f'{register_dict[register]}'})
-    df_return['abtauzyklus'] = classified_data_df['abtauzyklus']
-    write_manager.write_dataframe(datasource_classified_data, df_return, measurement)
+
+    df_raw = read_manager.read_query('test', f"SELECT * FROM {measurement_raw} WHERE time >= {start}ms AND time "
+                                                   f"<= {end}ms")
+    df_raw = df_raw.drop(df_raw.index[-1])
+    df_raw = df_raw.drop(df_raw.index[0])
+    df_raw[selected_event] = classified_data_df[selected_event]
+    write_manager.write_dataframe(datasource_classified_data, df_raw, measurement)
     return 0
 
 

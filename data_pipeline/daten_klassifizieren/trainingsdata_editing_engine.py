@@ -16,25 +16,22 @@ def enrich_data(config):
     :return
         int: Status code that indicates whether the enriching was successful(0 Success, 1 Failure)"""
     selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
-     required_registers, datasource_enriched_data, measurement_training, datasource_marked_data, \
-     start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
-     del_marker = get_config_parameter(config)
+    required_registers, datasource_enriched_data, measurement_training, datasource_marked_data, \
+    start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
+    del_marker = get_config_parameter(config)
     start = convert_time(start_time)
     end = convert_time(end_time)
     counter = 0
+    df_query = read_manager.read_query('test', f"SELECT * FROM temperature WHERE time >= {start}ms AND time "
+                                               f"<= {end}ms")
     for register in required_registers:
-        df_query = read_manager.read_query(datasource_raw_data, f"SELECT * FROM temperature_register WHERE (register = "
-                                                                f"'{register}')  AND time >= {start}ms AND time <= "
-                                                                f"{end}ms")
-        df_query = df_query.drop(['register'], axis=1)
-        df_query = df_query.rename(columns={'temperature': f'{register_dict[register]}'})
         df_query[f'{register_dict[register]}_deriv'] = (df_query[f'{register_dict[register]}'].shift(-1) -
                                                         (df_query[f'{register_dict[register]}'].shift(1))) / 2
         df_query[f'{register_dict[register]}_pct_ch'] = df_query[f'{register_dict[register]}'].pct_change(1)
         df_query[f'{register_dict[register]}_ch_abs'] = df_query[f'{register_dict[register]}'].diff(1)
         #test
         df_query[f'{register_dict[register]}_diff'] = df_query[f'{register_dict[register]}'] - \
-                                                       df_query[f'{register_dict[register]}'].shift(-1)
+                                                      df_query[f'{register_dict[register]}'].shift(-1)
         #test
         if counter == 0:
             df = df_query
