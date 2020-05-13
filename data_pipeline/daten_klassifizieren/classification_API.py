@@ -34,7 +34,8 @@ def classify():
 def train():
     response = 200
     try:
-        config = request.get_json(force=True)
+        config = request.get_json()
+
         trainingsdata.enrich_data(config)
         trainingsdata.mark_data(config)
         training.train_classifier(config)
