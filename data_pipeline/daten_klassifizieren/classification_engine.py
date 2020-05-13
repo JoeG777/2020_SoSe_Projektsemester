@@ -34,6 +34,7 @@ def apply_classifier(config):
     pd.set_option("display.max_columns", None)
     #df_query.dropna(inplace=True)
     df_query = df_query.drop(df_query.index[-1])
+    df_query = df_query.drop(df_query.index[0])
     classified_data_df = df_query.copy()
     classified_data_df[selected_event] = model.predict(df_query)
     counter = 0
@@ -42,6 +43,7 @@ def apply_classifier(config):
                                                                 f"'{register}')  AND time >= {start}ms AND time <= "
                                                                 f"{end}ms")
         df_raw = df_raw.drop(df_raw.index[-1])
+        df_raw = df_raw.drop(df_raw.index[0])
         df_raw = df_raw.drop(labels='register', axis=1)
         if counter == 0:
             df_return = df_raw.rename(columns={'temperature': f'{register_dict[register]}'})
