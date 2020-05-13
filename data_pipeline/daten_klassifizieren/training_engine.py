@@ -45,6 +45,7 @@ def train_classifier(config):
 
     if evaluate_classifier(classifier, required_score, X_test, y_test):
         model_persistor.persist_classifier(classifier, config)
+        print("ueberschrieben")
     return 0
 
 
@@ -61,6 +62,8 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
         boolean: True: New Classifier has a higher score and will be persist, False: New Classifier has a lower score and will not be persist)"""
     # TODO : ursprünglicher und neuer Score loggen
     score = classifier.score(X_test, y_test)
+    print("Das ist der alte Score: ", required_score)
+    print("Das ist der neue Score: ", score)
     if score >= required_score:
         return True
     return False
