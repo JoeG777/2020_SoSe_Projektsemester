@@ -30,7 +30,7 @@ def format_json(json):
     '''
 
     try:
-        json_nilan_array = [
+        json_nilan = [
             {'measurement': 'raumtemperatur',
              "time": get_current_time_utc(),
              "fields": {"temperatur": json['raumtemperatur']}
@@ -53,7 +53,7 @@ def format_json(json):
         logger.influx_logger.error('Config-JSON incomplete')
         raise exc.RawDataException('Config-JSON incomplete', 905)
 
-    return json_nilan_array
+    return json_nilan
 
 
 def write_to_nilan(json):
@@ -65,7 +65,7 @@ def write_to_nilan(json):
     '''
 
     try:
-        wm.write_query_array("db_steuerungsparameter", format_json(json))
+        wm.write_query("db_steuerungsparameter", json)
 
     except:
         logger.influx_logger.error('Writing data to database was unsuccessful')
