@@ -30,11 +30,8 @@ def enrich_data(config):
     except Exception as e:
         raise ex.InvalidConfigValueException("Value" + str(e) + "was not found")
     counter = 0
-    try:
-        df_query = read_manager.read_query(datasource_raw_data, f"SELECT * FROM temperature WHERE time >= {start}ms AND time "
-                                               f"<= {end}ms")
-    except Exception as e:
-        raise ex.DBException()
+    df_query = read_manager.read_query(datasource_raw_data, f"SELECT * FROM temperature WHERE time >= {start}ms AND time "
+                                            f"<= {end}ms")
 
     for register in required_registers:
         df_query[f'{register_dict[register]}_deriv'] = (df_query[f'{register_dict[register]}'].shift(-1) -
