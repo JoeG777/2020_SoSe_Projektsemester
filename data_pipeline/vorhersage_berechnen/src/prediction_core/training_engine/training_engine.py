@@ -18,15 +18,12 @@ def get_all_data(db_config):
     """
     df = rm.read_data(db_config["datasource_weatherdata_dbname"], measurement=db_config["datasource_weatherdata_measurement"])
     df = df.rename(columns={'temperature': "outdoor"})
+    current_dataset = rm.read_data(
+        db_config["datasource_nilan_dbname"],
+        measurement=db_config["datasource_nilan_measurement"],
+        resolve_register="True")
 
-    for key in curves:
-        current_dataset = rm.read_data(
-            db_config["datasource_nilan_dbname"],
-            measurement=db_config["datasource_nilan_measurement"],
-            resolve_register="True")
-        current_dataset = current_dataset.rename(columns={'valueScaled': key})
-
-        df = pd.merge(df, current_dataset, on='time', how='inner')
+    df = pd.merge(df, current_dataset, on='time', how='inner')
 
     return df
 
@@ -69,7 +66,7 @@ def train_model(all_data, prediction_unit):
         random_state=0)
     model.fit(independent_train, dependent_train)
     score = model.score(independent_test, dependent_test)
-    print("Trained model for" + dependent_data_keys[0] + " with score " + str(score))
+    print("Trained model for " + dependent_data_keys[0] + " with score " + str(score))
     return model_data_to_dict(score, model, dependent_data_keys)
 
 
@@ -83,6 +80,7 @@ def calculate_average_score(all_models):
     score_sum = 0
     for model in all_models:
         score_sum += model["score"]
+    print("Average Score: " + str(float(score_sum / len(all_models))))
     return float(score_sum / len(all_models))
 
 
@@ -112,7 +110,6 @@ def train(config):
     config_validator.validate_config(config)
     all_models = []
     all_data = get_all_data(config["database_options"]["training"])
-    print(all_data)
     selected_value = config.get("selected_value")
     all_prediction_units = config.get("prediction_options").get(selected_value)
     for prediction_unit in all_prediction_units:
