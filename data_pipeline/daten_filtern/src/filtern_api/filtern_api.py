@@ -33,6 +33,7 @@ def filter():
 def get_logs():
     '''
     Name in documentation: 'get_logs'
+    Reads the resulting logs.
     '''
     return 'logs'
 
