@@ -1,7 +1,16 @@
+from data_pipeline.log_writer.log_writer import Logger
+LOGGER_DB_NAME = "logs"
+LOGGER_MEASUREMENT = "logs"
+LOGGER_HOST = "localhost"
+LOGGER_PORT = "8086"
+LOGGER_COMPONENT = "Vorhersage berechnen"
+
+logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
+                LOGGER_COMPONENT)
+
 from flask import *
 import data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine.training_engine as training_engine
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine as prediction_engine
-from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import *
 import sys
 
@@ -15,14 +24,7 @@ http_status_codes = {
     "PersistorException": 902
 }
 
-LOGGER_DB_NAME = "logs"
-LOGGER_MEASUREMENT = "logs"
-LOGGER_HOST = "localhost"
-LOGGER_PORT = "8086"
-LOGGER_COMPONENT = "Vorhersage berechnen"
 
-logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
-                LOGGER_COMPONENT)
 
 @app.route('/')
 def default():
@@ -52,19 +54,25 @@ def train():
         try:
             training_engine.train(request.get_json())
         except ConfigException as e:
-            exception_name = type(e).__name__
+            exception_name = e.__class__.__name__
             logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
             logger.error("Returning " + str(http_status_codes.get(exception_name)))
             status_code = http_status_codes.get(exception_name)
         except DBException as e:
-            logger.error(type(e).__name__ + " was caught.\n StackTrace: " + str(e.__traceback__))
-            status_code = http_status_codes.get("DBException")
+            exception_name = e.__class__.__name__
+            logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
+            logger.error("Returning " + str(http_status_codes.get(exception_name)))
+            status_code = http_status_codes.get(exception_name)
         except PersistorException as e:
-            logger.error(type(e).__name__ + " was caught.\n StackTrace: " + str(e.__traceback__))
-            status_code = http_status_codes.get("PersistorException")
+            exception_name = e.__class__.__name__
+            logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
+            logger.error("Returning " + str(http_status_codes.get(exception_name)))
+            status_code = http_status_codes.get(exception_name)
         except Exception as e:
-            logger.error(type(e).__name__ + " was caught.\n StackTrace: " + str(e.__traceback__))
-            status_code = http_status_codes.get("HTTPInternalServerError")
+            exception_name = e.__class__.__name__
+            logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
+            logger.error("Returning " + str(http_status_codes.get(exception_name)))
+            status_code = http_status_codes.get(exception_name)
     else:
         logger.info("Request is not JSON. Returning " + str(http_status_codes.get("HTTPBadRequest")) + ".")
         status_code = http_status_codes.get("HTTPBadRequest")
