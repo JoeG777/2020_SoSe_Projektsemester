@@ -1,7 +1,7 @@
 import sklearn
 from sklearn import *
 import pickle
-#import logWriter
+# import logWriter
 import data_pipeline.exception.exceptions as ex
 
 
@@ -44,7 +44,7 @@ def load_classifier(classification_config):
     else:
         raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
 
-    if model == "":
+    if not (isinstance(model, (sklearn.svm.SVC, sklearn.neighbors.KNeighborsClassifier))):
         return sklearn.svm.SVC()  # TODO: hardcoden oder noch entscheiden durch Analyse
     else:
         return model
@@ -101,6 +101,8 @@ def load_dictionary(datasource_classifier):
     :param datasource_classifier: the file in which the dictionary is currently stored
     :return dictionary: unpickled dictionary {"event_name": sklearn-model}
     """
+    if datasource_classifier == "" or datasource_classifier is None:
+        raise ex.InvalidConfigValueException("Empty value: 'datasource_classifier")
 
     with open(datasource_classifier, "rb") as file:
         try:
