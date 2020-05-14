@@ -10,6 +10,7 @@ class test_api(unittest.TestCase):
 
     config = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -238,6 +239,7 @@ class test_api(unittest.TestCase):
 
     config_wrong_curvename = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -466,6 +468,7 @@ class test_api(unittest.TestCase):
 
     config_curve_missing = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -676,6 +679,7 @@ class test_api(unittest.TestCase):
     }
     config_wrong_cyclename = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -903,6 +907,7 @@ class test_api(unittest.TestCase):
     }
     config_cycle_missing = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -1127,6 +1132,7 @@ class test_api(unittest.TestCase):
     }
     config_delete_wrong= {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -1354,6 +1360,7 @@ class test_api(unittest.TestCase):
     }
     config_delete_missing = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -1581,6 +1588,7 @@ class test_api(unittest.TestCase):
     }
     congig_interpolation_wrong= {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {
@@ -1809,6 +1817,7 @@ class test_api(unittest.TestCase):
 
     config_interpolation_missing = {
         "filtern_config": {
+            "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_value": "variante",
             "filter_options": {
                 "default": {

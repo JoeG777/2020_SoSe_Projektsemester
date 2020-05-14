@@ -55,6 +55,7 @@ def config_validation(config_str):
     try:
         filtern_config = request.get_json()[config_str]
         config = filtern_config["filter_options"][filtern_config["selected_value"]]
+        timeframe = filtern_config['timeframe']
     except:
         #logger.influx_logger.error("Config is wrong.")
         raise exe.ConfigException("Filtern Config is wrong.", 900)
@@ -88,6 +89,8 @@ def config_validation(config_str):
 
     if expected_curve != []:
         raise exe.ConfigException("Filtern Config is wrong.", 900)
+
+    #["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
 
 
 if __name__ == '__main__':
