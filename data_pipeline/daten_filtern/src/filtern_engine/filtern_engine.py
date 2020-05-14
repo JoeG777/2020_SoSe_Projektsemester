@@ -30,7 +30,7 @@ def filter(config, timeframe):
         print(filtern_data.loc[filtern_data.abtauzyklus == True])
 
     except exe.ConfigException:
-        raise exe.ConfigException("Filtern Config is wrong.", 900)
+        raise exe.ConfigException("Filtern Config format is not correct.", 900)
 
 
     persist_data(filtern_data)
@@ -60,7 +60,7 @@ def get_data(timeframe):
 
     except exe.DBException:
         #logger.influx_logger.error("Database not available.")
-        raise exe.DBException("Database not available.", 901)
+        raise exe.DBException("Database is not available. Get_data() failed", 901)
 
     return classified_data
 
@@ -86,7 +86,7 @@ def tag_drop(curve, cycle, filtern_data):
 
     except:
         #logger.influx_logger.error("Config is wrong.")
-        raise exe.ConfigException("Filtern Config is wrong.", 900)
+        raise exe.ConfigException("Filtern Config format is not correct. Tag_drop() failed", 900)
 
     return filtern_data
 
@@ -110,7 +110,7 @@ def interpolation(methode, curve, zyklenfreie_daten):
 
     except:
         #logger.influx_logger.error("Config is wrong.")
-        raise exe.ConfigException("Filtern Config is wrong.", 900)
+        raise exe.ConfigException("Filtern Config format is not correct. Interpolation() failed.", 900)
 
     return zyklenfreie_daten
 
@@ -131,7 +131,7 @@ def persist_data(filtern_data):
 
     except:
         #logger.influx_logger.error("Database not available.")
-        raise exe.DBException("Database not available.", 901)
+        raise exe.DBException("Database is not available. Persist_data() failed", 901)
 
 
 
@@ -143,11 +143,14 @@ def convert_time(time_var):
     :return: the converted time.
     '''
 
-    time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
-    return int((time.mktime(time_var.timetuple())))*1000
+        time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
+        return int((time.mktime(time_var.timetuple())))*1000
+
+
 
 
 '''
+
 def configure_data(filter_data):
 
     time = None
