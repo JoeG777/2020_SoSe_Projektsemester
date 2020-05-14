@@ -5,7 +5,8 @@ from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
 from data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator import config_validator
-from data_pipeline.log_writer import log_writer as lw
+from data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api import logger
+from data_pipeline.exception.exceptions import ConfigException, InsufficientDataException
 from sklearn.metrics import explained_variance_score
 from sklearn.metrics import max_error
 from sklearn.metrics import mean_absolute_error
@@ -13,8 +14,16 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import median_absolute_error
 from sklearn.metrics import r2_score
 
+MODEL_LOG_MEASUREMENT = "model"
+CURVES = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"]
 
-curves = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"]
+
+def df_contains_all_data(dataframe):
+    if "outdoor" not in dataframe:
+        raise InsufficientDataException("Could not predict as data is missing for outdoor!")
+    for curve in CURVES:
+        if curve not in dataframe:
+            raise InsufficientDataException("Could not predict as data is missing for " + curve)
 
 
 def get_all_data(db_config):
@@ -24,7 +33,9 @@ def get_all_data(db_config):
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
     """
-    df = rm.read_data(db_config["datasource_weatherdata_dbname"], measurement=db_config["datasource_weatherdata_measurement"])
+    logger.info("Fetching data")
+    df = rm.read_data(db_config["datasource_weatherdata_dbname"],
+                      measurement=db_config["datasource_weatherdata_measurement"])
     df = df.rename(columns={'temperature': "outdoor"})
     current_dataset = rm.read_data(
         db_config["datasource_nilan_dbname"],
@@ -32,20 +43,24 @@ def get_all_data(db_config):
         resolve_register="True")
 
     df = pd.merge(df, current_dataset, on='time', how='inner')
-
+    try:
+        df_contains_all_data(df)
+    except InsufficientDataException as e:
+        logger.influx_logger.exception(e.message)
+    logger.info("Data fetching successful!")
     return df
 
 
 def build_unit_logging_model(models, current_model, indep_test, dep_true):
-        model = current_model["model"]
-        dep_predicted = model.predict(indep_test)
-        current_model["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
-        current_model["max_error"] = max_error(dep_true, dep_predicted)
-        current_model["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
-        current_model["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
-        current_model["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
-        current_model["r2_score"] = r2_score(dep_true, dep_predicted)
-        models.append(current_model)
+    model = current_model["model"]
+    dep_predicted = model.predict(indep_test)
+    current_model["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
+    current_model["max_error"] = max_error(dep_true, dep_predicted)
+    current_model["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
+    current_model["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
+    current_model["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
+    current_model["r2_score"] = r2_score(dep_true, dep_predicted)
+    models.append(current_model)
 
 
 def build_and_write_logging_model(unit_logging_models, average_score):
@@ -58,26 +73,23 @@ def build_and_write_logging_model(unit_logging_models, average_score):
     print(unit_logging_models)
     logging_model_amount = len(unit_logging_models)
     for unit_logging_model in unit_logging_models:
-        del(unit_logging_model["model"])
+        del (unit_logging_model["model"])
         explained_variance_score_avg += unit_logging_model["explained_variance_score"]
         max_error_avg += unit_logging_model["max_error"]
         mean_absolute_error_avg += unit_logging_model["mean_absolute_error"]
-        mean_squared_error +=  unit_logging_model["mean_squared_error"]
+        mean_squared_error += unit_logging_model["mean_squared_error"]
         median_absolute_error_avg += unit_logging_model["median_absolute_error"]
         r2_score_avg += unit_logging_model["r2_score"]
     logging_model = {"average_score": average_score,
-                     "average_explained_variance_score": explained_variance_score_avg/logging_model_amount,
-                     "average_max_error": max_error_avg/logging_model_amount,
-                     "average_mean_absolute_error": mean_absolute_error_avg/logging_model_amount,
-                     "average_mean_squared_error": mean_squared_error/logging_model_amount,
-                     "average_median_absolute_error": median_absolute_error_avg/logging_model_amount,
-                     "average_r2_score_avg": r2_score_avg/logging_model_amount,
+                     "average_explained_variance_score": explained_variance_score_avg / logging_model_amount,
+                     "average_max_error": max_error_avg / logging_model_amount,
+                     "average_mean_absolute_error": mean_absolute_error_avg / logging_model_amount,
+                     "average_mean_squared_error": mean_squared_error / logging_model_amount,
+                     "average_median_absolute_error": median_absolute_error_avg / logging_model_amount,
+                     "average_r2_score_avg": r2_score_avg / logging_model_amount,
                      "model_scores": unit_logging_models
                      }
-    logger = lw.Logger("Prediction Engine")
-    print(logging_model)
-    print(json.dumps(logging_model))
-    logger.write_into_measurement("model", json.dumps(logging_model))
+    logger.write_into_measurement(MODEL_LOG_MEASUREMENT, json.dumps(logging_model))
 
 
 def model_data_to_dict(score, model, dependent_data_keys):
@@ -160,8 +172,12 @@ def train(config):
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
-    print("------starting training--------------")
-    config_validator.validate_config(config)
+    logger.info("Starting training <br> TEST!")
+    try:
+        config_validator.validate_config(config)
+    except ConfigException as e:
+        logger.influx_logger.exception(e.message)
+        raise ConfigException("Wrong config: " + e.message)
     all_models = []
     all_data = get_all_data(config["database_options"]["training"])
     selected_value = config.get("selected_value")
