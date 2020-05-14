@@ -80,7 +80,7 @@ class Filtern_engine_tests(unittest.TestCase):
     spy2(read_manager.read_data)
     spy2(write_manager.write_dataframe)
 
-    # when the function tries to get the weather forecast from database, return the custom forecast DataFrame above
+    # when the function tries to get the klassified data from database, return the custom klassified DataFrame above
     when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenReturn(klassificate_dataframe)
 
     # verify all interactions (default times is 1)

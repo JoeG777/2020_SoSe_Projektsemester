@@ -1,6 +1,5 @@
 from flask import *
 from data_pipeline.daten_filtern.src.filtern_engine import filtern_engine
-#from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
 import data_pipeline.exception.exceptions as exe
 
 app = Flask(__name__)
@@ -8,12 +7,12 @@ app = Flask(__name__)
 @app.route('/filtern', methods =['POST'])
 def filter():
     '''
-    Name in documentation: 'filtern'
-    Start the filtern engine.
+    Name in documentation: "filtern()"
+    Validates the supplied config and then starts the filter engine. The received config is transferred to this
+    :return: statuscode
     '''
 
     response = None
-
     try:
         config_validation('filtern_config')
         filtern_config = request.get_json()['filtern_config']
@@ -24,10 +23,11 @@ def filter():
     except exe.ConfigException as exConf:
         #logger.influx_logger.error("Config is wrong.")
         response = exConf.args[1]
+    except exe.DBException as exDb:
+        #logger.influx_logger.error("Database not available.")
+        response = exDb.args[1]
     finally:
         return Response(status=response)
-
-
 
 @app.route('/log')
 def get_logs():
@@ -39,9 +39,11 @@ def get_logs():
 
 def config_validation(config_str):
     """
-
-    :param config:
-    :return:
+    Validate the config. It is checked whether the values for "delete" are only "True" and "False"
+    and whether the values for "Interpolation" are only "linear", "cubic", "spline" and "akima".
+    Also checks if every curve and cycle is in the config.
+    If this is not the case, an ConfigException is thrown.
+    :param config_str: the Rootelement of the Config:
     """
 
     if int(request.headers.get('Content-Length')) == 0:
@@ -56,20 +58,33 @@ def config_validation(config_str):
         raise exe.ConfigException("Filtern Config is wrong.", 900)
 
 
-
-    counter_curve = 0
-    counter_cycle = 0
+    expected_curve = ['room', 'condenser', 'evaporator', 'inlet', 'outlet', 'freshAirIntake']
     for curve in config:
-        counter_curve += 1
+        if curve in expected_curve:
+            expected_curve.remove(curve)
+
+        expected_cycle = ['warmwasseraufbereitung', 'ofennutzung','abtauzyklus', 'luefterstufen']
         for cycle in config[curve]:
-            counter_cycle += 1
+            expected_delete_interpolation = ['delete' , 'Interpolation']
+
+            for delete_interpolation in config[curve][cycle]:
+                if delete_interpolation in expected_delete_interpolation:
+                    expected_delete_interpolation.remove(delete_interpolation)
+
+            if expected_delete_interpolation != []:
+                raise exe.ConfigException("Filtern Config is wrong.", 900)
+
+            if cycle in expected_cycle:
+                expected_cycle.remove(cycle)
             if config[curve][cycle]["delete"] != 'True' and config[curve][cycle]["delete"] != 'False':
                 raise exe.ConfigException("Filtern Config is wrong.", 900)
             if config[curve][cycle]["Interpolation"] != 'linear' and config[curve][cycle]["Interpolation"] != 'cubic' and config[curve][cycle]["Interpolation"] != 'spline' and config[curve][cycle]["Interpolation"] != 'akima':
                 raise exe.ConfigException("Filtern Config is wrong.", 900)
 
+        if expected_cycle != []:
+            raise exe.ConfigException("Filtern Config is wrong.", 900)
 
-    if counter_curve != 6 or counter_cycle != 24:
+    if expected_curve != []:
         raise exe.ConfigException("Filtern Config is wrong.", 900)
 
 
