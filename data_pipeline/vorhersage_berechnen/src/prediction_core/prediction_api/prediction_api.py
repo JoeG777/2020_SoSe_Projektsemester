@@ -1,8 +1,9 @@
 from flask import *
 import data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine.training_engine as training_engine
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine as prediction_engine
+from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.exception.exceptions import *
-
+import sys
 
 app = Flask(__name__)
 
@@ -14,12 +15,22 @@ http_status_codes = {
     "PersistorException": 902
 }
 
+LOGGER_DB_NAME = "logs"
+LOGGER_MEASUREMENT = "logs"
+LOGGER_HOST = "localhost"
+LOGGER_PORT = "8086"
+LOGGER_COMPONENT = "Vorhersage berechnen"
+
+logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
+                LOGGER_COMPONENT)
+
 @app.route('/')
 def default():
     """
     Not featured in the documentation.
     Just returns information about the API.
     """
+    logger.info("Received request on default endpoint. Returning default answer.")
     return '<h1>Endpoints</h1><p>/train - Train a model</p><p>/predict - Make a prediction</p><p>/log - Get the logs</p>'
 
 
@@ -35,22 +46,27 @@ def train():
     901 - DBException - if there are problems with the database connection
     902 - PersistorException - if there are problems with persisting the new models
     """
-    print("Starting training-----")
-    print(request)
+    logger.info("Received request on train endpoint. Starting training procedure...")
     status_code = 200
     if request.is_json:
         try:
             training_engine.train(request.get_json())
         except ConfigException as e:
-            status_code = http_status_codes.get("ConfigException")
+            exception_name = type(e).__name__
+            logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
+            logger.error("Returning " + str(http_status_codes.get(exception_name)))
+            status_code = http_status_codes.get(exception_name)
         except DBException as e:
+            logger.error(type(e).__name__ + " was caught.\n StackTrace: " + str(e.__traceback__))
             status_code = http_status_codes.get("DBException")
         except PersistorException as e:
+            logger.error(type(e).__name__ + " was caught.\n StackTrace: " + str(e.__traceback__))
             status_code = http_status_codes.get("PersistorException")
         except Exception as e:
-            print(e.with_traceback())
+            logger.error(type(e).__name__ + " was caught.\n StackTrace: " + str(e.__traceback__))
             status_code = http_status_codes.get("HTTPInternalServerError")
     else:
+        logger.info("Request is not JSON. Returning " + str(http_status_codes.get("HTTPBadRequest")) + ".")
         status_code = http_status_codes.get("HTTPBadRequest")
 
     return Response(status=status_code)
@@ -87,6 +103,7 @@ def predict():
             print(e.with_traceback())
             status_code = http_status_codes.get("HTTPInternalServerError")
     else:
+        logger.info("Request is not JSON. Returning 400 - Bad Request.")
         status_code = http_status_codes.get("HTTPBadRequest")
 
     return Response(status=status_code)
