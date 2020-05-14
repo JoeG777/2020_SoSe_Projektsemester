@@ -16,8 +16,9 @@ def filter():
     try:
         config_validation('filtern_config')
         filtern_config = request.get_json()['filtern_config']
+        timeframe = filtern_config['timeframe']
         config = filtern_config["filter_options"][filtern_config["selected_value"]]
-        filtern_engine.filter(config)
+        filtern_engine.filter(config, timeframe)
         response = 200
 
     except exe.ConfigException as exConf:
@@ -33,6 +34,7 @@ def filter():
 def get_logs():
     '''
     Name in documentation: 'get_logs'
+    Reads the resulting logs.
     '''
     return 'logs'
 

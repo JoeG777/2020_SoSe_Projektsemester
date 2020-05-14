@@ -8,14 +8,14 @@ import time
 
 logger = Logger()
 
-def filter(config):
+def filter(config, timeframe):
     '''
     Name in documentation: 'filtern'
     Takes the config and load the klassified data. After that it delete and interpolate the marked intervall. Last it persist the filtered data.
     :raises ConfigExeption: If the config is wrong.
     '''
 
-    filtern_data = get_data()
+    filtern_data = get_data(timeframe)
 
 
     try:
@@ -36,7 +36,7 @@ def filter(config):
     persist_data(filtern_data)
 
 
-def get_data():
+def get_data(timeframe):
     """
     Name in documentation: 'get_data'
     Load the klassified data.
@@ -45,8 +45,10 @@ def get_data():
     """
     try:
         classified_data = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' ,
-                                           start_utc = str(convert_time('2020-01-14 00:00:00.000 UTC')),
-                                           end_utc = str(convert_time('2020-01-20 12:00:00.000 UTC')))
+                                           start_utc= str(convert_time(timeframe[0])),
+                                           end_utc= str(convert_time(timeframe[1])),
+                                           )
+
         print("Get_Data Ausgabe:")
         print(classified_data)
         print("________________________________")

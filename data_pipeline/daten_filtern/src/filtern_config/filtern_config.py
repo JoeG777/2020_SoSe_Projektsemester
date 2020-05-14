@@ -1,4 +1,5 @@
 filtern_config = {
+    "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
     "selected_value": "variante",
     "filter_options": {
         "default": {
@@ -227,6 +228,7 @@ filtern_config = {
 #Config für Postman
 {
     "filtern_config": {
+        "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
         "selected_value": "variante",
         "filter_options": {
             "default": {
