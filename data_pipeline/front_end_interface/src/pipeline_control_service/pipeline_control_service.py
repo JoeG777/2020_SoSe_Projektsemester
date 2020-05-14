@@ -15,5 +15,5 @@ def start_process(parameters):
 
     except:
         logger.influx_logger.error('Unable to start process')
-        raise exc.DataPipelineException('Unable to start process')
+        raise exc.RawDataException('Unable to start process', 905)
 
