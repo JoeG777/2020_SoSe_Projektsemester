@@ -41,14 +41,14 @@ def train():
     if request.is_json:
         try:
             training_engine.train(request.get_json())
-        except ConfigException:
+        except ConfigException as e:
             status_code = http_status_codes.get("ConfigException")
-        except DBException:
+        except DBException as e:
             status_code = http_status_codes.get("DBException")
-        except PersistorException:
+        except PersistorException as e:
             status_code = http_status_codes.get("PersistorException")
         except Exception as e:
-            print(e)
+            print(e.with_traceback())
             status_code = http_status_codes.get("HTTPInternalServerError")
     else:
         status_code = http_status_codes.get("HTTPBadRequest")
@@ -72,12 +72,16 @@ def predict():
     status_code = 200
     if request.is_json:
         try:
+            print("-----predicting----")
             prediction_engine.calculate_prediction(request.get_json())
-        except ConfigException:
+        except ConfigException as e:
+            print(e.with_traceback())
             status_code = http_status_codes.get("ConfigException")
-        except DBException:
+        except DBException as e:
+            print(e.with_traceback())
             status_code = http_status_codes.get("DBException")
-        except PersistorException:
+        except PersistorException as e:
+            print(e.with_traceback())
             status_code = http_status_codes.get("PersistorException")
         except Exception as e:
             print(e.with_traceback())
