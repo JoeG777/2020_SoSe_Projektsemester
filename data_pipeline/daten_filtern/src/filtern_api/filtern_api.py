@@ -18,7 +18,7 @@ def filter():
         filtern_config = request.get_json()['filtern_config']
         timeframe = filtern_config['timeframe']
         config = filtern_config["filter_options"][filtern_config["selected_value"]]
-        filtern_engine.filter(config, timeframe)
+        #filtern_engine.filter(config, timeframe)
         response = 200
 
     except exe.ConfigException as exConf:
@@ -91,6 +91,12 @@ def config_validation(config_str):
         raise exe.ConfigException("Filtern Config is wrong.", 900)
 
     #["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
+    for time in timeframe:
+        print(time)
+        for char in time:
+            print(char)
+
+
 
 
 if __name__ == '__main__':
