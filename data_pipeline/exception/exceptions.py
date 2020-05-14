@@ -91,3 +91,11 @@ class DBException(DataPipelineException):
             return 'DBException: {0}'.format(self.message)
         else:
             return 'DBException has been raised'
+
+
+class InsufficientDataException(DBException):
+    def __str__(self):
+        if self.message:
+            return 'InsufficientDataException: {0}'.format(self.message)
+        else:
+            return 'InsufficientDataException has been raised'
