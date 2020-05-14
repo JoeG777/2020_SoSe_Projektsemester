@@ -68,11 +68,3 @@ def get_model(dependent_keys, all_prediction_models):
 def classify_prediction(db_config):
     a = 1
     #TODO classify prediction
-
-
-def testlog():
-    logger = lw.Logger("Prediction Engine")
-    logger.write_into_measurement("test", "PLEASE WORK")
-
-
-testlog()

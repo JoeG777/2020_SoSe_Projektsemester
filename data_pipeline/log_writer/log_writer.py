@@ -1,7 +1,6 @@
 from influx_logging import InfluxHandler
 import logging
 
-
 class Logger():
 
     def __init__(self, component, database='logs', measurement='logs', host='localhost', port=8086):
@@ -20,3 +19,8 @@ class Logger():
         self.influx_handler.measurement = measurement
         self.influx_logger.info(content, extra={"component": self.COMPONENT})
         self.influx_handler.measurement = default_measurement
+
+
+
+
+
