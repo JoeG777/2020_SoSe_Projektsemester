@@ -3,12 +3,12 @@ import tempfile
 
 from influxdb import InfluxDBClient
 
-import pytest
+import pytest as py
 
 from data_pipeline.daten_filtern.src.filtern_api import filtern_api
 
 
-@pytest.fixture
+@py.fixture
 def client():
     db_fd, filtern_api.app.config['DATABASE'] = tempfile.mkstemp()
     filtern_api.app.config['TESTING'] = True

@@ -2049,6 +2049,8 @@ class test_api(unittest.TestCase):
         }
     }
 
+    config_empty = {}
+
     def test_response_200(self):
 
         request = requests.post(self.url, json = self.config)
@@ -2112,6 +2114,12 @@ class test_api(unittest.TestCase):
         response = request.status_code
         self.assertEqual(response, 900)
 
+    def test_response_900_config_empty(self):
+
+        request = requests.post(self.url, json = self.config_empty)
+        when2(api.filter).thenReturn(0)
+        response = request.status_code
+        self.assertEqual(response, 900)
 
 if __name__ == "__main__":
     unittest.main()

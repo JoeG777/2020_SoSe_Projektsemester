@@ -73,7 +73,7 @@ class Filtern_engine_tests(unittest.TestCase):
         "time": [1, 2, 3, 4, 5, 6, 7],
         "valueScaled": [2, 4, 6, 8, 10, 12, 14]
     }
-
+"""
     klassificate_dataframe = pd.DataFrame(temperature_data)
 
     # spies
@@ -86,7 +86,7 @@ class Filtern_engine_tests(unittest.TestCase):
     # verify all interactions (default times is 1)
     verify(read_manager).read_data(ANY, measurement=ANY, register=ANY)
     verify(write_manager).write_dataframe(ANY, ANY, ANY)
-
+"""
 
 if __name__ == '__main__':
     unittest.main()

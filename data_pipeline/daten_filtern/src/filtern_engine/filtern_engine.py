@@ -81,7 +81,7 @@ def tag_drop(curve, cycle, filtern_data):
 
         print("Tag_Drop:")
         print(curve)
-        print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
+        #print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
         print("________________________________")
 
     except:
@@ -105,7 +105,7 @@ def interpolation(methode, curve, zyklenfreie_daten):
         zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
 
         print("Interpoliert:")
-        print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
+        #print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
         print("________________________________")
 
     except:
@@ -142,9 +142,12 @@ def convert_time(time_var):
     :param time_var:
     :return: the converted time.
     '''
-
-    time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
-    return int((time.mktime(time_var.timetuple())))*1000
+    try:
+        time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
+        return int((time.mktime(time_var.timetuple())))*1000
+    except:
+        #logger.influx_logger.error("Config is wrong.")
+        raise exe.ConfigException("Filtern Config is wrong.", 900)
 
 '''
 def configure_data(filter_data):
