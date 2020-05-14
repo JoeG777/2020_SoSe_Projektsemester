@@ -77,6 +77,7 @@ class ConfigTypeException(ConfigException):
         else:
             return 'ConfigTypeException has been raised'
 
+
 class PersistorException(DataPipelineException):
     def __str__(self):
         if self.message:
@@ -99,3 +100,17 @@ class InsufficientDataException(DBException):
             return 'InsufficientDataException: {0}'.format(self.message)
         else:
             return 'InsufficientDataException has been raised'
+
+class FileException(DataPipelineException): #author: Johannes, stand so in der Doku noch drinn...
+    def __str__(self):
+        if self.message:
+            return 'FileExcpetion: {0}'.format(self.message)
+        else:
+            return 'FileExcpetion has been raised'
+
+class SklearnException(DataPipelineException): #author: Johannes, stand so in der Doku noch drinn...
+    def __str__(self):
+        if self.message:
+            return 'SklearnException: {0}'.format(self.message)
+        else:
+            return 'SklearnException has been raised'
