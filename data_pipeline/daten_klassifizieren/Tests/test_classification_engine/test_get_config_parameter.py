@@ -1,12 +1,10 @@
 import unittest
 from data_pipeline.daten_klassifizieren.classification_engine import get_config_parameter
-from data_pipeline.daten_klassifizieren.classification_engine import convert_time
-from data_pipeline.exception.exceptions import *
-from mockito import *
+from data_pipeline.exception.exceptions import ConfigException
 
 class MyTestCase(unittest.TestCase):
 
-    def test_get_config_parameter(self):
+    def test_missing_config_parameter(self):
         invalid_config = {
             #"datasource_raw_data": {'database': 'nilan_cleaned', 'measurement': 'temperature_register'},
             "datasource_enriched_data": {'database': 'nilan_enriched', 'measurement': 'training'},
@@ -17,14 +15,6 @@ class MyTestCase(unittest.TestCase):
                               "206": "evaporator"},
         }
         self.assertRaises(ConfigException, get_config_parameter, invalid_config)
-
-    def test_convert_time(self):
-        invalid_config = {
-            "timeframe": ["2020-01- 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
-        }
-        timeframe = invalid_config['timeframe']
-
-        self.assertRaises(InvalidConfigValueException, convert_time, timeframe[0])
 
 
 if __name__ == '__main__':

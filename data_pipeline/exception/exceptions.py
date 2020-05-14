@@ -97,3 +97,10 @@ class FileException(DataPipelineException): #author: Johannes, stand so in der D
             return 'FileExcpetion: {0}'.format(self.message)
         else:
             return 'FileExcpetion has been raised'
+
+class SklearnException(DataPipelineException): #author: Johannes, stand so in der Doku noch drinn...
+    def __str__(self):
+        if self.message:
+            return 'SklearnException: {0}'.format(self.message)
+        else:
+            return 'SklearnException has been raised'

@@ -44,7 +44,8 @@ def load_classifier(classification_config):
     else:
         raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
 
-    if not (isinstance(model, (sklearn.svm.SVC, sklearn.neighbors.KNeighborsClassifier))):
+    if model == '':
+        print('kein sklearn Model')
         return sklearn.svm.SVC()  # TODO: hardcoden oder noch entscheiden durch Analyse
     else:
         return model

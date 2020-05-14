@@ -7,7 +7,7 @@ classification_config = {
     "datasource_classifier": 'model.txt',
     "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
     "selected_event": "abtauzyklus",
-    "new_classifier_method": "kNN",
+    "new_classifier_method": "",
     "test_size": 0.3,
     "measurement": "temperature_register",
     "required_score": {"abtauzyklus": 0.9, "warmwasseraufbereitung": 0.9, "offennutzung": 0.5, "luefterstufen": 0.8},

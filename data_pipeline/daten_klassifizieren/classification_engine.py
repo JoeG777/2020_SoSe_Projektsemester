@@ -15,38 +15,39 @@ def apply_classifier(config):
     """Name in documentation: klassifizierer_anwenden()
     Marks the occurrences of the selected event in the data with the use of the classifier
     :param config: Contains parameters for classifying the data
-    :raises
-    :return int: Status code that indicates whether the classifying was successful(0 Success, 1 Failure)"""
-    # TODO: Exceptions die in enrich_data geworfen werden werfen
-    trainingsdata_editing_engine.enrich_data(config)
-    try:
-        datasource_enriched_data, datasource_classified_data, timeframe, selected_event, measurement, \
-        datasource_raw_data, measurement_raw, register_dict = get_config_parameter(config)
-    except ex.ConfigException:
-        raise ex.ConfigException("Missing or wrong parameters in config")
-    try:
-        start = convert_time(timeframe[0])
-        end = convert_time(timeframe[1])
-    except ex.InvalidConfigValueException:
-        raise ex.InvalidConfigValueException("Timeframe value in Config wrong")
+    :raises ConfigTypeException
 
-    df_query = read_manager.read_query(datasource_enriched_data, f"SELECT * FROM {measurement} WHERE time >= {start}ms "
-                                                                 f"AND time <= {end}ms")
-    try:
-        model = model_persistor.load_classifier(config)
-    except ex.ConfigTypeException:
+    :return int: Status code that indicates whether the classifying was successful(0 Success, 1 Failure)"""
+
+    if not isinstance(config, dict):
         raise ex.ConfigTypeException("Wrong data structure of configuration: " + str(config))
-    except ex.InvalidConfigKeyException:
-        raise ex.InvalidConfigKeyException("No Key found in configuration")
-    except ex.InvalidConfigValueException:
-        raise ex.InvalidConfigValueException("Wrong configuration values for loading")
+
+    trainingsdata_editing_engine.enrich_data(config)
+
+    datasource_enriched_data, datasource_classified_data, timeframe, selected_event, measurement, \
+    datasource_raw_data, measurement_raw = get_config_parameter(config)
+
+    start = convert_time(timeframe[0])
+    end = convert_time(timeframe[1])
+
+    try:
+        df_query = read_manager.read_query(datasource_enriched_data, f"SELECT * FROM {measurement} WHERE time >= {start}ms "
+                                                                    f"AND time <= {end}ms")
+    except Exception:
+        raise ex.DBException("Exception in read_manager")
+
+    model = model_persistor.load_classifier(config)
 
     #letzte und erste Reihe mit NaN weil kein Wert nachher und kein Wert vorher zur Berechnung der zusätzl Merkmale
     df_query = df_query.drop(df_query.index[-1])
     df_query = df_query.drop(df_query.index[0])
 
     classified_data_df = df_query.copy()
-    classified_data_df[selected_event] = model.predict(df_query)
+
+    try:
+        classified_data_df[selected_event] = model.predict(df_query)
+    except sklearn.exceptions.NotFittedError:
+        raise ex.SklearnException("Classifier not fitted")
 
     df_raw = read_manager.read_query('test', f"SELECT * FROM {measurement_raw} WHERE time >= {start}ms AND time "
                                                    f"<= {end}ms")
@@ -54,8 +55,10 @@ def apply_classifier(config):
     df_raw = df_raw.drop(df_raw.index[0])
 
     df_raw[selected_event] = classified_data_df[selected_event]
-
-    write_manager.write_dataframe(datasource_classified_data, df_raw, measurement)
+    try:
+        write_manager.write_dataframe(datasource_classified_data, df_raw, measurement)
+    except Exception:
+        raise ex.DBException("Exception in write_manager")
 
     return 0
 
