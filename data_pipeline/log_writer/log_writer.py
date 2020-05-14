@@ -2,7 +2,7 @@ from influx_logging import InfluxHandler
 import logging
 import inspect
 
-class Logger():
+class Logger:
 
     def __init__(self, database, measurement, host, port, component):
         """
