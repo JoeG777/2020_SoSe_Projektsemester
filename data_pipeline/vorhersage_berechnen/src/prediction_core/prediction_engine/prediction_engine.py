@@ -4,7 +4,6 @@ import data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor.mo
 import data_pipeline.db_connector.src.read_manager.read_manager as db_read
 import data_pipeline.db_connector.src.write_manager.write_manager as db_write
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api as pred_api
-import data_pipeline.log_writer.log_writer as lw
 
 
 def calculate_prediction(config):
@@ -68,11 +67,3 @@ def get_model(dependent_keys, all_prediction_models):
 def classify_prediction(db_config):
     a = 1
     #TODO classify prediction
-
-
-def testlog():
-    logger = lw.Logger("Prediction Engine")
-    logger.write_into_measurement("test", "PLEASE WORK")
-
-
-testlog()
