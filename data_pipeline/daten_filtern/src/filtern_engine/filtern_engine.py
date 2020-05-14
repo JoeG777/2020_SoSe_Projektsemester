@@ -6,7 +6,7 @@ import data_pipeline.db_connector.src.write_manager.write_manager as writer
 from datetime import datetime
 import time
 
-logger = Logger()
+#logger = Logger()
 
 def filter(config, timeframe):
     '''
@@ -81,7 +81,7 @@ def tag_drop(curve, cycle, filtern_data):
 
         print("Tag_Drop:")
         print(curve)
-        #print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
+        print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
         print("________________________________")
 
     except:
@@ -105,7 +105,7 @@ def interpolation(methode, curve, zyklenfreie_daten):
         zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
 
         print("Interpoliert:")
-        #print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
+        print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
         print("________________________________")
 
     except:
