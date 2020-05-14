@@ -142,9 +142,12 @@ def convert_time(time_var):
     :param time_var:
     :return: the converted time.
     '''
-
+    try:
         time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
         return int((time.mktime(time_var.timetuple())))*1000
+    except:
+        #logger.influx_logger.error("Config is wrong.")
+        raise exe.ConfigException("Filtern Config format is not correct. Convert_time() failed", 900)
 
 
 
