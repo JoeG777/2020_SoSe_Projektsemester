@@ -6,13 +6,6 @@ DATA_CLEANING_URL = "http://localhost:xxxx"
 DATA_CLASSIFICATION_URL = "http://localhost:xxxx"
 DATA_FILTER_URL = "http://localhost:xxxx"
 DATA_PREDICTION_URL = "http://localhost:4999"
-CONFIG_URL = "http://localhost:xxxx"
-CONFIG_ENDPOINTS = {"elicitation": '/erhebung_config',
-                    "cleaning": '/bereinigung_config',
-                    "classification": '/klassifikation_config',
-                    "filtering": '/filterung_config',
-                    "prediction": '/vorhersage_config'
-                    }
 
 
 def drop_get_request(url):
@@ -54,12 +47,6 @@ def start_prediction_training(config):
 def start_prediction(config):
     return requests.post(DATA_PREDICTION_URL + "/predict", config)
 
-
-def fetch_all_configs():
-    all_configs = {}
-    for key in CONFIG_ENDPOINTS.keys():
-        all_configs[key] = drop_get_request(CONFIG_URL + CONFIG_ENDPOINTS[key])
-    return all_configs
 
 
 def start_timer_based_process_cycle():

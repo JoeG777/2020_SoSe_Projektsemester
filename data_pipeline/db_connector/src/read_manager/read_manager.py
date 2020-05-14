@@ -47,29 +47,26 @@ def read_data(db, **kwargs):
     :param db: The database the data should be read from.
     :return: The retrieved data.
     """
+
     measurement = default_measurement
     if "measurement" in kwargs.keys():
         measurement = kwargs["measurement"]
     register = default_register
     if "register" in kwargs.keys():
         if "resolve_register" in kwargs.keys():
-            register = register_dict[kwargs["register"]]
+            register = register_dict[register]
         else:
             register = kwargs["register"]
     query = 'select * from ' + measurement
     if "register" in kwargs.keys():
-        query += " where register = \'" + register
-        if "start_utc" in kwargs.keys() or "end_utc" in kwargs.keys():
-            query += '\' and'
+        query += " where register = \'" + register + '\' and'
     else:
-        if "start_utc" in kwargs.keys() or "end_utc" in kwargs.keys():
-            query += " where"
+        query += " where"
     if "start_utc" in kwargs.keys():
-        query += ' time > ' + str(kwargs["start_utc"])+'ms'
+        query += ' time > ' + kwargs["start_utc"]+'ms'
     if "end_utc" in kwargs.keys():
-        query += ' AND time < ' + str(kwargs["end_utc"])+'ms'
+        query += ' AND time < ' + kwargs["end_utc"]+'ms'
     return read_query(db, query)
-
 
 def format_data(dataset):
     """
