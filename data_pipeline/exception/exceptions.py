@@ -5,12 +5,6 @@ class DataPipelineException(Exception):
         else:
             self.message = None
 
-    def __str__(self):
-        if self.message:
-            return 'RedundantConfigException: {0}'.format(self.message)
-        else:
-            return 'RedundantConfigException has been raised'
-
 
 class ConfigException(DataPipelineException):
     def __str__(self):
@@ -18,6 +12,14 @@ class ConfigException(DataPipelineException):
             return 'ConfigException: {0}'.format(self.message)
         else:
             return 'ConfigException has been raised'
+
+
+class RedundantConfigException(ConfigException):
+    def __str__(self):
+        if self.message:
+            return 'RedundantConfigException: {0}'.format(self.message)
+        else:
+            return 'RedundantConfigException has been raised'
 
 
 class IncompleteConfigException(ConfigException):
@@ -75,7 +77,6 @@ class ConfigTypeException(ConfigException):
         else:
             return 'ConfigTypeException has been raised'
 
-
 class PersistorException(DataPipelineException):
     def __str__(self):
         if self.message:
@@ -90,3 +91,11 @@ class DBException(DataPipelineException):
             return 'DBException: {0}'.format(self.message)
         else:
             return 'DBException has been raised'
+
+
+class InsufficientDataException(DBException):
+    def __str__(self):
+        if self.message:
+            return 'InsufficientDataException: {0}'.format(self.message)
+        else:
+            return 'InsufficientDataException has been raised'
