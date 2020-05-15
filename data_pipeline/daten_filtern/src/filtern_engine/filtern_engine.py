@@ -12,7 +12,7 @@ def filter(config, timeframe):
     '''
     Name in documentation: 'filtern'
     Takes the config and load the klassified data. After that it delete and interpolate the marked intervall. Last it persist the filtered data.
-    :raises ConfigExeption: If the config is wrong.
+    :raises ConfigExeption: For incorrect Config.
     '''
 
     filtern_data = get_data(timeframe)
@@ -139,7 +139,8 @@ def persist_data(filtern_data):
 def convert_time(time_var):
     '''
     Convert the time UTC.
-    :param time_var:
+    :param time_var: The UTC time as String.
+    :raises: ConfigException: For incorrect Config.
     :return: the converted time.
     '''
     try:

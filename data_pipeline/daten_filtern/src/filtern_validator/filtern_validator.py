@@ -4,12 +4,18 @@ import re
 
 def config_validation(filtern_config):
     """
+    Name in documentation: 'config_validation'
     Validate the config. It is checked whether the values for "delete" are only "True" and "False"
     and whether the values for "Interpolation" are only "linear", "cubic", "spline" and "akima".
     Also checks if every curve and cycle is in the config.
     If this is not the case, an ConfigException is thrown.
-    :param config_str: the Rootelement of the Config:
+    :raises: ConfigExeption: For incorrect Config.
+    :raises: InvalidConfigKeyException: For wrong keys in Config.
+    :raises: InvalidConfigValueException: For wrong Values in Config.
+    :raises: IncompleteConfigException: For missing anything in Config.
+    :param filtern_config: The filtern_config:
     """
+
 
     try:
         config = filtern_config["filter_options"][filtern_config["selected_value"]]

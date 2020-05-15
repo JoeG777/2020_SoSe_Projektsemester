@@ -1,6 +1,6 @@
 from flask import *
-from data_pipeline.daten_filtern_dic.src.filtern_engine import filtern_engine
-from data_pipeline.daten_filtern_dic.src.filtern_validator import filtern_validator
+from data_pipeline.daten_filtern.src.filtern_engine import filtern_engine
+from data_pipeline.daten_filtern.src.filtern_validator import filtern_validator
 import data_pipeline.exception.exceptions as exe
 import traceback
 
