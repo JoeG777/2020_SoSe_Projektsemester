@@ -1,12 +1,12 @@
 import requests
 import json
 
-DATA_ELICITATION_URL = "http://localhost:xxxx"
-DATA_CLEANING_URL = "http://localhost:xxxx"
-DATA_CLASSIFICATION_URL = "http://localhost:xxxx"
-DATA_FILTER_URL = "http://localhost:xxxx"
+DATA_ELICITATION_URL = "http://localhost:4994"
+DATA_CLEANING_URL = "http://localhost:4995"
+DATA_CLASSIFICATION_URL = "http://localhost:4996"
+DATA_FILTER_URL = "http://localhost:4997"
 DATA_PREDICTION_URL = "http://localhost:4999"
-CONFIG_URL = "http://localhost:xxxx"
+CONFIG_URL = "http://localhost:4998"
 
 
 def drop_get_request(url):
