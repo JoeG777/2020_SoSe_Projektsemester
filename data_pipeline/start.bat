@@ -5,6 +5,13 @@ set FLASK_APP=data_collection_api.py
 start cmd /k flask run -h localhost -p 4994
 cd ../../../
 
+cd daten_bereinigen
+cd src
+cd bereinigungs_API
+set FLASK_APP=bereinigungs_API.py
+start cmd /k flask run -h localhost -p 4995
+cd ../../../
+
 cd daten_filtern
 cd ./src
 cd ./filtern_api
