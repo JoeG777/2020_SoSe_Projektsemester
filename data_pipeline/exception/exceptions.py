@@ -101,16 +101,50 @@ class InsufficientDataException(DBException):
         else:
             return 'InsufficientDataException has been raised'
 
-class FileException(DataPipelineException): #author: Johannes, stand so in der Doku noch drinn...
+
+class FileException(DataPipelineException):  # author: Johannes, stand so in der Doku noch drinn...
     def __str__(self):
         if self.message:
             return 'FileExcpetion: {0}'.format(self.message)
         else:
             return 'FileExcpetion has been raised'
 
-class SklearnException(DataPipelineException): #author: Johannes, stand so in der Doku noch drinn...
+
+class SklearnException(DataPipelineException):  # author: Johannes, stand so in der Doku noch drinn...
     def __str__(self):
         if self.message:
             return 'SklearnException: {0}'.format(self.message)
         else:
             return 'SklearnException has been raised'
+
+
+class DBException(DataPipelineException):
+    def __str__(self):
+        if self.message:
+            return 'DBException: {0}'.format(self.message)
+        else:
+            return 'DBException has been raised'
+
+
+class UrlException(DataPipelineException):
+    def __str__(self):
+        if self.message:
+            return 'UrlException: {0}'.format(self.message)
+        else:
+            return 'UrlException has been raised'
+
+
+class FileException(DataPipelineException):
+    def __str__(self):
+        if self.message:
+            return 'FileException: {0}'.format(self.message)
+        else:
+            return 'FileException has been raised'
+
+
+class RawDataException(DataPipelineException):
+    def __str__(self):
+        if self.message:
+            return 'RawDataException: {0}'.format(self.message)
+        else:
+            return 'RawDataException has been raised'
