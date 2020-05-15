@@ -6,8 +6,7 @@ logger = log_writer.Logger()
 def start_process(parameters):
     '''
     Calls the 'start_process'-method in the pipeline controller, which starts the whole forecast process.
-    :param parameters:
-    :return:
+    :param parameters: Parameters from Usersettings in the Web-application
     '''
 
     try:
