@@ -1,5 +1,5 @@
 import unittest
-from data_pipeline.daten_filtern_dic.src.filtern_validator import filtern_validator
+from data_pipeline.daten_filtern.src.filtern_validator import filtern_validator
 from data_pipeline.exception import exceptions as exe
 
 class test_validator(unittest.TestCase):

@@ -5,7 +5,7 @@ from influxdb import InfluxDBClient
 
 import pytest as py
 
-from data_pipeline.daten_filtern_dic.src.filtern_api import filtern_api
+from data_pipeline.daten_filtern.src.filtern_api import filtern_api
 
 
 @py.fixture

@@ -15,7 +15,6 @@ def config_validation(filtern_config):
         config = filtern_config["filter_options"][filtern_config["selected_value"]]
         timeframe = filtern_config['timeframe']
     except:
-        #logger.influx_logger.error("Config is wrong.")
         raise exe.InvalidConfigKeyException("Can not read Filtern Config.", 900)
 
 
