@@ -1,5 +1,5 @@
 import unittest
-import data_pipeline.daten_filtern.src.filtern_api.filtern_api as api
+import data_pipeline.daten_filtern_dic.src.filtern_api.filtern_api as api
 import requests
 from mockito import *
 

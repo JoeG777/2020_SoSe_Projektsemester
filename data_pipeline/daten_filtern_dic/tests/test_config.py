@@ -1,4 +1,4 @@
-from data_pipeline.daten_filtern.src.filtern_config.filtern_config import filtern_config
+from data_pipeline.daten_filtern_dic.src.filtern_config.filtern_config import filtern_config
 import unittest
 
 

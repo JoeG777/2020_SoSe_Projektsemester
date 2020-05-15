@@ -1,12 +1,12 @@
 import numpy as np
-from data_pipeline.daten_filtern.src.filtern_api.filtern_api import logger
+from data_pipeline.log_writer.log_writer import Logger
 import data_pipeline.exception.exceptions as exe
 import data_pipeline.db_connector.src.read_manager.read_manager as reader
 import data_pipeline.db_connector.src.write_manager.write_manager as writer
 from datetime import datetime
 import time
 
-
+#logger = Logger()
 
 def filter(config, timeframe):
     '''
@@ -16,7 +16,8 @@ def filter(config, timeframe):
     '''
 
     filtern_data = get_data(timeframe)
-    logger.info("Get_data was successful")
+    print("1")
+
     try:
         for curve in config:
             for cycle in config[curve]:
@@ -25,19 +26,14 @@ def filter(config, timeframe):
                     method = config[curve][cycle]["Interpolation"]
                     filtern_data = interpolation(method, curve, filtern_data)
 
-
-
-        #print("Gefilterte Daten:")
-        #print(filtern_data.loc[filtern_data.abtauzyklus == True])
-        logger.info("tag_drop and interpolation was successful")
+        print("Gefilterte Daten:")
+        print(filtern_data.loc[filtern_data.abtauzyklus == True])
 
     except exe.ConfigException:
-        logger.warning()
         raise exe.ConfigException("Filtern Config format is not correct.", 900)
 
 
     persist_data(filtern_data)
-    logger.info("Persisted filterd data successfully")
 
 
 def get_data(timeframe):
@@ -48,21 +44,22 @@ def get_data(timeframe):
     :return: The klassified data
     """
     try:
-        #print(timeframe)
+        print(timeframe)
         classified_data = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' ,
                                            start_utc= str(convert_time(timeframe[0])),
                                            end_utc= str(convert_time(timeframe[1])))
 
-        #print("Get_Data Ausgabe:")
-        #print(classified_data)
-        #print("________________________________")
+        print("Get_Data Ausgabe:")
+        print(classified_data)
+        print("________________________________")
 
-        #print("Get_Data Ausgabe nur True-gesetzte:")
-        #print(classified_data.loc[classified_data.abtauzyklus == True]) #only True cycle
-        #print("________________________________")
+        print("Get_Data Ausgabe nur True-gesetzte:")
+        print(classified_data.loc[classified_data.abtauzyklus == True]) #only True cycle
+        print("________________________________")
 
 
     except exe.DBException:
+        #logger.influx_logger.error("Database not available.")
         raise exe.DBException("Database is not available. Get_data() failed", 901)
 
     return classified_data
@@ -82,12 +79,13 @@ def tag_drop(curve, cycle, filtern_data):
     try:
         filtern_data.loc[filtern_data[cycle] == True, curve] = np.NaN
 
-        #print("Tag_Drop:")
-        #print(curve)
-        #print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
-        #print("________________________________")
+        print("Tag_Drop:")
+        print(curve)
+        print(filtern_data.loc[filtern_data.abtauzyklus == True][curve])
+        print("________________________________")
 
     except:
+        #logger.influx_logger.error("Config is wrong.")
         raise exe.ConfigException("Filtern Config format is not correct. Tag_drop() failed", 900)
 
     return filtern_data
@@ -106,11 +104,12 @@ def interpolation(methode, curve, zyklenfreie_daten):
     try:
         zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
 
-        #print("Interpoliert:")
-        #print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
-        #print("________________________________")
+        print("Interpoliert:")
+        print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
+        print("________________________________")
 
     except:
+        #logger.influx_logger.error("Config is wrong.")
         raise exe.ConfigException("Filtern Config format is not correct. Interpolation() failed.", 900)
 
     return zyklenfreie_daten
@@ -127,10 +126,11 @@ def persist_data(filtern_data):
     try:
         writer.write_dataframe('filtered_data', filtern_data, measurement = 'temperature_register')
 
-        #print("Persistiert")
-        #("________________________________")
+        print("Persistiert")
+        print("________________________________")
 
     except:
+        #logger.influx_logger.error("Database not available.")
         raise exe.DBException("Database is not available. Persist_data() failed", 901)
 
 
@@ -143,7 +143,9 @@ def convert_time(time_var):
     :return: the converted time.
     '''
     try:
+        print(time_var)
         time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
         return int((time.mktime(time_var.timetuple())))*1000
     except:
+        #logger.influx_logger.error("Config is wrong.")
         raise exe.InvalidConfigValueException("Filtern Config format is not correct. Convert_time() failed", 900)

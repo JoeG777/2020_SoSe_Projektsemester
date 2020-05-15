@@ -1,5 +1,5 @@
 import unittest
-import data_pipeline.daten_filtern.src.filtern_engine.filtern_engine as fe
+import data_pipeline.daten_filtern_dic.src.filtern_engine.filtern_engine as fe
 import pandas as pd
 import numpy as np
 
@@ -67,7 +67,6 @@ class Filtern_engine_tests(unittest.TestCase):
 
         #comparison real_data and exected_data
         self.assertEqual(real_data.room.all() , expected_data.room.all())
-
 """
     @classmethod
     def setUp(self):
@@ -79,6 +78,7 @@ class Filtern_engine_tests(unittest.TestCase):
     def test_read_and_write(self):
         # config
         timeframe = ['2020-01-10 00:00:00.000 UTC', '2020-01-20 12:00:00.000 UTC']
+        print(timeframe[0])
         config =  {
             "room": {
                 "warmwasseraufbereitung": {
