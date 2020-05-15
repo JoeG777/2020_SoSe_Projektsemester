@@ -1,4 +1,5 @@
 import data_pipeline.exception.exceptions as exe
+import re
 
 
 def config_validation(filtern_config):
@@ -46,4 +47,9 @@ def config_validation(filtern_config):
 
     if expected_curve != []:
         raise exe.IncompleteConfigException("Filtern Config missing a curve.", 900)
+
+    for time in timeframe:
+        if not re.search(r"[0-9][0-9][0-9][0-9][-][0-1][0-9][-][0-3][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][.][0-9][0-9][0-9][ ][U][T][C]" , time):
+            raise exe.ConfigException("Filtern Config Timeframe Format is not correct.")
+
 
