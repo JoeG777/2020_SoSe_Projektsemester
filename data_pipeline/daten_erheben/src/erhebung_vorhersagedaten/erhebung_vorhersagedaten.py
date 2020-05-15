@@ -7,7 +7,7 @@ from data_pipeline.exception.exceptions import FileException, UrlException, RawD
 import data_pipeline.log_writer.log_writer as logger
 import pandas as pd
 
-logger = logger.Logger("db_rohdaten", "temperature_DWD", "uipserver.ddns.net", 8086,"datenerhebung")
+logger = logger.Logger("db_rohdaten", "temperature_DWD", "localhost", 8086,"datenerhebung")
 
 def get_forecast_data(url):
 
