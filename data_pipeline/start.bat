@@ -1,3 +1,10 @@
+cd daten_erheben
+cd src
+cd data_collection_api
+set FLASK_APP=data_collection_api.py
+start cmd /k flask run -h localhost -p 4994
+cd ../../../
+
 cd daten_filtern
 cd ./src
 cd ./filtern_api
