@@ -1,6 +1,7 @@
 import requests
 
-CONFIG_URL = "http://localhost:xxxx"
+from data_pipeline.pipeline_controller.request_service.request_service import drop_get_request
+
 CONFIG_ENDPOINTS = {"elicitation": '/erhebung_config',
                     "cleaning": '/bereinigung_config',
                     "classification": '/klassifikation_config',
@@ -12,9 +13,9 @@ CONFIG_ENDPOINTS = {"elicitation": '/erhebung_config',
 def fetch_all_configs():
     all_configs = {}
     for key in CONFIG_ENDPOINTS.keys():
-        all_configs[key] = drop_get_request(CONFIG_URL + CONFIG_ENDPOINTS[key])
+        all_configs[key] = drop_get_request(CONFIG_ENDPOINTS[key])
     return all_configs
 
 
-def drop_get_request(url):
-    return requests.get(url)
+def fetch_config(config_key):
+    return drop_get_request(CONFIG_ENDPOINTS[config_key])
