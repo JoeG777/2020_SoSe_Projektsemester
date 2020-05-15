@@ -149,9 +149,6 @@ def convert_time(time_var):
         #logger.influx_logger.error("Config is wrong.")
         raise exe.ConfigException("Filtern Config format is not correct. Convert_time() failed", 900)
 
-
-
-
 '''
 
 def configure_data(filter_data):
