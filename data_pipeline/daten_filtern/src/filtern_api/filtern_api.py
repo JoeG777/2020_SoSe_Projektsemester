@@ -15,7 +15,6 @@ def filter():
 
     response = None
     try:
-        filtern_validator.config_validation("filtern_config")
         filtern_config = request.get_json()['filtern_config']
         filtern_validator.config_validation(filtern_config)
         timeframe = filtern_config['timeframe']
@@ -23,12 +22,21 @@ def filter():
         filtern_engine.filter(config, timeframe)
         response = 200
 
-    except exe.IncompleteConfigException as exConf:
+    except exe.IncompleteConfigException as exIncConf:
         #logger.influx_logger.error("Config is wrong.")
-        response = exConf.args[1]
+        response = exIncConf.args[1]
     except exe.DBException as exDb:
         #logger.influx_logger.error("Database not available.")
         response = exDb.args[1]
+    except exe.InvalidConfigValueException as exInval:
+        #logger.influx_logger.error("Config is wrong.")
+        response = exInval.args[1]
+    except exe.InvalidConfigKeyException as exInvalkey:
+        #logger.influx_logger.error("Config is wrong.")
+        response = exInvalkey.args[1]
+    except exe.ConfigException as exConf:
+        #logger.influx_logger.error("Config is wrong.")
+        response = exConf.args[1]
     finally:
         return Response(status=response)
 

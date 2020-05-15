@@ -50,6 +50,6 @@ def config_validation(filtern_config):
 
     for time in timeframe:
         if not re.search(r"[0-9][0-9][0-9][0-9][-][0-1][0-9][-][0-3][0-9][ ][0-2][0-9][:][0-6][0-9][:][0-6][0-9][.][0-9][0-9][0-9][ ][U][T][C]" , time):
-            raise exe.ConfigException("Filtern Config Timeframe Format is not correct.")
+            raise exe.ConfigException("Filtern Config Timeframe Format is not correct.", 900)
 
 

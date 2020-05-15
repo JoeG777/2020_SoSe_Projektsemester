@@ -4,11 +4,12 @@ import pandas as pd
 import numpy as np
 
 from mockito import *
-from mockito.matchers import ANY
+from mockito.matchers import ANY, captor
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 
 class Filtern_engine_tests(unittest.TestCase):
+
     def test_tag_drop(self):
         #opening_data
         opening_y = range(0,10)
@@ -66,26 +67,152 @@ class Filtern_engine_tests(unittest.TestCase):
 
         #comparison real_data and exected_data
         self.assertEqual(real_data.room.all() , expected_data.room.all())
-
-
-    # klassififcate
-    temperature_data = {
-        "time": [1, 2, 3, 4, 5, 6, 7],
-        "valueScaled": [2, 4, 6, 8, 10, 12, 14]
-    }
 """
-    klassificate_dataframe = pd.DataFrame(temperature_data)
+    @classmethod
+    def setUp(self):
+        unstub()
+        # spies
+        spy2(read_manager.read_data)
+        spy2(write_manager.write_dataframe)
 
-    # spies
-    spy2(read_manager.read_data)
-    spy2(write_manager.write_dataframe)
+    def test_read_and_write(self):
+        # config
+        timeframe = ['2020-01-10 00:00:00.000 UTC', '2020-01-20 12:00:00.000 UTC']
+        print(timeframe[0])
+        config =  {
+            "room": {
+                "warmwasseraufbereitung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "ofennutzung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "luefterstufen": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "True",
+                    "Interpolation": "linear"
+                }
+            },
+            "condenser": {
+                "warmwasseraufbereitung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "ofennutzung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "luefterstufen": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "evaporator": {
+                "warmwasseraufbereitung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "ofennutzung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "luefterstufen": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "inlet": {
+                "warmwasseraufbereitung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "ofennutzung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "luefterstufen": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "outlet": {
+                "warmwasseraufbereitung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "ofennutzung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "luefterstufen": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            },
+            "freshAirIntake": {
+                "warmwasseraufbereitung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "ofennutzung": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "luefterstufen": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                },
+                "abtauzyklus": {
+                    "delete": "False",
+                    "Interpolation": "linear"
+                }
+            }
+        }
 
-    # when the function tries to get the klassified data from database, return the custom klassified DataFrame above
-    when2(read_manager.read_data, ANY, measurement=ANY, register=ANY).thenReturn(klassificate_dataframe)
+        # klassififcate
+        temperature_data = {
+            "time": [1, 2, 3, 4, 5, 6, 7],
+            "room": [2, 4, 6, 8, 10, 12, 14],
+            "abtauzyklus": ["False","True","True","False","False","False","False"]
+        }
+        temperature_dataframe = pd.DataFrame(temperature_data)
 
-    # verify all interactions (default times is 1)
-    verify(read_manager).read_data(ANY, measurement=ANY, register=ANY)
-    verify(write_manager).write_dataframe(ANY, ANY, ANY)
+        temperature_dataframe["time"] = pd.to_datetime(temperature_dataframe["time"])
+        temperature_dataframe = temperature_dataframe.set_index("time")
+
+        when2(read_manager.read_data, ANY, measurement=ANY , start_utc=ANY,end_utc = ANY).thenReturn(temperature_dataframe)
+
+        prediction_captor = captor(any(pd.DataFrame))
+        when2(write_manager.write_dataframe, ANY, prediction_captor, ANY).thenReturn(None)
+
+        #fe.filter(config, timeframe)
+        actual_dataframe = prediction_captor.value
+
+        verify(read_manager).read_data(ANY, measurement=ANY, start_utc=ANY,end_utc = ANY)
+        verify(write_manager).write_dataframe(ANY, ANY, ANY)
+
+        pd.testing.assert_frame_equal(actual_dataframe, temperature_dataframe, check_dtype = False)
 """
 
 if __name__ == '__main__':

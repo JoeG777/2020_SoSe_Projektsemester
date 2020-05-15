@@ -11,7 +11,7 @@ class test_api(unittest.TestCase):
     def test_response_200(self):
         config = {
             "filtern_config": {
-                "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
+                "timeframe": ["2020-01-10 00:00:00.000 UTC", "2020-01-20 12:00:00.000 UTC"],
                 "selected_value": "variante",
                 "filter_options": {
                     "default": {

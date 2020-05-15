@@ -16,7 +16,7 @@ def filter(config, timeframe):
     '''
 
     filtern_data = get_data(timeframe)
-
+    print("1")
 
     try:
         for curve in config:
@@ -44,10 +44,10 @@ def get_data(timeframe):
     :return: The klassified data
     """
     try:
+        print(timeframe)
         classified_data = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' ,
                                            start_utc= str(convert_time(timeframe[0])),
-                                           end_utc= str(convert_time(timeframe[1])),
-                                           )
+                                           end_utc= str(convert_time(timeframe[1])))
 
         print("Get_Data Ausgabe:")
         print(classified_data)
@@ -143,22 +143,9 @@ def convert_time(time_var):
     :return: the converted time.
     '''
     try:
+        print(time_var)
         time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
         return int((time.mktime(time_var.timetuple())))*1000
     except:
         #logger.influx_logger.error("Config is wrong.")
-        raise exe.ConfigException("Filtern Config format is not correct. Convert_time() failed", 900)
-
-'''
-
-def configure_data(filter_data):
-
-    time = None
-    for i in filter_data:
-        if filter_data.at[filter_data.index[i],filter_data.columns[1]] == True and filter_data.at[filter_data.index[i+1],filter_data.columns[1]] == False:
-            filter_data.at[filter_data.index[i+1],filter_data.columns[1]] = 5
-            filter_data.at[filter_data.index[i+2],filter_data.columns[1]] = 7
-            i = i+3
-
-    return filter_data
-'''
+        raise exe.InvalidConfigValueException("Filtern Config format is not correct. Convert_time() failed", 900)
