@@ -1,18 +1,19 @@
 from flask import *
-from data_pipeline.daten_filtern.src.filtern_engine import filtern_engine
-from data_pipeline.daten_filtern.src.filtern_validator import filtern_validator
-import data_pipeline.exception.exceptions as exe
-import traceback
+import data_pipeline.log_writer.log_writer as logger
 
-from data_pipeline.log_writer.log_writer import Logger
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
-LOGGER_HOST = "localhost"
+LOGGER_HOST = "uipserver.ddns.net"
 LOGGER_PORT = "8086"
 LOGGER_COMPONENT = "Daten filtern"
 
-logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
-                LOGGER_COMPONENT)
+logger = logger.Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
+                       LOGGER_COMPONENT)
+import data_pipeline.daten_filtern.src.filtern_engine.filtern_engine as filtern_engine
+import data_pipeline.daten_filtern.src.filtern_validator.filtern_validator as filtern_validator
+import data_pipeline.exception.exceptions as exe
+import traceback
+
 
 app = Flask(__name__)
 
