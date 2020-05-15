@@ -79,7 +79,6 @@ class Filtern_engine_tests(unittest.TestCase):
     def test_read_and_write(self):
         # config
         timeframe = ['2020-01-10 00:00:00.000 UTC', '2020-01-20 12:00:00.000 UTC']
-        print(timeframe[0])
         config =  {
             "room": {
                 "warmwasseraufbereitung": {
