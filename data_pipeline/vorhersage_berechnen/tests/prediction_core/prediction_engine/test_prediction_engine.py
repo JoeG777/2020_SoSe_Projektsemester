@@ -2,14 +2,20 @@ from unittest import TestCase
 
 from mockito import *
 from mockito.matchers import ANY, captor
+import data_pipeline.log_writer.log_writer as logger
+when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn\
+    (mock(dict(info=lambda x: print(x), warning=lambda x: print(x),
+               error=lambda x: print(x), write_into_measurement=lambda x: print(x))))
+
 from data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine import *
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 import data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor.model_persistor as model_persistor
-import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api as pred_api
 from data_pipeline.exception.exceptions import ConfigException, DBException, PersistorException
 import pandas as pd
 from sklearn import linear_model as lm, model_selection
+import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api as pred_api
+
 
 # TODO prediction engine will change (send classification request and calc in control params,
 #  tests need to be adjusted acordingly)
@@ -20,6 +26,7 @@ class test_calculate_prediction(TestCase):
     @classmethod
     def setUp(self):
         unstub()
+
         # spies
         spy2(pred_api.send_classification_request)
         spy2(model_persistor.load)
@@ -149,7 +156,6 @@ class test_calculate_prediction(TestCase):
         expected_forecasts["time"] = pd.to_datetime(expected_forecasts["time"])
         expected_forecasts = expected_forecasts.set_index("time")
 
-        print(expected_forecasts.head())
         # verify all interactions (default times is 1)
         verify(pred_api).send_classification_request(ANY)
         verify(read_manager).read_data(ANY, measurement=ANY)
