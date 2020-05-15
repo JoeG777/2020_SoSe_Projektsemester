@@ -3,7 +3,7 @@ from datetime import timedelta
 from data_pipeline.pipeline_controller.config_handler.config_handler import fetch_all_configs, fetch_config
 from data_pipeline.pipeline_controller.request_service.request_service import start_historic_data_elicitation, \
     start_prediction_data_elicitation, start_cleaning, start_classification, start_classification_training, \
-    start_filtering, start_prediction_training, drop_get_request, start_prediction
+    start_filtering, start_prediction_training, start_prediction
 
 tl = Timeloop()
 

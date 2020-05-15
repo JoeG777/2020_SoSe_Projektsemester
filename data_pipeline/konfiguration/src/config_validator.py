@@ -1,4 +1,5 @@
 import data_pipeline.exception.exceptions as exceptions
+from data_pipeline.exception.exceptions import ConfigException
 
 
 def check_keys_in_request(req_json, expected_keys):
@@ -11,8 +12,7 @@ def check_keys_in_request(req_json, expected_keys):
     :return True if the ecepted keys match the given keys in the request.
     """
 
-    expected_keys = set(
-        ['value_name', 'measurement', 'frame_width', 'freq', 'register', 'time', 'from', 'to', 'threshold'])
+    expected_keys = {'value_name', 'measurement', 'frame_width', 'freq', 'register', 'time', 'from', 'to', 'threshold'}
 
     def get_keys(json_req):
 
@@ -36,7 +36,7 @@ def check_keys_in_request(req_json, expected_keys):
         return tmp
 
     if req_json is None:
-        raise exceptions.InvalidConfigException('Request empty', 900)
+        raise ConfigException('Request empty', 900)
 
     appendix = set(get_keys(req_json))
 

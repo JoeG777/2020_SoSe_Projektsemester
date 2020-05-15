@@ -1,7 +1,7 @@
 import unittest
 import data_pipeline.konfiguration.src.config_validator as validator
 from data_pipeline.konfiguration.src.bereinigungs_config import bereinigungs_config as be_con
-import data_pipeline.konfiguration.src.config_API as api
+from data_pipeline.konfiguration.src import config_API as api
 
 
 class test_get_json_from_api(unittest.TestCase):
