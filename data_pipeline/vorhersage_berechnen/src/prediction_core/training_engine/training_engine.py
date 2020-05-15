@@ -1,6 +1,8 @@
 import data_pipeline.db_connector.src.read_manager.read_manager as rm
 import pandas as pd
 import json
+import time
+import datetime
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
@@ -51,16 +53,18 @@ def get_all_data(db_config):
     return df
 
 
-def build_unit_logging_model(models, current_model, indep_test, dep_true):
+def build_unit_logging_model(log_models, prediction_unit, current_model, indep_test, dep_true):
     model = current_model["model"]
     dep_predicted = model.predict(indep_test)
-    current_model["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
-    current_model["max_error"] = max_error(dep_true, dep_predicted)
-    current_model["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
-    current_model["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
-    current_model["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
-    current_model["r2_score"] = r2_score(dep_true, dep_predicted)
-    models.append(current_model)
+    prediction_unit["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
+    prediction_unit["max_error"] = max_error(dep_true, dep_predicted)
+    prediction_unit["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
+    prediction_unit["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
+    prediction_unit["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
+    prediction_unit["r2_score"] = r2_score(dep_true, dep_predicted)
+    test = model.coef_
+    prediction_unit["coef"] = test.data
+    log_models.append(prediction_unit)
 
 
 def build_and_write_logging_model(unit_logging_models, average_score):
@@ -70,10 +74,8 @@ def build_and_write_logging_model(unit_logging_models, average_score):
     mean_squared_error = 0
     median_absolute_error_avg = 0
     r2_score_avg = 0
-    print(unit_logging_models)
     logging_model_amount = len(unit_logging_models)
     for unit_logging_model in unit_logging_models:
-        del (unit_logging_model["model"])
         explained_variance_score_avg += unit_logging_model["explained_variance_score"]
         max_error_avg += unit_logging_model["max_error"]
         mean_absolute_error_avg += unit_logging_model["mean_absolute_error"]
@@ -87,8 +89,8 @@ def build_and_write_logging_model(unit_logging_models, average_score):
                      "average_mean_squared_error": mean_squared_error / logging_model_amount,
                      "average_median_absolute_error": median_absolute_error_avg / logging_model_amount,
                      "average_r2_score_avg": r2_score_avg / logging_model_amount,
-                     "model_scores": unit_logging_models
-                     }
+                     "prediction_units": unit_logging_models,
+                     "created_on": datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')}
     logger.write_into_measurement(MODEL_LOG_MEASUREMENT, json.dumps(logging_model))
 
 
@@ -131,7 +133,7 @@ def train_model(all_data, prediction_unit, log_models):
     model.fit(independent_train, dependent_train)
     score = model.score(independent_test, dependent_test)
     persistance_model = model_data_to_dict(score, model, dependent_data_keys)
-    build_unit_logging_model(log_models, persistance_model, independent_test, dependent_test)
+    build_unit_logging_model(log_models, prediction_unit, persistance_model, independent_test, dependent_test)
     return persistance_model
 
 
@@ -145,7 +147,6 @@ def calculate_average_score(all_models):
     score_sum = 0
     for model in all_models:
         score_sum += model["score"]
-    print("Average Score: " + str(float(score_sum / len(all_models))))
     return float(score_sum / len(all_models))
 
 
@@ -172,7 +173,7 @@ def train(config):
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
-    logger.info("Starting training <br> TEST!")
+    logger.info("Starting training")
     try:
         config_validator.validate_config(config)
     except ConfigException as e:

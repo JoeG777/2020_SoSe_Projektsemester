@@ -8,6 +8,7 @@ LOGGER_COMPONENT = "Vorhersage berechnen"
 logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
                 LOGGER_COMPONENT)
 
+import json
 from flask import *
 import data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine.training_engine as training_engine
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine as prediction_engine
@@ -54,21 +55,25 @@ def train():
         try:
             training_engine.train(request.get_json())
         except ConfigException as e:
+            print(e.with_traceback())
             exception_name = e.__class__.__name__
             logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
             logger.error("Returning " + str(http_status_codes.get(exception_name)))
             status_code = http_status_codes.get(exception_name)
         except DBException as e:
+            print(e.with_traceback())
             exception_name = e.__class__.__name__
             logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
             logger.error("Returning " + str(http_status_codes.get(exception_name)))
             status_code = http_status_codes.get(exception_name)
         except PersistorException as e:
+            print(e.with_traceback())
             exception_name = e.__class__.__name__
             logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
             logger.error("Returning " + str(http_status_codes.get(exception_name)))
             status_code = http_status_codes.get(exception_name)
         except Exception as e:
+            print(e.with_traceback())
             exception_name = e.__class__.__name__
             logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
             logger.error("Returning " + str(http_status_codes.get(exception_name)))
