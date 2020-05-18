@@ -2,9 +2,7 @@ from datetime import datetime
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
 import pytz
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as log_writer
-
-logger = log_writer.Logger()
+from data_pipeline.front_end_interface.src.front_end_interface_api.front_end_interface_api import logger
 
 def get_current_time_utc():
     '''
