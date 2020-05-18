@@ -23,7 +23,7 @@ def get_historic_data():
 
         json_validation('historischURL')
 
-        url_historisch = request.get_json()['historischURL']
+        url_historisch = request.get_json(force=True)['historischURL']
 
         his.raise_historic_data(url_historisch)
 
@@ -52,7 +52,7 @@ def get_forecast_data():
 
         json_validation('forecastURL')
 
-        url_forecast = request.get_json()['forecastURL']
+        url_forecast = request.get_json(force=True)['forecastURL']
 
         forc.raise_forecast_data(url_forecast)
 
@@ -79,7 +79,7 @@ def json_validation(index):
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
 
     try:
-        request.get_json()[index]
+        request.get_json(force=True)[index]
     except:
         logger.influx_logger.error(index + 'missing in Config-JSON')
         raise exc.IncompleteConfigException(index + 'missing in Config-JSON.', 900)

@@ -3,8 +3,8 @@ import json
 
 DATA_ELICITATION_URL = "http://localhost:4994"
 DATA_CLEANING_URL = "http://localhost:4995"
-DATA_CLASSIFICATION_URL = "http://localhost:4996"
-DATA_FILTER_URL = "http://localhost:4997"
+DATA_CLASSIFICATION_URL = "http://localhost:4997"
+DATA_FILTER_URL = "http://localhost:4996"
 DATA_PREDICTION_URL = "http://localhost:4999"
 CONFIG_URL = "http://localhost:4998"
 
@@ -14,7 +14,7 @@ def drop_get_request(url):
 
 
 def drop_post_request(url, payload):
-    return requests.post(url, json=json.dumps(payload))
+    return requests.post(url, json=payload, headers = {'Content-type': 'application/json', 'Accept': 'text/plain'})
 
 
 def retrieve_config(config_endpoint):
@@ -22,11 +22,11 @@ def retrieve_config(config_endpoint):
 
 
 def start_historic_data_elicitation(config):
-    return drop_post_request(DATA_ELICITATION_URL + "/historische_daten_erheben ", config)
+    return drop_post_request(DATA_ELICITATION_URL + "/historische_datenerhebung", config)
 
 
 def start_prediction_data_elicitation(config):
-    return drop_post_request(DATA_ELICITATION_URL + "/vorhersagedaten_erheben ", config)
+    return drop_post_request(DATA_ELICITATION_URL + "/forecast_datenerhebung", config)
 
 
 def start_cleaning(config):

@@ -49,12 +49,12 @@ def train():
     901 - DBException - if there are problems with the database connection
     902 - PersistorException - if there are problems with persisting the new models
     """
-    print(request.get_json())
+    logger.info(request.get_json(force=True))
     logger.info("Received request on train endpoint. Starting training procedure...")
     status_code = 200
     if request.is_json:
         try:
-            training_engine.train(request.get_json())
+            training_engine.train(request.get_json(force=True))
         except ConfigException as e:
             exception_name = e.__class__.__name__
             logger.error(exception_name + " was caught.\n StackTrace: " + str(e.__traceback__))
@@ -99,7 +99,7 @@ def predict():
     if request.is_json:
         try:
             print("-----predicting----")
-            prediction_engine.calculate_prediction(request.get_json())
+            prediction_engine.calculate_prediction(request.get_json(force=True))
         except ConfigException as e:
             print(e.with_traceback())
             status_code = http_status_codes.get("ConfigException")

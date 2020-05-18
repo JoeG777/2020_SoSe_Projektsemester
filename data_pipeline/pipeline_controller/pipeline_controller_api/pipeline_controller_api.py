@@ -1,5 +1,5 @@
-from data_pipeline.log_writer.log_writer import Logger
 from data_pipeline.pipeline_controller.process_engine import process_engine
+from data_pipeline.log_writer.log_writer import Logger
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
 LOGGER_HOST = "uipserver.ddns.net"
@@ -25,6 +25,7 @@ if __name__ == '__main__':
     app.run(host='localhost', port=5000)
 
 
-@app.route('/start_process')
-def start_process(front_end_json):
-    return process_engine.start_trigger_based_process()
+@app.route('/start_process', methods=['POST'])
+def start_process():
+    logger.info("lets gooo")
+    return process_engine.start_timer_based_process_cycle()

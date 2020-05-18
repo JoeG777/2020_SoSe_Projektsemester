@@ -8,9 +8,9 @@ from data_pipeline.pipeline_controller.request_service.request_service import st
 tl = Timeloop()
 
 
-@tl.job(interval=timedelta(hours=24))
+#@tl.job(interval=timedelta(hours=24))
 def start_timer_based_process_cycle():
-    tl.start(block=True)
+#   tl.start(block=True)
     all_configs = fetch_all_configs()
     start_historic_data_elicitation(all_configs["elicitation"])
     start_prediction_data_elicitation(all_configs["elicitation"])
@@ -21,6 +21,6 @@ def start_timer_based_process_cycle():
     start_prediction_training(all_configs["prediction"])
 
 
-def start_trigger_based_process(front_end_json):
+def start_trigger_based_process():
     config = fetch_config("prediction")
     start_prediction(config)

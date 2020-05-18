@@ -13,7 +13,7 @@ CONFIG_ENDPOINTS = {"elicitation": '/erhebung_config',
 def fetch_all_configs():
     all_configs = {}
     for key in CONFIG_ENDPOINTS.keys():
-        all_configs[key] = drop_get_request(CONFIG_ENDPOINTS[key])
+        all_configs[key] = drop_get_request("http://localhost:4998" + CONFIG_ENDPOINTS[key]).json()
     return all_configs
 
 

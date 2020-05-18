@@ -14,7 +14,7 @@ app = Flask(__name__)
 def classify():
     response = 200
     try:
-        extracted_config = request.get_json()
+        extracted_config = request.get_json(force=True)
         classification.apply_classifier(extracted_config)
     except ex.ConfigException:
         response = 900
@@ -34,7 +34,7 @@ def classify():
 def train():
     response = 200
     try:
-        config = request.get_json()
+        config = request.get_json(force=True)
 
         trainingsdata.enrich_data(config)
         trainingsdata.mark_data(config)

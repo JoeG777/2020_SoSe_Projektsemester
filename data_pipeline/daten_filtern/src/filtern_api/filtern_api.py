@@ -37,7 +37,7 @@ def filter():
     logger.info("Received request on filter data. Starting ...")
     response = None
     try:
-        filtern_config = request.get_json()['filtern_config']
+        filtern_config = request.get_json(force=True)['filtern_config']
         filtern_validator.config_validation(filtern_config)
         logger.info("Config validated")
         timeframe = filtern_config['timeframe']
