@@ -4,9 +4,10 @@ import data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor.mo
 import data_pipeline.db_connector.src.read_manager.read_manager as db_read
 import data_pipeline.db_connector.src.write_manager.write_manager as db_write
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api as pred_api
-
+from data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api import logger
 
 def calculate_prediction(config):
+    logger.info("Starting prediction calculation...")
     cfg_validator.validate_config(config)
 
     database_options = config["database_options"]["prediction"]
@@ -20,18 +21,23 @@ def calculate_prediction(config):
     all_prediction_units = config.get("prediction_options").get(selected_value)
     known_data_sources = db_read.read_data(datasource_forecast_dbname, measurement=datasource_forecast_measurement)
 
-    known_data_sources = known_data_sources.rename(columns={'temperature': 'outdoor'})
+    #known_data_sources = known_data_sources.rename(columns={'temperature': 'outdoor'})
+
+    logger.info("Fetched relevant data...")
 
     all_prediction_models = model_persistor.load()
     while all_prediction_units:
+        logger.info("Known data sources: " + ', '.join(known_data_sources.columns.values))
         for prediction_unit in all_prediction_units:
             independent_data = prediction_unit.get("independent")
             if set(independent_data).issubset(set(known_data_sources.columns.values)):
+                logger.info("Predicting " + ', '.join(prediction_unit.get("dependent")))
                 apply_model(prediction_unit, known_data_sources, all_prediction_models)
                 all_prediction_units.remove(prediction_unit)
 
+    logger.info("Prediction finished. Sending data to database")
     db_write.write_dataframe(datasink_prediction_dbname, known_data_sources, datasink_prediction_measurement)
-
+    print(known_data_sources.head())
     # TODO send the actual database config to the api
     pred_api.send_classification_request('')
 

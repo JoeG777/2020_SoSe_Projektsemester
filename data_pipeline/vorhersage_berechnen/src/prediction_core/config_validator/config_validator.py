@@ -3,6 +3,7 @@ from data_pipeline.exception.exceptions import *
 import collections
 import copy
 from numbers import Number
+from data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_api.prediction_api import logger
 
 valid_independent_values = ['outdoor', 'freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
 valid_dependent_values = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
@@ -35,6 +36,7 @@ def validate_config(config):
     :raises InvalidConfigKeyException - if a key in the config is invalid
     :raises InvalidConfigValueException if a value in the config is invalid
     """
+    logger.info("Validating config...")
     if isinstance(config, dict):
         check_general_constraints(config)
 
@@ -47,6 +49,8 @@ def validate_config(config):
         check_prediction_chain(prediction_units)
     else:
         raise ConfigTypeException("Config is of wrong type: " + str(type(config)))
+
+    logger.info("Validation successful.")
 
 
 def has_mandatory_keys(config, keys):
@@ -109,6 +113,7 @@ def check_general_constraints(config):
     E.g. if prediction options is a dictionary, e.g. if every dependent entry is a list
     :param config: The config to be checked
     """
+    logger.info("Checking general constraints...")
     has_mandatory_keys(config, top_level_keys)
     validate_database_options(config["database_options"])
     selected_value = config["selected_value"]
@@ -119,6 +124,7 @@ def check_general_constraints(config):
     has_mandatory_keys(prediction_options, [selected_value])
     selected_prediction_unit = prediction_options[selected_value]
     validate_prediciton_unit(selected_prediction_unit)
+    logger.info("Validated general constraints.")
 
 
 def check_completeness(config):
@@ -129,6 +135,7 @@ def check_completeness(config):
     :raises InvalidConfigKeyException - if a necessary key is not given(should've been checked before)
     :raises IncompleteConfigException if a necessary curve is not defined as dependent
     """
+    logger.info("Checking completeness...")
     to_be_predicted = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet']
 
     for entry in config:
@@ -142,6 +149,8 @@ def check_completeness(config):
     if to_be_predicted:
         raise IncompleteConfigException('In the current config not every curve is dependent')
 
+    logger.info("Config is complete.")
+
 
 def check_redundancies(config):
     """
@@ -152,6 +161,7 @@ def check_redundancies(config):
     :raises RedundantConfigException - in any of the cases described above
     :raises InvalidConfigKeyException - if a necessary key is not given(should've been checked before'
     """
+    logger.info("Checking redundancies...")
     to_be_predicted = []
 
     for entry in config:
@@ -170,6 +180,7 @@ def check_redundancies(config):
                                                " in the same prediction unit")
         else:
             raise InvalidConfigKeyException('An entry of the config does not contain a dependent curve.')
+    logger.info("No redundancies found.")
 
 
 def check_prediction_chain(config):
@@ -179,6 +190,7 @@ def check_prediction_chain(config):
     :param config: the config to be checked
     :raises InconsistentConfigException - if a prediction chain can not be built with the config
     """
+    logger.info("Checking prediction chain...")
     config = copy.deepcopy(config)
     predicted = ['outdoor']
     to_be_predicted = ['freshAirIntake', 'condenser', 'evaporator', 'outlet', 'room', 'inlet', 'outdoor']
@@ -202,6 +214,8 @@ def check_prediction_chain(config):
     if not compare(predicted, to_be_predicted):
         raise InconsistentConfigException('The prediction chain could not be built fully with the given config!')
 
+    logger.info("Prediction chain is valid.")
+
 
 def check_training_percentage(config):
     """
@@ -210,6 +224,7 @@ def check_training_percentage(config):
     :raises InvalidTrainingPercentageException - if the training percentage is not in (0,1)
     :raises InvalidConfigKeyException - if a necessary key is not given(should've been checked before'
     """
+    logger.info("Checking training percentages...")
     for entry in config:
         if 'test_sample_size' in entry:
             curr_test_sample_size = entry.get('test_sample_size')
@@ -218,5 +233,7 @@ def check_training_percentage(config):
                                                          + str(curr_test_sample_size))
         else:
             raise InvalidConfigKeyException('An entry of the config does not contain a test sample size.')
+
+    logger.info("Training percentages are valid.")
 
 
