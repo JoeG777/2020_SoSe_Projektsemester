@@ -104,6 +104,8 @@ function createElementArray(predictionUnits) {
 
                 elements.push(linkNode);
 
+                console.log(linkNode);
+
             }
 
             // create nodes and create link or create link only
@@ -115,7 +117,6 @@ function createElementArray(predictionUnits) {
     return elements;
 
 }
-
 var cy = cytoscape({
 
     container: document.getElementById('cy'), // container to render in
@@ -149,6 +150,7 @@ var cy = cytoscape({
 
   });
 
+cy.on('hover', 'node', () => console.log('hello'))
 // Parameter-Viewer
 
 let curve_name_independent = document.getElementById("curve_name_independent");
@@ -161,7 +163,7 @@ let mean_absolute_error = document.getElementById("mean_absolute_error");
 let mean_squared_error = document.getElementById("mean_squared_error");
 let median_absolute_error = document.getElementById("median_absolute_error");
 let r2_score = document.getElementById("r2_score");
-
+/*
 //Independent Curves
 
 for (var i = 0; i < predictionUnits[3]['independent'].length; i++) {
@@ -188,7 +190,7 @@ $(document).on('mousemove', function(e){
         top:   e.pageY
     });
 });
-
+*/
 //test_sample_size.innerHTML = predictionUnits[0]['test_sample_size']
 //explained_variance_score.innerHTML = predictionUnits[0]['explained_variance_score']
 //max_error.innerHTML = predictionUnits[0]['max_error']
