@@ -1,15 +1,11 @@
-import sklearn
-import pandas as pd
 import data_pipeline.exception.exceptions as exce
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
-import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 import data_pipeline.daten_klassifizieren.model_persistor as model_persistor
-import data_pipeline.log_writer as log_writer
-from data_pipeline.daten_klassifizieren.config import classification_config as config
 from sklearn.model_selection import train_test_split
 import numpy as np
 from datetime import datetime
 import time
+from data_pipeline.daten_klassifizieren.classification_API import logger
 
 def train_classifier(config):
     """Name in documentation: klassifizierer_trainieren()
@@ -22,30 +18,33 @@ def train_classifier(config):
     :return
         int: Status code that indicates whether the training was successful(0 Success, 1 Failure)"""
     try:
+        logger.info("Logging config")
         selected_event, required_score, test_size, datasource_marked_data, start_time, end_time = get_config_parameter(config)
     except Exception:
-        return exce.InvalidConfigException()
+        return exce.InvalidConfigValueException
     try:
+        logger.info("Logging Model")
         classifier = model_persistor.load_classifier(config)
-    except Exception:
-        return exce.PersistorException
+    except Exception as e:
+        raise exce.PersistorException(str(e)) # TODO: warum nochmal eine werfen, wenn eh schon geworfen???
     start_time = convert_time(start_time)
     end_time = convert_time(end_time)
     df = read_manager.read_query(datasource_marked_data, f"SELECT * FROM {selected_event} WHERE time >= {start_time}ms "
                                                       f"AND time <= {end_time}ms")
     df.dropna(inplace=True)
     y = np.array(df[selected_event])
-    X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    X = np.array(df.drop(labels=[selected_event, f"{selected_event}_marker"], axis=1))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
 
     try:
+        logger.info("training Model")
         classifier = classifier.fit(X_train, y_train)
     except Exception:
         return 1
 
     if evaluate_classifier(classifier, required_score, X_test, y_test):
         model_persistor.persist_classifier(classifier, config)
-        print("ueberschrieben")
+        logger.info("Saving Model")
     return 0
 
 
@@ -65,6 +64,7 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
     print("Das ist der alte Score: ", required_score)
     print("Das ist der neue Score: ", score)
     if score >= required_score:
+        logger.info("evaluating Model")
         return True
     return False
 
@@ -75,7 +75,12 @@ def get_config_parameter(config):
         config: dictionary from which the parameters will be extracted
     :raises
     :return
-        int: #########################"""
+        string: selected_event: selected classification event
+        float: required_score: required score for the classifier
+        string: test_size: proportion of test and training data size
+        string: datasource_marked_data: database name for the marked_data
+        array: timeframe: timeframe for the query of the required data
+        """
     selected_event = config['selected_event']
     required_score = config['required_score'][selected_event]
     test_size = config['test_size']
@@ -93,3 +98,6 @@ def convert_time(time_var):
         int: The converted time as unix timestamp"""
     time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
     return int((time.mktime(time_var.timetuple())))*1000
+
+if __name__ == "__main__":
+    train_classifier(config)

@@ -75,13 +75,13 @@ def json_validation(index):
     '''
 
     if int(request.headers.get('Content-Length')) == 0:
-        logger.influx_logger.error('Config-JSON empty')
+        logger.info('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
 
     try:
         request.get_json(force=True)[index]
     except:
-        logger.influx_logger.error(index + 'missing in Config-JSON')
+        logger.info(index + 'missing in Config-JSON')
         raise exc.IncompleteConfigException(index + 'missing in Config-JSON.', 900)
 
 

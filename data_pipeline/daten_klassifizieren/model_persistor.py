@@ -6,7 +6,7 @@ import data_pipeline.exception.exceptions as ex
 
 
 # TODO: logWriter noch einbinden
-
+# TODO: model.txt muss existieren und darf nicht leer sein
 def load_classifier(classification_config):
     """
     Name in documentation: 'klassifizierer_laden'
@@ -26,11 +26,9 @@ def load_classifier(classification_config):
         raise ex.ConfigTypeException("Wrong data structure of configuration: " + str(classification_config))
 
     try:
-        new_classifier_method, datasource_classifier, event = get_config_parameter(classification_config)
-
-        if new_classifier_method != "":
-            exec_string = classification_config["classification_method_options"][new_classifier_method]
-            return eval(exec_string)
+        create_new_classifier, datasource_classifier, event = get_config_parameter(classification_config)
+        if create_new_classifier == "True":
+            return sklearn.neighbors.KNeighborsClassifier()
     except KeyError:
         raise ex.InvalidConfigKeyException("No Key found in configuration ")#evtl. genauere aufteilung der Exception notwendig
 
@@ -45,8 +43,7 @@ def load_classifier(classification_config):
         raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
 
     if model == '':
-        print('kein sklearn Model')
-        return sklearn.svm.SVC()  # TODO: hardcoden oder noch entscheiden durch Analyse
+        return sklearn.neighbors.KNeighborsClassifier()  # TODO: hardcoden oder noch entscheiden durch Analyse
     else:
         return model
 
@@ -72,7 +69,7 @@ def persist_classifier(classifier, classification_config):
         raise ex.ConfigTypeException("Wrong data structure of configuration: " + str(classification_config))
 
     try:
-        new_classifier_method, datasource_classifier, event = get_config_parameter(classification_config)
+        create_new_classifier, datasource_classifier, event = get_config_parameter(classification_config)
     except KeyError:
         raise ex.InvalidConfigKeyException("Wrong key for Configuration")
 
@@ -137,7 +134,7 @@ def get_config_parameter(config):
     :return datasource_classifier: the file in which the dictionary ist currently stored
     :return event: happening which should be detected by the classifier
     """
-    new_classifier_method = config["new_classifier_method"]
+    create_new_classifier = config["create_new_classifier"]
     datasource_classifier = config["datasource_classifier"]
     event = config["selected_event"]
-    return new_classifier_method, datasource_classifier, event
+    return create_new_classifier, datasource_classifier, event

@@ -25,7 +25,7 @@ def get_data(from_db, from_measurement, value_name, register, time):
     query = ""
     if isInt(register):
 
-        query = "SELECT {0} FROM {1} WHERE register='{2}' and time >= {3} and time <= {4}".format(
+        query = "SELECT {0} FROM {1} WHERE register='{2}' and time >= {3} and time <= {4} limit 10000".format(
             value_name, from_measurement, register, time["from"], time["to"])
     else:
         query = "SELECT {0} FROM {1} WHERE time >={2} AND time <={3}".format(

@@ -12,7 +12,6 @@ def check_keys_in_request(req_json, expected_keys):
     :return True if the ecepted keys match the given keys in the request.
     """
 
-    expected_keys = {'value_name', 'measurement', 'frame_width', 'freq', 'register', 'time', 'from', 'to', 'threshold'}
 
     def get_keys(json_req):
 
@@ -20,7 +19,7 @@ def check_keys_in_request(req_json, expected_keys):
 
         def get_keys_rec(v_dict):
             for k, v in v_dict.items():
-                if type(k) is dict:
+                if type(v) is dict:
                     tmp.append(k)
                     get_keys_rec(v)
                 else:

@@ -34,22 +34,22 @@ def get_start_date():
     :return: start date for the beginning of the query
     '''
 
-    try:
-        if not os.path.exists(date_tmp_file):
-            open(date_tmp_file, "w")
+#    try:
+#        if not os.path.exists(date_tmp_file):
+#            open(date_tmp_file, "w")
 
-        tmp = open(date_tmp_file, "r")
-        start_date = tmp.read()
+#        tmp = open(date_tmp_file, "r")
+#        start_date = tmp.read()
 
-        if start_date == "":
-            start_date = "2020-01-05T00:00:00Z"
-        tmp.close()
+#        if start_date == "":
+    start_date = "2020-01-05T00:00:00Z"
+#        tmp.close()
 
-        return start_date
+    return start_date
 
-    except:
-        logger.influx_logger.error("Inadequate read and write rights.")
-        raise FileException("Inadequate read and write rights.", 903)
+#    except:
+#        logger.info("Inadequate read and write rights.")
+#        raise FileException("Inadequate read and write rights.", 903)
 
 
 def get_temp_data(url):
@@ -85,7 +85,7 @@ def get_temp_data(url):
                 return_data.append(element)
 
     except:
-        logger.influx_logger.error("Inadequate read and write rights.")
+        logger.info("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
     return return_data
@@ -99,15 +99,17 @@ def find_start_date(temperatures):
     :return: Start-date for the query.
     '''
 
-    try:
+    start_date = 1
 
-        for i in range(len(temperatures)):
-            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
-                start_date = i
+#    try:
 
-    except:
-        logger.influx_logger.error("incorrect passed data.")
-        raise RawDataException("incorrect passed data.", 905)
+#        for i in range(len(temperatures)):
+#            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
+#               start_date = i
+#
+#    except:
+#       logger.info("incorrect passed data.")
+#       raise RawDataException("incorrect passed data.", 905)
 
     return start_date
 
@@ -124,7 +126,7 @@ def write_into_tmp(last_date_read):
         tmp.write(last_date_read)
         tmp.close()
     except FileException:
-        logger.influx_logger.error("Inadequate read and write rights.")
+        logger.info("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
 
@@ -161,11 +163,11 @@ def get_dwd_data(url):
         df = df.set_index('time')
 
     except FileException:
-        logger.influx_logger.error("Inadequate read and write rights.")
+        logger.info("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
     except UrlException:
-        logger.influx_logger.error("Incorrect URL.")
+        logger.info("Incorrect URL.")
         raise UrlException("Incorrect URL.", 904)
 
     return df
