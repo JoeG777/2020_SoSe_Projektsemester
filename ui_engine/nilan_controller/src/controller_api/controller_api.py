@@ -2,6 +2,7 @@ from flask import *
 import ui_engine.nilan_controller.src.data_pipeline_format_executor.data_pipeline_command_executor as dpce
 import ui_engine.nilan_controller.src.modbus_command_executor.modbus_command_executor as mce
 import data_pipeline.exception.exceptions as exc
+import requests
 
 app = Flask(__name__)
 
@@ -130,3 +131,8 @@ def format_json():
     }
 
     return json
+
+def get_current_models():
+
+    return requests.post('http://localhost:xxxx/current_models')
+
