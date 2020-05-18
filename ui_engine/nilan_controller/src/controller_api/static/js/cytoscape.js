@@ -58,10 +58,70 @@ let predictionUnits = [{"independent": ["outdoor"],
                          "median_absolute_error": 2.195879102725417,
                          "r2_score": 0.0019386808175004822}
                         ]
+var edgesPredictionCalcValues = {}
+var cy = null;
+
+$(document).ready(init())
 
 
+function init() {
+    // fetch data
+
+    let elements = createElementArray(predictionUnits);
+
+    cy = cytoscape({
+
+        container: document.getElementById('cy'), // container to render in
+
+        elements: createElementArray(predictionUnits),
+        style: [ // the stylesheet for the graph
+          {
+            selector: 'node',
+            style: {
+              'background-color': '#666',
+              'label': 'data(id)'
+            }
+          },
+
+          {
+            selector: 'edge',
+            style: {
+              'width': 3,
+              'line-color': '#ccc',
+              'target-arrow-color': '#ccc',
+              'target-arrow-shape': 'triangle',
+              'curve-style': 'bezier'
+            }
+          }
+        ],
+
+        layout: {
+          name: 'cose',
+
+        }
+
+      });
 
 
+  cy.on('mouseover', 'edge', function(evt)  {
+      let eventId = evt.target.id();
+
+      let values = edgesPredictionCalcValues[eventId];
+
+      $('#parameter_wrapper').offset({
+                left:  evt.pageX,
+                top:   evt.pageY
+      });
+      console.log(values);
+  });
+}
+
+function onEdgeHover(evt) {
+    let eventId = evt.target.id();
+    let value = edgesPredictionCalcValues[eventId];
+
+
+}
 function createElementArray(predictionUnits) {
     let elements = [];
     let predictionUnitId = 10;
@@ -94,18 +154,17 @@ function createElementArray(predictionUnits) {
             for (let k = 0; k < independent.length; k++) {
                 let node = elements.find(n => n['data']['id'] == independent[k])
 
+                let id = predictionUnitId + '-' + node['data']['id'] + independent[j];
                 let linkNode = {
                     'data': {
-                        'id': predictionUnitId + '-' + node['data']['id'] + independent[j],
+                        'id': id,
                         'source': node['data']['id'],
                         'target': dependent[j]
                     }
                 }
+                edgesPredictionCalcValues[id] = 'yalla es geht';
 
                 elements.push(linkNode);
-
-                console.log(linkNode);
-
             }
 
             // create nodes and create link or create link only
@@ -117,40 +176,11 @@ function createElementArray(predictionUnits) {
     return elements;
 
 }
-var cy = cytoscape({
 
-    container: document.getElementById('cy'), // container to render in
+$(document).on('mousemove', function(e){
 
-    elements: createElementArray(predictionUnits),
-    style: [ // the stylesheet for the graph
-      {
-        selector: 'node',
-        style: {
-          'background-color': '#666',
-          'label': 'data(id)'
-        }
-      },
+});
 
-      {
-        selector: 'edge',
-        style: {
-          'width': 3,
-          'line-color': '#ccc',
-          'target-arrow-color': '#ccc',
-          'target-arrow-shape': 'triangle',
-          'curve-style': 'bezier'
-        }
-      }
-    ],
-
-    layout: {
-      name: 'cose',
-
-    }
-
-  });
-
-cy.on('hover', 'node', () => console.log('hello'))
 // Parameter-Viewer
 
 let curve_name_independent = document.getElementById("curve_name_independent");
@@ -184,12 +214,7 @@ for (var i = 0; i < predictionUnits[3]['dependent'].length; i++) {
 
 }
 
-$(document).on('mousemove', function(e){
-    $('#parameter_wrapper').offset({
-        left:  e.pageX,
-        top:   e.pageY
-    });
-});
+
 */
 //test_sample_size.innerHTML = predictionUnits[0]['test_sample_size']
 //explained_variance_score.innerHTML = predictionUnits[0]['explained_variance_score']
