@@ -11,7 +11,7 @@ response = None
 @app.route('/nilan_control_service', methods=['POST'])
 def nilan_control_service():
     '''
-    Name in documentation: 'nilan_control_service()'
+    Name in documentation: 'nilan_control_service'
     Gets called when new Data has to be persisted.
     The passed Data gets validated and afterwards calls the write_to_nilan method on
     nilan_control_service.
@@ -56,6 +56,7 @@ def pipeline_control_service():
 def json_validation():
 
     '''
+    Name in Documentation: 'json_validation'
     Gets called in the beginning of either 'pipeline_control_service' or 'nilan_control_service' to proof wether the passed config data
     is complete or not.
     :param index: Depending on the passed index, the config gets checked for another tag. Either 'forecastURL' or 'historischURL'.

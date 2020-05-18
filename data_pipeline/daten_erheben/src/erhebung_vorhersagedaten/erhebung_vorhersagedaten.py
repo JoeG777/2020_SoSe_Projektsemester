@@ -10,9 +10,8 @@ import pandas as pd
 logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Datenerhebung")
 
 def get_forecast_data(url):
-
     '''
-    Name in documentation: 'get_forecast_data()'
+    Name in documentation: 'get_forecast_data'
     The KML-file including the forecast weatherdata is being processed as XML. The Method searches and saves the Temperature data,
     transform it for InfluxDB and Changes the type from Kelvin to Celsius. The formatted forecast temperature data is saved in one Json-Array.
     The Method returns this Array.
@@ -80,7 +79,6 @@ def get_forecast_data(url):
 
 
 def get_forecast(url):
-
     '''
     Name in documentation: 'get_forecast'
     This Method downloads the KMZ file from the URL, saves it as ZIP-file and extracts it.
@@ -110,10 +108,10 @@ def get_forecast(url):
 
 
 def raise_forecast_data(url):
-
     '''
-    Name in documentation: 'vorhersagedaten_erheben()'
+    Name in documentation: 'vorhersagedaten_erheben'
     Main-method for the main call.
     :param url: This is the URL to download the forecast weather data.
     '''
+
     utils.write_to_influx(get_forecast_data(url))

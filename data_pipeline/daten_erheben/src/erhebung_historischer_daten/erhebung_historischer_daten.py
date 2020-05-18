@@ -13,7 +13,7 @@ logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Datenerhebung
 
 def get_timestamp_dwd(time):
     '''
-    Name in documentation: 'get_timestamp_dwd()'
+    Name in documentation: 'get_timestamp_dwd'
     Formats the time stamp of the individual weather data in a suitable format for writing into InfluxDB.
     :param time: unformatted time stamp of the individual weather data
     :return: formatted time stamp
@@ -25,7 +25,7 @@ def get_timestamp_dwd(time):
 
 def get_start_date():
     '''
-    Name in documentation: 'get_start_date()'
+    Name in documentation: 'get_start_date'
     Requests the start of the weather data.
     To determine the start date, it looks for an entry in the tmp.txt file.
     If a date has already been received in this, then this is also used as the start date.
@@ -54,7 +54,7 @@ def get_start_date():
 
 def get_temp_data(url):
     '''
-    Name in documentation: 'get_temp_data()'
+    Name in documentation: 'get_temp_data'
     Downloads the ZIP file from DWD, reads the CSV,
     and stores the individual temperature data in an array with their associated time stamps.
     :param url: Download-link for the weather data from DWD
@@ -93,7 +93,7 @@ def get_temp_data(url):
 
 def find_start_date(temperatures):
     '''
-    Name in documentation: 'find_start_date()'
+    Name in documentation: 'find_start_date'
     This method searches for the start-date of the query depending on the datenerhebung_tmp.txt-file.
     :param temperatures: Holds the weather data.
     :return: Start-date for the query.
@@ -114,7 +114,7 @@ def find_start_date(temperatures):
 
 def write_into_tmp(last_date_read):
     '''
-    Name in documentation: ''
+    Name in documentation: 'write_into_tmp'
     Writes the last date of the last written weather-data into tmp.txt
     :param last_date_read: Timestamp of the last written weather-data
     '''
@@ -130,7 +130,7 @@ def write_into_tmp(last_date_read):
 
 def get_dwd_data(url):
     '''
-    Name in documentation: 'get_dwd_data()'
+    Name in documentation: 'get_dwd_data'
     Temperature data from the extracted CSV file are formatted appropriately for the InfluxDB,
     stored in a JSON array and returned.
     :param url: Download-link for the weather data from DWD
@@ -173,7 +173,7 @@ def get_dwd_data(url):
 
 def raise_historic_data(url):
     '''
-    Name in documentation: 'historische_daten_erheben()'
+    Name in documentation: 'historische_daten_erheben'
     Main method for the main call.
     :param url: Download-link for the weather data from DWD
     '''

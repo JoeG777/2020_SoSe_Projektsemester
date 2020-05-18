@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/')
 def start():
     '''
-    Name in documentation: ''
+    Name in documentation: 'start'
     triggers the index method
     :return: the link to index.html
     '''
@@ -20,7 +20,7 @@ def start():
 @app.route('/index')
 def index():
     '''
-        Name in documentation: ''
+        Name in documentation: 'index'
         renders the index.html
         :return: index.html the site to be shown
     '''
@@ -44,7 +44,7 @@ def index():
 @app.route('/validate_input', methods=['POST'])
 def validate_input():
     '''
-        Name in documentation: ''
+        Name in documentation: 'validate_input'
         Validates from which button the input came and afterwards calls the right method.
         :return: index.html the site to be shown
     '''
@@ -111,6 +111,7 @@ def exec_modbus_cmd():
 
 def format_json():
     '''
+    Name in documentation: 'format_json'
     Requests the mandatory values from the index.html and saves it into a JSON-file.
     :return: json the formatted JSON-file
     '''

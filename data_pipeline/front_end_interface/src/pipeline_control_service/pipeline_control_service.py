@@ -8,6 +8,7 @@ logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Forntend-Inte
 
 def build_request_data_pipeline_cmd(front_end_json):
     '''
+    Name in documentation: 'vorhersage_triggern'
     Calls the 'start_process'-method in the pipeline controller, which starts the whole forecast process.
     :param parameters: Parameters from Usersettings in the Web-application
     '''

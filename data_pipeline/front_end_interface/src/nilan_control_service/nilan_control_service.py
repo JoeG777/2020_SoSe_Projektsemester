@@ -8,7 +8,7 @@ logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Forntend-Inte
 
 def get_current_time_utc():
     '''
-    Name in documentation: 'get_current_time'
+    Name in documentation: 'get_current_time_utc'
     This method sets the timezone of the timestamp to UTC in order to show it correctly in Grafana.
     :return: the date 2 hours before the passed date.
     '''
@@ -24,7 +24,7 @@ def get_current_time_utc():
 
 def format_json(json):
     '''
-    Name in documentation: 'formatiere_eingabedaten()'
+    Name in documentation: 'formatiere_eingabedaten'
     Formats the Json-File for InfluxDB
     :param json: Nilan-Ventilation Unit Parameters
     '''
@@ -58,7 +58,7 @@ def format_json(json):
 
 def write_to_nilan(json):
     '''
-    Name in documentation: 'schreibe_eingabedaten()'
+    Name in documentation: 'schreibe_eingabedaten'
     Writes the User-Settings into Nilan-Ventilation Unit
     :param json: Nilan-Ventilation Unit Parameters
     :raises
