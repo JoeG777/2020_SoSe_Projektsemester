@@ -14,91 +14,96 @@
     </div>
     <div class="heading_container">
         <div class="dropdown_options">
-            <a class="dropdown_option" id="dropdown_option_1" onclick="option_pressed(1)">Control Panel</a>
-            <a class="dropdown_option" id="dropdown_option_2" onclick="option_pressed(2)">Current Model</a>
+            <a class="dropdown_option" id="dropdown_option_1" onclick="option_pressed(1)" href="index">Control Panel</a>
+            <a class="dropdown_option" id="dropdown_option_2" onclick="option_pressed(2)" href="prediction"}>Current Model</a>
         </div>
     </div>
 </div>
-<form action="{{ url_for('validate_input') }}" method="post">
-    <div class="content active" id="content">
-        <div class="controlPanel">
-            <div class="date-control-wrapper">
-                <input class="date-element safari" type="datetime-local" id="start_safari" name="start_safari" value={{value_start_safari}} size="10">
-                <input class="date-element not-safari disable" type="date" id="start_not_safari" name="start_not_safari">
-                <input class="date-element safari" type="datetime-local" id="end_safari" name="end_safari" value={{value_end_safari}} size="10">
-                <input class="date-element not-safari disable" type="date" id="end_not_safari" name="end_not_safari">
+<div class="body">
+    <form action="{{ url_for('validate_input') }}" method="post">
+        <div class="content active" id="content">
+            <div class="controlPanel">
+                <div class="date-control-wrapper">
+                    <input class="date-element safari" type="datetime-local" id="start_safari" name="start_safari" value={{value_start_safari}} size="10">
+                    <input class="date-element not-safari disable" type="date" id="start_not_safari" name="start_not_safari">
+                    <input class="date-element safari" type="datetime-local" id="end_safari" name="end_safari" value={{value_end_safari}} size="10">
+                    <input class="date-element not-safari disable" type="date" id="end_not_safari" name="end_not_safari">
+                </div>
+                <div class="vorhersage-wrapper">
+                    <label class="switch">
+                        <input type="checkbox" name="vorhersage" id="vorhersage" value={{value_vorhersage}}>
+                        <span class="checkboxSlider"></span>
+                    </label>
+                    <label class="vorhersageLabel">Vorhersage anzeigen</label>
+                </div>
+                <div class="slider-wrapper raumtemperatur" id="raumtemperatur">
+                    <p class="heading">Raumtemperatur</p>
+                    <input type="range" min="1800" max="2400" value={{value_raumtemperatur}} class="slider" name="raumtemperaturSlider" id="raumtemperaturSlider">
+                    <div class="text">
+                        <p class="value low raumtempLow">18°C</p>
+                        <p class="value high raumtempHigh">24°C</p>
+                    </div>
+                    <div class="current current1">
+                        <span class="currentValue currentValue1"></span>
+                    </div>
+                </div>
+                <div class="slider-wrapper lüfterstufe" id="lüfterstufe">
+                    <p class="heading">Lüfterstufe - Zuluft</p>
+                    <input type="range" min="0" max="4" value={{value_luefterstufe_zuluft}} class="slider" name="lüfterZuluftSlider" id="lüfterZuluftSlider">
+                    <div class="text">
+                        <p class="value low zuluftLow">0</p>
+                        <p class="value high zuluftHigh">4</p>
+                    </div>
+                    <div class="current current2">
+                        <span class="currentValue currentValue2"></span>
+                    </div>
+                </div>
+                <div class="slider-wrapper lüfterstufe" id="lüfterstufe">
+                    <p class="heading">Lüfterstufe - Abluft</p>
+                    <input type="range" min="0" max="4" value={{value_luefterstufe_abluft}} class="slider" name="lüfterAbluftSlider" id="lüfterAbluftSlider">
+                    <div class="text">
+                        <p class="value low abluftLow">0</p>
+                        <p class="value high abluftHigh">4</p>
+                    </div>
+                    <div class="current current3">
+                        <span class="currentValue currentValue3"></span>
+                    </div>
+                </div>
+                <div class="slider-wrapper kompressor" id="kompressor">
+                    <p class="heading">Betriebsmodus</p>
+                    <input type="range" min="0" max="2" value={{value_betriebsmodus}} class="slider" name="betriebsmodusSlider" id="betriebsmodusSlider">
+                    <div class="text">
+                        <p class="value low betriebsmodusLow">Kühlen</p>
+                        <p class="value high betriebsmodusHigh">Heizen</p>
+                    </div>
+                    <div class="current current4">
+                        <span class="currentValue currentValue4"></span>
+                    </div>
+                </div>
             </div>
-            <div class="vorhersage-wrapper">
-                <label class="switch">
-                    <input type="checkbox" name="vorhersage" id="vorhersage" value={{value_vorhersage}}>
-                    <span class="checkboxSlider"></span>
-                </label>
-                <label class="vorhersageLabel">Vorhersage anzeigen</label>
-            </div>
-            <div class="slider-wrapper raumtemperatur" id="raumtemperatur">
-                <p class="heading">Raumtemperatur</p>
-                <input type="range" min="1800" max="2400" value={{value_raumtemperatur}} class="slider" name="raumtemperaturSlider" id="raumtemperaturSlider">
-                <div class="text">
-                    <p class="value low raumtempLow">18°C</p>
-                    <p class="value high raumtempHigh">24°C</p>
-                </div>
-                <div class="current current1">
-                    <span class="currentValue currentValue1"></span>
-                </div>
-            </div>
-            <div class="slider-wrapper lüfterstufe" id="lüfterstufe">
-                <p class="heading">Lüfterstufe - Zuluft</p>
-                <input type="range" min="0" max="4" value={{value_luefterstufe_zuluft}} class="slider" name="lüfterZuluftSlider" id="lüfterZuluftSlider">
-                <div class="text">
-                    <p class="value low zuluftLow">0</p>
-                    <p class="value high zuluftHigh">4</p>
-                </div>
-                <div class="current current2">
-                    <span class="currentValue currentValue2"></span>
-                </div>
-            </div>
-            <div class="slider-wrapper lüfterstufe" id="lüfterstufe">
-                <p class="heading">Lüfterstufe - Abluft</p>
-                <input type="range" min="0" max="4" value={{value_luefterstufe_abluft}} class="slider" name="lüfterAbluftSlider" id="lüfterAbluftSlider">
-                <div class="text">
-                    <p class="value low abluftLow">0</p>
-                    <p class="value high abluftHigh">4</p>
-                </div>
-                <div class="current current3">
-                    <span class="currentValue currentValue3"></span>
-                </div>
-            </div>
-            <div class="slider-wrapper kompressor" id="kompressor">
-                <p class="heading">Betriebsmodus</p>
-                <input type="range" min="0" max="2" value={{value_betriebsmodus}} class="slider" name="betriebsmodusSlider" id="betriebsmodusSlider">
-                <div class="text">
-                    <p class="value low betriebsmodusLow">Kühlen</p>
-                    <p class="value high betriebsmodusHigh">Heizen</p>
-                </div>
-                <div class="current current4">
-                    <span class="currentValue currentValue4"></span>
-                </div>
+            <div class="grafana-wrapper">
+                <iframe class="grafana-frame" src="http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=2" width="700" height="500" frameborder="0"></iframe>
             </div>
         </div>
-        <div class="grafana-wrapper">
-            <iframe class="grafana-frame" src="http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=2" width="700" height="500" frameborder="0"></iframe>
+        <div class="dropdown active" id="dashboard_dropdown">
+            <button class="dropbtn">Dashboards</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="dropdown(1)">Dashboard 1</a>
+                <a href="#" onclick="dropdown(2)">Dashboard 2</a>
+            </div>
         </div>
-    </div>
-    <div class="dropdown active" id="dashboard_dropdown">
-        <button class="dropbtn">Dashboards</button>
-        <div class="dropdown-content">
-            <a href="#" onclick="dropdown(1)">Dashboard 1</a>
-            <a href="#" onclick="dropdown(2)">Dashboard 2</a>
+        <div class="btn-wrapper active" id="btn_wrapper">
+            <input type="submit" class="button inactive" id="aktualisieren" name="button" href="#" value="aktualisieren"/>
+            <input type="submit" class="button inactive" id="anwenden" href="#" name="button" value="anwenden"/>
         </div>
-    </div>
-    <div class="btn-wrapper active" id="btn_wrapper">
-        <input type="submit" class="button inactive" id="aktualisieren" name="button" href="#" value="aktualisieren"/>
-        <input type="submit" class="button inactive" id="anwenden" href="#" name="button" value="anwenden"/>
-    </div>
-</form>
+    </form>
+</div>
+
 <div class="cy_container" id="cy">
     <div class="cy" id="cy"></div>
 </div>
+
+
 <div class="parameter_wrapper" id="parameter_wrapper">
     <div class="curves">
         <div class="independent_curves">

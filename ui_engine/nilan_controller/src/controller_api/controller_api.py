@@ -41,6 +41,11 @@ def index():
                            value_betriebsmodus=betriebsmodus)
 
 
+@app.route('/prediction')
+def prediction():
+    return render_template('prediction.html')
+
+
 @app.route('/validate_input', methods=['POST'])
 def validate_input():
     '''
