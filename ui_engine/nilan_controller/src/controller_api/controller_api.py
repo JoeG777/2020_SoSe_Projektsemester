@@ -134,5 +134,5 @@ def format_json():
 
 def get_current_models():
 
-        current_models = requests.post('http://localhost:xxxx/current_models')
+    return requests.post('http://localhost:xxxx/current_models')
 
