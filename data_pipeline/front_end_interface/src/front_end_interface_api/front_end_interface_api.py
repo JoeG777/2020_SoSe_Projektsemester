@@ -1,12 +1,19 @@
 from flask import *
+from data_pipeline.log_writer.log_writer import Logger
+LOGGER_DB_NAME = "logs"
+LOGGER_MEASUREMENT = "logs"
+LOGGER_HOST = "localhost"
+LOGGER_PORT = "8086"
+LOGGER_COMPONENT = "Frontend Interface"
+
+logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
+                LOGGER_COMPONENT)
 from data_pipeline.db_connector.src.read_manager import read_manager as rm
 import data_pipeline.front_end_interface.src.nilan_control_service.nilan_control_service as ncs
 import data_pipeline.front_end_interface.src.pipeline_control_service.pipeline_control_service as pcs
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as log_writer
 
 app = Flask(__name__)
-logger = log_writer.Logger()
 response = None
 
 

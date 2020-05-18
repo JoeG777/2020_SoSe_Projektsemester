@@ -1,9 +1,7 @@
 import json
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as log_writer
+from data_pipeline.front_end_interface.src.front_end_interface_api.front_end_interface_api import logger
 import requests
-
-logger = log_writer.Logger()
 
 
 def build_request_data_pipeline_cmd(front_end_json):
