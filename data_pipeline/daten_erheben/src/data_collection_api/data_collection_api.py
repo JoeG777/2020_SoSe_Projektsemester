@@ -5,7 +5,7 @@ import data_pipeline.exception.exceptions as exc
 import data_pipeline.log_writer.log_writer as logger
 
 app = Flask(__name__)
-logger = logger.Logger("db_rohdaten", "temperature_DWD", "uipserver.ddns.net", 8086,"datenerhebung")
+logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Datenerhebung")
 
 
 @app.route('/historische_datenerhebung', methods=['POST'])
