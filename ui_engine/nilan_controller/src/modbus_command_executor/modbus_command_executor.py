@@ -3,7 +3,7 @@ import data_pipeline.log_writer.log_writer as logger
 import data_pipeline.exception.exceptions as exc
 import json
 
-logger = logger.Logger()
+#llogger = logger.Logger()
 
 
 def drop_post_request(url, payload):
