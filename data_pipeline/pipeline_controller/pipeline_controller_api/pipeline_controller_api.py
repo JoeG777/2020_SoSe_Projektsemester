@@ -26,5 +26,5 @@ if __name__ == '__main__':
 
 
 @app.route('/start_process')
-def start_process():
+def start_process(front_end_json):
     return process_engine.start_trigger_based_process()

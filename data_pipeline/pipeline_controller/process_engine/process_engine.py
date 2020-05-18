@@ -21,6 +21,6 @@ def start_timer_based_process_cycle():
     start_prediction_training(all_configs["prediction"])
 
 
-def start_trigger_based_process():
+def start_trigger_based_process(front_end_json):
     config = fetch_config("prediction")
     start_prediction(config)
