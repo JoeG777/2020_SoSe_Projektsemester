@@ -182,6 +182,13 @@ for (var i = 0; i < predictionUnits[3]['dependent'].length; i++) {
 
 }
 
+$(document).on('mousemove', function(e){
+    $('#parameter_wrapper').offset({
+        left:  e.pageX,
+        top:   e.pageY
+    });
+});
+
 //test_sample_size.innerHTML = predictionUnits[0]['test_sample_size']
 //explained_variance_score.innerHTML = predictionUnits[0]['explained_variance_score']
 //max_error.innerHTML = predictionUnits[0]['max_error']
