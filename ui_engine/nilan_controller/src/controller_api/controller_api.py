@@ -2,6 +2,7 @@ from flask import *
 import ui_engine.nilan_controller.src.data_pipeline_format_executor.data_pipeline_command_executor as dpce
 import ui_engine.nilan_controller.src.modbus_command_executor.modbus_command_executor as mce
 import data_pipeline.exception.exceptions as exc
+import requests
 
 app = Flask(__name__)
 
@@ -39,6 +40,11 @@ def index():
                            value_luefterstufe_zuluft=luefterstufe_zuluft,
                            value_luefterstufe_abluft=luefterstufe_abluft,
                            value_betriebsmodus=betriebsmodus)
+
+
+@app.route('/prediction')
+def prediction():
+    return render_template('prediction.html')
 
 
 @app.route('/validate_input', methods=['POST'])
@@ -125,3 +131,8 @@ def format_json():
     }
 
     return json
+
+def get_current_models():
+
+        current_models = requests.post('http://localhost:xxxx/current_models')
+

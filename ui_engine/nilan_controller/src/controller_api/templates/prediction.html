@@ -1,10 +1,33 @@
 <html>
 <head>
-    <link rel="stylesheet" href="../static/styles/prediction.css">
+    <link rel="stylesheet" href="../static/css/prediction.css">
 </head>
-<body style="background-color: green;">
-<div class="cy" id="cy" style="background-color: white;width:80%;height:80%;"></div>
-<script src="../static/js/cytoscape.min.js"></script>
-<script src="../static/js/cytoscape.js"></script>
-</body>
+    <body>
+    <div class="header_container">
+        <div class="heading_dropdown">
+            <div class="dropdown_header">
+                <p class="heading" id="heading">Header</p>
+                <div class="dropdown_arrow" onclick="press_dropdown()"></div>
+            </div>
+            <div class="dropdown_options">
+                <a class="dropdown_option" id="dropdown_option_1" onclick="option_pressed(1)" href="index">Control Panel</a>
+                <a class="dropdown_option" id="dropdown_option_2" onclick="option_pressed(2)" href="prediction">Current Model</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="body_container">
+        <div class="cy_container">
+            <div class="cy" id="cy"></div>
+        </div>
+    </div>
+
+    <script src="../static/js/cytoscape.min.js"></script>
+    <script src="../static/js/cytoscape.js"></script>
+    <script type="text/javascript"
+            src='../static/js/prediction.js'>
+    </script>
+    </body>
 </html>
+
