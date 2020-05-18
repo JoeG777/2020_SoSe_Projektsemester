@@ -43,3 +43,10 @@ cd pipeline_controller_api
 set FLASK_APP=pipeline_controller_api.py
 start cmd /k flask run -h localhost -p 5000
 cd ../../
+
+cd front_end_interface
+cd src
+cd front_end_interface_api
+set FLASK_APP=front_end_interface_api.py
+start cmd /k flask run -h localhost -p 5001
+cd ../../../
