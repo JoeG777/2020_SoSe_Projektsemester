@@ -90,27 +90,3 @@ class DBException(DataPipelineException):
             return 'DBException: {0}'.format(self.message)
         else:
             return 'DBException has been raised'
-
-
-class UrlException(DataPipelineException):
-    def __str__(self):
-        if self.message:
-            return 'UrlException: {0}'.format(self.message)
-        else:
-            return 'UrlException has been raised'
-
-
-class FileException(DataPipelineException):
-    def __str__(self):
-        if self.message:
-            return 'FileException: {0}'.format(self.message)
-        else:
-            return 'FileException has been raised'
-
-
-class RawDataException(DataPipelineException):
-    def __str__(self):
-        if self.message:
-            return 'RawDataException: {0}'.format(self.message)
-        else:
-            return 'RawDataException has been raised'
