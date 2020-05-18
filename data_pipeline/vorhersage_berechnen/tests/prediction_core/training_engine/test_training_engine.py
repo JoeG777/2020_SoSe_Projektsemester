@@ -1,9 +1,12 @@
 import unittest
 import data_pipeline.db_connector.src.read_manager.read_manager as rm
 import pandas
-
 from mockito import mockito, ANY, captor
-from mockito.mockito import when2
+from mockito.mockito import when2, when, mock
+import data_pipeline.log_writer.log_writer as logger
+when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
+    (mock(dict(info=lambda x: print(x), warning=lambda x: print(x),
+               error=lambda x: print(x), write_into_measurement=lambda x: print(x))))
 from data_pipeline.exception.exceptions import PersistorException, DBException
 from data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine import training_engine as te
 from prediction_core.model_persistor import model_persistor
