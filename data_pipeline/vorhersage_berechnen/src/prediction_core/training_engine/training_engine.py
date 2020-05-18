@@ -57,13 +57,16 @@ def build_unit_logging_model(log_models, prediction_unit, current_model, indep_t
     model = current_model["model"]
     dep_predicted = model.predict(indep_test)
     prediction_unit["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
-    prediction_unit["max_error"] = max_error(dep_true, dep_predicted)
+    prediction_unit["max_error"] = 0
+    if len(prediction_unit["dependent"]) == 1:
+        prediction_unit["max_error"] = max_error(dep_true, dep_predicted)
+
     prediction_unit["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
     prediction_unit["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
     prediction_unit["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
     prediction_unit["r2_score"] = r2_score(dep_true, dep_predicted)
-    test = model.coef_
-    prediction_unit["coef"] = test.data
+    prediction_unit["intercept"] = model.intercept_
+    #prediction_unit["coef"] = model.coef_.tolist()
     log_models.append(prediction_unit)
 
 
@@ -188,3 +191,74 @@ def train(config):
         all_models.append(train_model(all_data, prediction_unit, log_models))
     persist_dictionary = save_prediction_model(all_models, config)
     build_and_write_logging_model(log_models, persist_dictionary["average_score"])
+
+vorhersage_config = {
+    "database_options": {
+        "training": {
+            "datasource_nilan_dbname": "trainingsdatenTest",
+            "datasource_nilan_measurement": "trainingsdatenTestMeasurement",
+            "datasource_weatherdata_dbname": "trainingsdatenTest",
+            "datasource_weatherdata_measurement": "trainingswetterdatenTestMeasurement"
+        },
+        "prediction": {
+            "datasource_forecast_dbname": "vorhersagedatenTest",
+            "datasource_forecast_measurement": "vorhersageTestMeasurement",
+            "datasource_forecast_register": "201",
+            "datasink_prediction_dbname": "jourfixeVorhersage",
+            "datasink_prediction_measurement": "vorhergesagteDaten"
+        }
+    },
+    "selected_value": "default",
+    "prediction_options": {
+        "default": [
+            {
+                "independent": [
+                    "outdoor"
+                ],
+                "dependent": [
+                    "freshAirIntake"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "freshAirIntake"
+                ],
+                "dependent": [
+                    "evaporator"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "freshAirIntake"
+                ],
+                "dependent": [
+                    "outlet"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "outlet",
+                    "evaporator"
+                ],
+                "dependent": [
+                    "room"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "freshAirIntake"
+                ],
+                "dependent": [
+                    "inlet", "condenser"
+                ],
+                "test_sample_size": 0.2
+            }
+        ]
+    }
+}
+
+train(vorhersage_config)
