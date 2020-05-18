@@ -50,3 +50,12 @@ cd front_end_interface_api
 set FLASK_APP=front_end_interface_api.py
 start cmd /k flask run -h localhost -p 5001
 cd ../../../
+
+cd ../
+cd ui_engine
+cd nilan_controller
+cd src
+cd controller_api
+set FLASK_APP=controller_api.py
+start cmd /k flask run -h localhost -p 5002
+cd ../../../
