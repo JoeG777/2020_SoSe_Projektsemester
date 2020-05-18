@@ -1,4 +1,5 @@
 from flask import *
+from data_pipeline.db_connector.src.read_manager import read_manager as rm
 import data_pipeline.front_end_interface.src.nilan_control_service.nilan_control_service as ncs
 import data_pipeline.front_end_interface.src.pipeline_control_service.pipeline_control_service as pcs
 import data_pipeline.exception.exceptions as exc
@@ -7,6 +8,7 @@ import data_pipeline.log_writer.log_writer as log_writer
 app = Flask(__name__)
 logger = log_writer.Logger()
 response = None
+
 
 @app.route('/nilan_control_service', methods=['POST'])
 def nilan_control_service():
@@ -31,6 +33,7 @@ def nilan_control_service():
 
     return Response(status=response)
 
+
 @app.route('/pipeline_control_service', methods=['POST'])
 def pipeline_control_service():
     '''
@@ -52,6 +55,20 @@ def pipeline_control_service():
         response = icxc.args[1]
 
     return Response(status=response)
+
+
+@app.route('/current_models', methods=['GET'])
+def get_current_models():
+    """
+    //TODO ADD TO DOCUMENTATION
+    Used to retrieve the current model metadata for display in a front-end application.
+    :return: The current model metadata as json.
+    """
+    df = rm.read_query("logs", "SELECT short_message FROM model GROUP BY short_message ORDER BY DESC LIMIT 1")["short_message"]
+    df.reset_index(drop=True, inplace=True)
+    print(df)
+    return df.to_dict()[0]
+
 
 def json_validation():
 
