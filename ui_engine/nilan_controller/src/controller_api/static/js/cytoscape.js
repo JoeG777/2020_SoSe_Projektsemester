@@ -1,4 +1,4 @@
-let predictionUnits = [{"independent": ["outdoor"],
+/*let predictionUnits = [{"independent": ["outdoor"],
                         "dependent": ["freshAirIntake"],
                         "test_sample_size": 0.2,
                         "explained_variance_score": 1.0,
@@ -57,17 +57,23 @@ let predictionUnits = [{"independent": ["outdoor"],
                          "mean_squared_error": 22.747382804899328,
                          "median_absolute_error": 2.195879102725417,
                          "r2_score": 0.0019386808175004822}
-                        ]
+                        ]*/
 var edgesPredictionCalcValues = {}
 var cy = null;
 
-$(document).ready(init())
+$(document).ready(fetchModelData())
+
+function fetchModelData() {
+    jQuery.when(
+        jQuery.getJSON('get_model_data')
+    ).done(function (json) {
+        init(json)
+    })
+}
 
 
-function init() {
-    // fetch data
-
-    let elements = createElementArray(predictionUnits);
+function init(data) {
+    let predictionUnits = data.prediction_units //createElementArray(predictionUnits);
 
     cy = cytoscape({
 

@@ -132,7 +132,8 @@ def format_json():
 
     return json
 
-def get_current_models():
 
-    return requests.post('http://localhost:xxxx/current_models')
+@app.route('/get_model_data', methods=['GET'])
+def get_current_models():
+    return requests.get('http://localhost:4999/current_models').json()
 
