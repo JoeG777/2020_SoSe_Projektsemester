@@ -21,11 +21,13 @@ CURVES = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"
 
 
 def df_contains_all_data(dataframe):
+    logger.info("Validating fetched data...")
     if "outdoor" not in dataframe:
         raise InsufficientDataException("Could not predict as data is missing for outdoor!")
     for curve in CURVES:
         if curve not in dataframe:
             raise InsufficientDataException("Could not predict as data is missing for " + curve)
+    logger.info("Fetched data validated!")
 
 
 def get_all_data(db_config):
@@ -35,7 +37,7 @@ def get_all_data(db_config):
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
     """
-    logger.info("Fetching data")
+    logger.info("Fetching data....")
     df = rm.read_data(db_config["datasource_weatherdata_dbname"],
                       measurement=db_config["datasource_weatherdata_measurement"])
     df = df.rename(columns={'temperature': "outdoor"})
@@ -70,6 +72,7 @@ def build_unit_logging_model(log_models, prediction_unit, current_model, indep_t
 
 
 def build_and_write_logging_model(unit_logging_models, average_score):
+    logger.info("Calculating benchmarks for current model...")
     explained_variance_score_avg = 0
     max_error_avg = 0
     mean_absolute_error_avg = 0
@@ -93,6 +96,7 @@ def build_and_write_logging_model(unit_logging_models, average_score):
                      "average_r2_score_avg": r2_score_avg / logging_model_amount,
                      "prediction_units": unit_logging_models,
                      "created_on": datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')}
+    logger.info("benchmarks calucalted successfully. Writing into database.")
     logger.write_into_measurement(MODEL_LOG_MEASUREMENT, json.dumps(logging_model))
 
 
@@ -121,6 +125,7 @@ def train_model(all_data, prediction_unit, log_models):
     :param prediction_unit: The prediction unit the model should be based on.
     :return: The created model in a dictionary as defined in model_data_to_dict.
     """
+    logger.info("Training for dependent data set: " + str(prediction_unit["dependent"]) + "...")
     model = linear_model.LinearRegression()
 
     independent_data_keys = prediction_unit["independent"]
@@ -135,6 +140,7 @@ def train_model(all_data, prediction_unit, log_models):
     model.fit(independent_train, dependent_train)
     score = model.score(independent_test, dependent_test)
     persistance_model = model_data_to_dict(score, model, dependent_data_keys)
+    logger.info("Done training for dependent data set: " + str(prediction_unit["dependent"]) + "!")
     build_unit_logging_model(log_models, prediction_unit, persistance_model, independent_test, dependent_test)
     return persistance_model
 
@@ -159,6 +165,7 @@ def save_prediction_model(all_models, config):
     :param all_models: All models to be persisted.
     :param config: The config these models where created with.
     """
+    logger.info("Persisting prediction model...")
     avg_score = calculate_average_score(all_models)
     persist_dictionary = {
         "average_score": avg_score,
@@ -166,6 +173,7 @@ def save_prediction_model(all_models, config):
         "models": all_models
     }
     model_persistor.save(persist_dictionary)
+    logger.info("Prediction model persisted successfully!")
     return persist_dictionary
 
 
@@ -175,7 +183,7 @@ def train(config):
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
-    logger.info("Starting training")
+    logger.info("Starting training prediction....")
     try:
         config_validator.validate_config(config)
     except ConfigException as e:
@@ -188,5 +196,77 @@ def train(config):
     log_models = []
     for prediction_unit in all_prediction_units:
         all_models.append(train_model(all_data, prediction_unit, log_models))
+    logger.info("Done training prediction.")
     persist_dictionary = save_prediction_model(all_models, config)
     build_and_write_logging_model(log_models, persist_dictionary["average_score"])
+
+vorhersage_config = {
+    "database_options": {
+        "training": {
+            "datasource_nilan_dbname": "trainingsdatenTest",
+            "datasource_nilan_measurement": "trainingsdatenTestMeasurement",
+            "datasource_weatherdata_dbname": "trainingsdatenTest",
+            "datasource_weatherdata_measurement": "trainingswetterdatenTestMeasurement"
+        },
+        "prediction": {
+            "datasource_forecast_dbname": "vorhersagedatenTest",
+            "datasource_forecast_measurement": "vorhersageTestMeasurement",
+            "datasource_forecast_register": "201",
+            "datasink_prediction_dbname": "jourfixeVorhersage",
+            "datasink_prediction_measurement": "vorhergesagteDaten"
+        }
+    },
+    "selected_value": "default",
+    "prediction_options": {
+        "default": [
+            {
+                "independent": [
+                    "outdoor"
+                ],
+                "dependent": [
+                    "freshAirIntake"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "freshAirIntake"
+                ],
+                "dependent": [
+                    "evaporator"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "freshAirIntake"
+                ],
+                "dependent": [
+                    "outlet"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "outlet",
+                    "evaporator"
+                ],
+                "dependent": [
+                    "room"
+                ],
+                "test_sample_size": 0.2
+            },
+            {
+                "independent": [
+                    "freshAirIntake"
+                ],
+                "dependent": [
+                    "inlet", "condenser"
+                ],
+                "test_sample_size": 0.2
+            }
+        ]
+    }
+}
+
+train(vorhersage_config)
