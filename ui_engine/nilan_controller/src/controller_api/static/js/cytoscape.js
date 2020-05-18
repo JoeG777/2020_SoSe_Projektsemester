@@ -79,24 +79,31 @@ function init() {
             selector: 'node',
             style: {
               'background-color': '#666',
-              'label': 'data(id)'
+              'label': 'data(id)',
+              'content': 'data(id)',
+              'background-color': 'white',
+              'color': 'white',
+              'font-size': '24px',
+              'width': '60',
+              'height': '60'
             }
           },
 
           {
             selector: 'edge',
             style: {
-              'width': 3,
+              'width': '6',
               'line-color': '#ccc',
               'target-arrow-color': '#ccc',
               'target-arrow-shape': 'triangle',
-              'curve-style': 'bezier'
+              'curve-style': 'bezier',
+              'target-arrow-shape': 'vee',
+              'arrow-scale': '1',
             }
-          }
+          },
         ],
-
         layout: {
-          name: 'cose',
+          name: 'breadthfirst',
 
         }
 
@@ -106,14 +113,27 @@ function init() {
   cy.on('mouseover', 'edge', function(evt)  {
       let eventId = evt.target.id();
 
-      let values = edgesPredictionCalcValues[eventId];
-
+      let value = edgesPredictionCalcValues[eventId];
+      $('#parameter_wrapper').show();
       $('#parameter_wrapper').offset({
-                left:  evt.pageX,
-                top:   evt.pageY
+                left:  evt.renderedPosition.x,
+                top:   evt.renderedPosition.y
       });
-      console.log(values);
+
+   $('#test_sample_size').innerHTML = value['test_sample_size']
+   $('#explained_variance_score').innerHTML = value['explained_variance_score']
+   $('#max_error').innerHTML = value['max_error']
+   $('#mean_absolute_error').innerHTML = value['mean_absolute_error']
+   $('#mean_squared_error').innerHTML = value['mean_squared_error']
+   $('#median_absolute_error').innerHTML = value['median_absolute_error']
+   $('#r2_score').innerHTML =value['r2_score']
   });
+
+    cy.on('mouseout', 'edge', function(evt)  {
+        $('#parameter_wrapper').hide();
+    });
+
+  cy.userZoomingEnabled(false);
 }
 
 function onEdgeHover(evt) {
@@ -162,7 +182,7 @@ function createElementArray(predictionUnits) {
                         'target': dependent[j]
                     }
                 }
-                edgesPredictionCalcValues[id] = 'yalla es geht';
+                edgesPredictionCalcValues[id] = extractCalcValues(predictionUnits[i]);
 
                 elements.push(linkNode);
             }
@@ -177,10 +197,16 @@ function createElementArray(predictionUnits) {
 
 }
 
-$(document).on('mousemove', function(e){
-
-});
-
+function extractCalcValues(predictionUnit) {
+    return {
+         "test_sample_size": predictionUnit["test_sample_size"],
+         "explained_variance_score": predictionUnit["explained_variance_score"],
+         "max_error": predictionUnit["max_error"],
+         "mean_absolute_error": predictionUnit["mean_absolute_error"],
+         "mean_squared_error": predictionUnit["mean_squared_error"],
+         "median_absolute_error": predictionUnit["median_absolute_error"],
+    }
+}
 // Parameter-Viewer
 
 let curve_name_independent = document.getElementById("curve_name_independent");
@@ -216,10 +242,3 @@ for (var i = 0; i < predictionUnits[3]['dependent'].length; i++) {
 
 
 */
-//test_sample_size.innerHTML = predictionUnits[0]['test_sample_size']
-//explained_variance_score.innerHTML = predictionUnits[0]['explained_variance_score']
-//max_error.innerHTML = predictionUnits[0]['max_error']
-//mean_absolute_error.innerHTML = predictionUnits[0]['mean_absolute_error']
-//mean_squared_error.innerHTML = predictionUnits[0]['mean_squared_error']
-//median_absolute_error.innerHTML = predictionUnits[0]['median_absolute_error']
-//r2_score.innerHTML = predictionUnits[0]['r2_score']
