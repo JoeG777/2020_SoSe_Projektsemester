@@ -6,10 +6,6 @@ import json
 logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Nilan Controller")
 
 
-def drop_post_request(url, payload):
-    return requests.post(url, json=json.dumps(payload))
-
-
 def build_request_modbus_cmd(nilan_json):
     '''
     Name in documentation: 'build_request_modbus_cmd'
@@ -19,7 +15,7 @@ def build_request_modbus_cmd(nilan_json):
     '''
 
     try:
-        return drop_post_request("http://localhost:5001" + "/nilan_control_service ", json=json.dumps(nilan_json))
+        return requests.post("http://localhost:5001" + "/nilan_control_service ", json=json.dumps(nilan_json))
 
     except:
         logger.influx_logger.error('Unable to save new parameters.')
