@@ -1,6 +1,8 @@
 import data_pipeline.db_connector.src.read_manager.read_manager as rm
 import pandas as pd
 import json
+import time
+import datetime
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from data_pipeline.vorhersage_berechnen.src.prediction_core.model_persistor import model_persistor
@@ -19,11 +21,13 @@ CURVES = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"
 
 
 def df_contains_all_data(dataframe):
+    logger.info("Validating fetched data...")
     if "outdoor" not in dataframe:
         raise InsufficientDataException("Could not predict as data is missing for outdoor!")
     for curve in CURVES:
         if curve not in dataframe:
             raise InsufficientDataException("Could not predict as data is missing for " + curve)
+    logger.info("Fetched data validated!")
 
 
 def get_all_data(db_config):
@@ -33,16 +37,17 @@ def get_all_data(db_config):
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
     """
-    logger.info("Fetching data")
-    df = rm.read_data(db_config["datasource_weatherdata_dbname"],
-                      measurement=db_config["datasource_weatherdata_measurement"])
-    df = df.rename(columns={'temperature': "outdoor"})
-    current_dataset = rm.read_data(
+    logger.info("Fetching data....")
+    df = rm.read_query(db_config["datasource_weatherdata_dbname"],
+                      "SELECT historic_weatherdata, time FROM " + db_config["datasource_weatherdata_measurement"] + " WHERE time > 1578610800000000000 AND time < 1578912660000000000")
+    print(df)
+    df = df.rename(columns={'historic_weatherdata': "outdoor"})
+    current_dataset = rm.read_query(
         db_config["datasource_nilan_dbname"],
-        measurement=db_config["datasource_nilan_measurement"],
-        resolve_register="True")
-
+        "SELECT * FROM " + db_config["datasource_nilan_measurement"] + " WHERE time > 1578610800000000000 AND time < 11578912660000000000")
+    current_dataset = current_dataset.astype('float64')
     df = pd.merge(df, current_dataset, on='time', how='inner')
+    print(df.columns)
     try:
         df_contains_all_data(df)
     except InsufficientDataException as e:
@@ -51,29 +56,32 @@ def get_all_data(db_config):
     return df
 
 
-def build_unit_logging_model(models, current_model, indep_test, dep_true):
+def build_unit_logging_model(log_models, prediction_unit, current_model, indep_test, dep_true):
     model = current_model["model"]
     dep_predicted = model.predict(indep_test)
-    current_model["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
-    current_model["max_error"] = max_error(dep_true, dep_predicted)
-    current_model["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
-    current_model["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
-    current_model["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
-    current_model["r2_score"] = r2_score(dep_true, dep_predicted)
-    models.append(current_model)
+    prediction_unit["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
+    prediction_unit["max_error"] = 0
+    if len(prediction_unit["dependent"]) == 1:
+        prediction_unit["max_error"] = max_error(dep_true, dep_predicted)
+    prediction_unit["mean_absolute_error"] = mean_absolute_error(dep_true, dep_predicted)
+    prediction_unit["mean_squared_error"] = mean_squared_error(dep_true, dep_predicted)
+    prediction_unit["median_absolute_error"] = median_absolute_error(dep_true, dep_predicted)
+    prediction_unit["r2_score"] = r2_score(dep_true, dep_predicted)
+    prediction_unit["intercept"] = model.intercept_.tolist()
+    prediction_unit["coef"] = model.coef_.tolist()
+    log_models.append(prediction_unit)
 
 
 def build_and_write_logging_model(unit_logging_models, average_score):
+    logger.info("Calculating benchmarks for current model...")
     explained_variance_score_avg = 0
     max_error_avg = 0
     mean_absolute_error_avg = 0
     mean_squared_error = 0
     median_absolute_error_avg = 0
     r2_score_avg = 0
-    print(unit_logging_models)
     logging_model_amount = len(unit_logging_models)
     for unit_logging_model in unit_logging_models:
-        del (unit_logging_model["model"])
         explained_variance_score_avg += unit_logging_model["explained_variance_score"]
         max_error_avg += unit_logging_model["max_error"]
         mean_absolute_error_avg += unit_logging_model["mean_absolute_error"]
@@ -87,8 +95,9 @@ def build_and_write_logging_model(unit_logging_models, average_score):
                      "average_mean_squared_error": mean_squared_error / logging_model_amount,
                      "average_median_absolute_error": median_absolute_error_avg / logging_model_amount,
                      "average_r2_score_avg": r2_score_avg / logging_model_amount,
-                     "model_scores": unit_logging_models
-                     }
+                     "prediction_units": unit_logging_models,
+                     "created_on": datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')}
+    logger.info("benchmarks calucalted successfully. Writing into database.")
     logger.write_into_measurement(MODEL_LOG_MEASUREMENT, json.dumps(logging_model))
 
 
@@ -117,12 +126,13 @@ def train_model(all_data, prediction_unit, log_models):
     :param prediction_unit: The prediction unit the model should be based on.
     :return: The created model in a dictionary as defined in model_data_to_dict.
     """
+    logger.info("Training for dependent data set: " + str(prediction_unit["dependent"]) + "...")
     model = linear_model.LinearRegression()
 
     independent_data_keys = prediction_unit["independent"]
     dependent_data_keys = prediction_unit["dependent"]
     test_sample_size = prediction_unit["test_sample_size"]
-
+    print(all_data)
     independent_train, independent_test, dependent_train, dependent_test = train_test_split(
         all_data[independent_data_keys],
         all_data[dependent_data_keys],
@@ -131,7 +141,8 @@ def train_model(all_data, prediction_unit, log_models):
     model.fit(independent_train, dependent_train)
     score = model.score(independent_test, dependent_test)
     persistance_model = model_data_to_dict(score, model, dependent_data_keys)
-    build_unit_logging_model(log_models, persistance_model, independent_test, dependent_test)
+    logger.info("Done training for dependent data set: " + str(prediction_unit["dependent"]) + "!")
+    build_unit_logging_model(log_models, prediction_unit, persistance_model, independent_test, dependent_test)
     return persistance_model
 
 
@@ -145,7 +156,6 @@ def calculate_average_score(all_models):
     score_sum = 0
     for model in all_models:
         score_sum += model["score"]
-    print("Average Score: " + str(float(score_sum / len(all_models))))
     return float(score_sum / len(all_models))
 
 
@@ -156,6 +166,7 @@ def save_prediction_model(all_models, config):
     :param all_models: All models to be persisted.
     :param config: The config these models where created with.
     """
+    logger.info("Persisting prediction model...")
     avg_score = calculate_average_score(all_models)
     persist_dictionary = {
         "average_score": avg_score,
@@ -163,6 +174,7 @@ def save_prediction_model(all_models, config):
         "models": all_models
     }
     model_persistor.save(persist_dictionary)
+    logger.info("Prediction model persisted successfully!")
     return persist_dictionary
 
 
@@ -172,7 +184,7 @@ def train(config):
     Takes a configuration and trains a regression model based on this configuration.
     :param config: The configuration the model should be created with.
     """
-    logger.info("Starting training <br> TEST!")
+    logger.info("Starting training prediction....")
     try:
         config_validator.validate_config(config)
     except ConfigException as e:
@@ -185,5 +197,6 @@ def train(config):
     log_models = []
     for prediction_unit in all_prediction_units:
         all_models.append(train_model(all_data, prediction_unit, log_models))
+    logger.info("Done training prediction.")
     persist_dictionary = save_prediction_model(all_models, config)
     build_and_write_logging_model(log_models, persist_dictionary["average_score"])

@@ -11,8 +11,8 @@ bereinigungs_config = {
         "freq": "60S",
         "threshold": 3600,
         "time": {
-            "from": "1578610800000000000",
-            "to": "1578913200000000000"
+            "from": "1578615660000000000",
+            "to": "1578912660000000000"
         }
     },
 
@@ -24,11 +24,11 @@ bereinigungs_config = {
         "value_name": "temperature",
         "register": "historic_weatherdata",
         "frame_width": 10,
-        "freq": "600S",
+        "freq": "60S",
         "threshold": 3600,
         "time": {
-            "from": "1588809000000000000",
-            "to": "1589413800000000000"
+            "from": "1578615660000000000",
+            "to": "1578912660000000000"
         }
     },
 
@@ -43,7 +43,7 @@ bereinigungs_config = {
         "freq": "3600S",
         "threshold": 10000,
         "time": {
-            "from": "1588809000000000000",
+            "from": "1578912660000000000",
             "to": "1589413800000000000"
         }
     }
