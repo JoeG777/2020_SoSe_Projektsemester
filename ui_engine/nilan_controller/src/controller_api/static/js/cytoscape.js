@@ -1,4 +1,4 @@
-let predictionUnits = [{"independent": ["outdoor"],
+/*let predictionUnits = [{"independent": ["outdoor"],
                         "dependent": ["freshAirIntake"],
                         "test_sample_size": 0.2,
                         "explained_variance_score": 1.0,
@@ -57,10 +57,9 @@ let predictionUnits = [{"independent": ["outdoor"],
                          "mean_squared_error": 22.747382804899328,
                          "median_absolute_error": 2.195879102725417,
                          "r2_score": 0.0019386808175004822}
-                        ]
+                        ]*/
 var edgesPredictionCalcValues = {}
 var cy = null;
-
 let standardStyles = {
     'line-color': '#ffffff',
     'target-arrow-color': '#ffffff',
@@ -68,7 +67,7 @@ let standardStyles = {
     'target-arrow-color-grayed-out': '#4d4b57'
 }
 
-$(document).ready(init(predictionUnits))
+$(document).ready(fetchModelData())
 
 function fetchModelData() {
     jQuery.when(
@@ -81,13 +80,13 @@ function fetchModelData() {
 
 function init(data) {
     $('#parameter_wrapper').hide();
-    let predictionUnits =  data// createElementArray(predictionUnits); //data.prediction_units //;
+    let predictionUnits =  createElementArray(predictionUnits); //data.prediction_units //;
 
     cy = cytoscape({
 
         container: document.getElementById('cy'), // container to render in
 
-        elements: createElementArray(predictionUnits),
+        elements: predictionUnits,
         style: [ // the stylesheet for the graph
           {
             selector: 'node',

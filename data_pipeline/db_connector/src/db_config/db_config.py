@@ -1,6 +1,6 @@
 params = {
-    "url": "localhost",
+    "url": "uipserver.ddns.net",
     "port": 8086,
-    "user": "admin",
-    "password": "admin"
+    "user": "student",
+    "password": "Abtauzyklus"
 }
