@@ -12,7 +12,7 @@ from data_pipeline.daten_klassifizieren import model_persistor as model_persisto
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 from data_pipeline.daten_klassifizieren.classification_engine import apply_classifier
-from data_pipeline.konfiguration.src.config import classification_config as config
+from data_pipeline.daten_klassifizieren.config import classification_config as config
 from data_pipeline.exception.exceptions import *
 import math
 

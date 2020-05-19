@@ -1,5 +1,5 @@
 import unittest
-import data_pipeline.datenbereinigen.src.bereinigungs_API.bereinigungs_API as api
+import data_pipeline.daten_bereinigen.src.bereinigungs_API.bereinigungs_API as api
 import data_pipeline.exception.exceptions as excep
 import data_pipeline.konfiguration.src.config_validator as validator
 

@@ -19,7 +19,7 @@ def enrich_data(config):
         selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
         required_registers, datasource_enriched_data, datasource_marked_data, \
         start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
-        del_marker = get_config_parameter(config)
+        del_marker, end_ch = get_config_parameter(config)
     except Exception as e:
         raise ex.InvalidConfigKeyException("Key " + str(e) + " was not found in config")
     try:
@@ -29,11 +29,12 @@ def enrich_data(config):
         raise ex.InvalidConfigValueException(str(e))
     counter = 0
     try:
-        df_query = read_manager.read_query(datasource_raw_data, f"SELECT * FROM temperature_register WHERE time >= {start}ms AND time "
+        df_query = read_manager.read_query(datasource_raw_data, f"SELECT * FROM {measurement_raw} WHERE time >= {start}ms AND time "
                                                 f"<= {end}ms")
     except Exception as e:
         raise ex.DBException(str(e))
     logger.info('raw_data loaded')
+    df_query = df_query.astype('float64')
     for register in required_registers:
         if register_dict[register] not in df_query.columns:
             raise ex.InvalidConfigValueException(register_dict[register] + ' not found in dataframe columns')
@@ -76,7 +77,7 @@ def mark_data(config):
         selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
         required_registers, datasource_enriched_data, datasource_marked_data, \
         start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
-        del_marker = get_config_parameter(config)
+        del_marker, end_ch = get_config_parameter(config)
     except Exception as e:
         raise ex.InvalidConfigKeyException("Key " + str(e) + " was not found in config")
     try:
@@ -108,30 +109,29 @@ def mark_data(config):
         for i in range(0, len(spaces), 2):
             df.loc[spaces[i]:spaces[i+1], 'abtauzyklus'] = True
     elif selected_event == 'warmwasseraufbereitung':
-        df['warmwassermarker'] = 0.0
-        '''df.loc[(df['inlet'].shift(1) > start_abtau) & (df['room_deriv'] <= start_deriv) & (df['room_deriv'] <= start_ch), 'warmwassermarker'] = start_marker
+        df['warmwasseraufbereitung_marker'] = 0.0
+        df.loc[(df['inlet'].shift(1) > 10) & (df['room_ch_abs'] <= start_ch), 'warmwasseraufbereitung_marker'] = start_marker # start_ch: -0.064
+        df.loc[(df['warmwasseraufbereitung_marker'] == start_marker) & ((df['warmwasseraufbereitung_marker'].shift(-1) == start_marker) |
+                                                            (df['warmwasseraufbereitung_marker'].shift(-2) == start_marker) |
+                                                           (df['warmwasseraufbereitung_marker'].shift(-3) == start_marker)), 'warmwasseraufbereitung_marker'] = del_marker
+        df.loc[df['room_ch_abs'] >= end_ch, 'warmwasseraufbereitung_marker'] = end_marker #end_ch 0.059
+        df.loc[(df['warmwasseraufbereitung_marker'] == end_marker) & ((df['warmwasseraufbereitung_marker'].shift(1) == end_marker) |
+                                                          (df['warmwasseraufbereitung_marker'].shift(2) == end_marker) |
+                                                          (df['warmwasseraufbereitung_marker'].shift(3) == end_marker)), 'warmwasseraufbereitung_marker'] = del_marker
+        df.loc[(df['warmwasseraufbereitung_marker'].index.hour <20) & (df['warmwasseraufbereitung_marker'].index.hour > 5), 'warmwasseraufbereitung_marker'] = 0
+        df.at['2020-01-10 00:59', 'warmwasseraufbereitung_marker'] = 0.0
+        df.at['2020-01-12 21:44', 'warmwasseraufbereitung_marker'] = 0.0
+        df.at['2020-01-14 23:16', 'warmwasseraufbereitung_marker'] = 0.0
+        df.at['2020-01-18 22:00', 'warmwasseraufbereitung_marker'] = 0.0
 
-        df.loc[(df['warmwassermarker'] == start_marker) & ((df['warmwassermarker'].shift(-1) == start_marker) |
-                                                           (df['warmwassermarker'].shift(-2) == start_marker)), 'warmwassermarker'] = del_marker
-
-        df.loc[df['room_deriv'].shift(end_shift) >= end_deriv, 'warmwassermarker'] = end_marker
-
-        df.loc[(df['warmwassermarker'] == end_marker) & ((df['warmwassermarker'].shift(-1) == end_marker) |
-                                                         (df['warmwassermarker'].shift(-2) == end_marker)), 'warmwassermarker'] = del_marker
-
-        df.loc[(df['warmwassermarker'].index.hour > 8) & (df['warmwassermarker'].index.hour < 22), 'warmwassermarker'] = 0'''
-
-        df.loc[df['room_diff'] > 0.3, 'warmwassermarker'] = 1.0
-        df.loc[df['room_diff'] < -0.26, 'warmwassermarker'] = -1.0
-
-        df.loc[(df.index.hour > 10) & (df.index.hour < 20), 'warmwassermarker'] = 0.0
-        spaces = df.loc[(df['warmwassermarker'] == start_marker) | (df['warmwassermarker'] == end_marker)].index.tolist()
-        #for i in range(0, len(spaces), 2):
-            #df.loc[spaces[i]:spaces[i+1], 'warmwasserzyklus'] = True
+        spaces = df.loc[(df['warmwasseraufbereitung_marker'] == start_marker) | (df['warmwasseraufbereitung_marker'] == end_marker)].index.tolist()
+        df['warmwasseraufbereitung'] = False
+        for i in range(0, len(spaces), 2):
+            df.loc[spaces[i]:spaces[i+1], 'warmwasseraufbereitung'] = True
     else:
         raise ex.InvalidConfigValueException(selected_event + ' not an valid classification event')
     try:
-        write_manager.write_dataframe(datasource_marked_data, df, selected_event)
+        write_manager.write_dataframe("nilan_marked", df, selected_event)
     except Exception as e:
         raise ex.DBException(str(e))
     logger.info(f"marked_data for {selected_event} successfully persisted")
@@ -163,6 +163,7 @@ def get_config_parameter(config):
         float: start_abtau: threshold value to check if a abtauzyklus starts
         float: end_shift:
         float: del_marker: value for the deletion marker in the classificated column
+        float: end_ch
         """
     selected_event = config['selected_event']
     datasource_raw_data = config['datasource_raw_data']['database']
@@ -183,10 +184,11 @@ def get_config_parameter(config):
     start_abtau = config['event_features']['start_abtau']
     end_shift = config['event_features']['end_shift']
     del_marker = config['event_features']['del_marker']
+    end_ch = config['event_features']['end_ch']
     return selected_event, datasource_raw_data, measurement_raw, start_time, end_time, register_dict, \
            required_registers, datasource_enriched_data, datasource_marked_data,\
            start_deriv, start_evap, start_marker, end_deriv, end_deriv_n3, end_marker, start_ch, start_abtau, end_shift, \
-           del_marker
+           del_marker, end_ch
 
 
 def convert_time(time_var):
@@ -240,3 +242,4 @@ def convert_time(time_var):
 
 if __name__ == "__main__":
     enrich_data(config)
+    mark_data(config)

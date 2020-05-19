@@ -1,6 +1,6 @@
 import copy
 import unittest
-from mockito.matchers import ANY
+from mockito.matchers import ANY, captor
 from mockito import *
 import data_pipeline.log_writer.log_writer as logger
 when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
@@ -11,7 +11,8 @@ import requests
 
 import data_pipeline.exception.exceptions as ex
 from data_pipeline.daten_klassifizieren import classification_engine as classification
-from data_pipeline.konfiguration.src.config import classification_config as config
+from data_pipeline.daten_klassifizieren.config import classification_config as config
+from data_pipeline.db_connector.src.read_manager import read_manager
 
 
 class test_classify(unittest.TestCase):

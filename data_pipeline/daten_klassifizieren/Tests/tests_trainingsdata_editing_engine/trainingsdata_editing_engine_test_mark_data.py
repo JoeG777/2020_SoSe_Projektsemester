@@ -7,7 +7,7 @@ when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
                error=lambda x: print(x), write_into_measurement=lambda x: print(x))))
 import data_pipeline.db_connector.src.write_manager.write_manager as write_manager
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
-from data_pipeline.konfiguration.src.config import classification_config as config
+from data_pipeline.daten_klassifizieren.config import classification_config as config
 import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
 import unittest
 from data_pipeline.exception.exceptions import *

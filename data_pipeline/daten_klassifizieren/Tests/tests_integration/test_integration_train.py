@@ -2,7 +2,12 @@ import unittest
 import requests
 import copy
 
-from data_pipeline.konfiguration.src.config import classification_config as config
+import data_pipeline.exception.exceptions as ex
+import data_pipeline.daten_klassifizieren.classification_engine as classification
+import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as editing
+import data_pipeline.daten_klassifizieren.training_engine as training
+
+from data_pipeline.daten_klassifizieren.config import classification_config as config
 
 
 class test_train(unittest.TestCase):
@@ -52,7 +57,7 @@ class test_train(unittest.TestCase):
         response = request.status_code
         self.assertEqual(response, 900)
 
-    def test_mark_for_invalid_value_excpetion(self):
+    def test_mark_for_invalid_value_exception(self):
         wrong_config = copy.deepcopy(config)
         wrong_config['timeframe'] = ["2020-01-12 00:00:00.000 UTC", "ich_bin_kein_datum"]
         request = requests.post(self.url, json=wrong_config)
@@ -77,7 +82,7 @@ class test_train(unittest.TestCase):
         response = request.status_code
         self.assertEqual(response, 900)
 
-    def test_train_for_persistor_expetion(self):
+    def test_train_for_persistor_exception(self):
         wrong_config = copy.deepcopy(config)
         wrong_config['datasource_classifier'] = 'model_empty_API.txt'
         request = requests.post(self.url, json=wrong_config)

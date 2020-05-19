@@ -15,8 +15,8 @@ def start_timer_based_process_cycle():
     start_historic_data_elicitation(all_configs["elicitation"])
     start_prediction_data_elicitation(all_configs["elicitation"])
     start_cleaning(all_configs["cleaning"])
-    start_classification(all_configs["classification"])
     start_classification_training(all_configs["classification"])
+    start_classification(all_configs["classification"])
     start_filtering(all_configs["filtering"])
     start_prediction_training(all_configs["prediction"])
 

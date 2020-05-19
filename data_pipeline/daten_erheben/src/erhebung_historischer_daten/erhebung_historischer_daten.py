@@ -7,7 +7,7 @@ import data_pipeline.daten_erheben.src.utils.utils as utils
 from data_pipeline.exception.exceptions import FileException, UrlException, RawDataException
 import data_pipeline.log_writer.log_writer as logger
 
-date_tmp_file = "./data_pipeline/daten_erheben/src/erhebung_historischer_daten/tmp/datenerhebung_tmp.txt"
+date_tmp_file = "tmp.txt"
 logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Datenerhebung")
 
 

@@ -234,6 +234,7 @@ def craft(data, value_name, register):
             register = "room"
 
     res = pd.DataFrame(data)
+    res = res.astype('float64')
     res = res.rename(columns={value_name: register})
     return res.where((pd.notnull(res)), None)
 
