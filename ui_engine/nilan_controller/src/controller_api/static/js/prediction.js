@@ -17,8 +17,6 @@ function option_pressed(option) {
 
         press_dropdown()
 
-        document.querySelector('.heading').innerHTML = "CONTROL PANEL";
-
     } else {
 
         document.getElementById('content').classList.remove('active');
@@ -28,7 +26,6 @@ function option_pressed(option) {
 
         press_dropdown()
 
-        document.querySelector('.heading').innerHTML = "CURRENT MODEL";
     }
 
 }

@@ -1,4 +1,14 @@
-/*let predictionUnits = [{"independent": ["outdoor"],
+let averageData = {
+    "average_score": 0.5763061660139956,
+    "average_explained_variance_score": 0.5763743321592572,
+    "average_max_error": 8.096326490599703,
+    "average_mean_absolute_error": 1.0542581697922409,
+    "average_mean_squared_error": 5.5904049363090556,
+    "average_median_absolute_error": 0.7699636093103956,
+    "average_r2_score_avg": 0.5763637120083245
+}
+
+let predictionUnits = [{"independent": ["outdoor"],
                         "dependent": ["freshAirIntake"],
                         "test_sample_size": 0.2,
                         "explained_variance_score": 1.0,
@@ -57,7 +67,8 @@
                          "mean_squared_error": 22.747382804899328,
                          "median_absolute_error": 2.195879102725417,
                          "r2_score": 0.0019386808175004822}
-                        ]*/
+                        ]
+
 var edgesPredictionCalcValues = {}
 var cy = null;
 let standardStyles = {
@@ -68,6 +79,7 @@ let standardStyles = {
 }
 
 $(document).ready(fetchModelData())
+//$(document).ready(init())
 
 function fetchModelData() {
     jQuery.when(
@@ -80,7 +92,8 @@ function fetchModelData() {
 
 function init(data) {
     $('#parameter_wrapper').hide();
-    let predictionUnits =  createElementArray(data.prediction_units);
+    let predictionUnits = createElementArray(data.prediction_units);
+    //let predictionUnitsData = predictionUnits;
 
     cy = cytoscape({
 
@@ -142,6 +155,18 @@ function init(data) {
    $('#r2_score').html(value['r2_score']);
 
   });
+
+  /* AVERAGE PARAMETERS */
+
+    let average_data = getAverageValues()
+
+    $('#average_score').html(average_data['average_score']);
+    $('#average_explained_variance_score').html(average_data['average_explained_variance_score']);
+    $('#average_max_error').html(average_data['average_max_error']);
+    $('#average_mean_absolute_error').html(average_data['average_mean_absolute_error']);
+    $('#average_mean_squared_error').html(average_data['average_mean_squared_error']);
+    $('#average_median_absolute_error').html(average_data['average_median_absolute_error']);
+    $('#average_r2_score').html(average_data['average_r2_score']);
 
     cy.on('mouseout', 'edge', function(evt)  {
         $('#parameter_wrapper').hide();
@@ -243,7 +268,6 @@ function createElementArray(predictionUnits) {
                 elements.push(linkNode);
             }
 
-            // create nodes and create link or create link only
         }
 
     predictionUnitId += 10;
@@ -253,9 +277,6 @@ function createElementArray(predictionUnits) {
 
 }
 
-function getColor(elementColors, colorCounter) {
-
-}
 function extractCalcValues(predictionUnit) {
     return {
          "test_sample_size": predictionUnit["test_sample_size"],
@@ -269,6 +290,21 @@ function extractCalcValues(predictionUnit) {
          "intercept": predictionUnit["intercept"]
     }
 }
+
+function getAverageValues() {
+    let data = fetchModelData()
+    //let data = averageData
+    return {
+        "average_score": data["average_score"],
+        "average_explained_variance_score": data["average_explained_variance_score"],
+        "average_max_error": data["average_max_error"],
+        "average_mean_absolute_error": data["average_mean_absolute_error"],
+        "average_mean_squared_error": data["average_mean_squared_error"],
+        "average_median_absolute_error": data["average_median_absolute_error"],
+        "average_r2_score": data["average_r2_score_avg"]
+    }
+}
+
 // Parameter-Viewer
 
 let curve_name_independent = document.getElementById("curve_name_independent");
