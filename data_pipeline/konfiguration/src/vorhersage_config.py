@@ -1,16 +1,16 @@
 vorhersage_config = {
     "database_options": {
         "training": {
-            "datasource_nilan_dbname": "trainingsdatenTest",
-            "datasource_nilan_measurement": "trainingsdatenTestMeasurement",
-            "datasource_weatherdata_dbname": "trainingsdatenTest",
-            "datasource_weatherdata_measurement": "trainingswetterdatenTestMeasurement"
+            "datasource_nilan_dbname": "filtered_data",
+            "datasource_nilan_measurement": "temperature_register",
+            "datasource_weatherdata_dbname": "bereinigte_Daten",
+            "datasource_weatherdata_measurement": "temperature_register"
         },
         "prediction": {
-            "datasource_forecast_dbname": "vorhersagedatenTest",
-            "datasource_forecast_measurement": "vorhersageTestMeasurement",
+            "datasource_forecast_dbname": "bereinigte_Daten",
+            "datasource_forecast_measurement": "forecast_temperature_register",
             "datasource_forecast_register": "201",
-            "datasink_prediction_dbname": "jourfixeVorhersage",
+            "datasink_prediction_dbname": "prediction_data",
             "datasink_prediction_measurement": "vorhergesagteDaten"
         }
     },

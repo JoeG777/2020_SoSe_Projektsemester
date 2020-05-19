@@ -36,7 +36,7 @@ bereinigungs_config = {
         "from_db": "db_rohdaten",
         "to_db": "bereinigte_Daten",
         "from_measurement": "temperature_DWD",
-        "to_measurement": "temperature_register",
+        "to_measurement": "forecast_temperature_register",
         "value_name": "temperature",
         "register": "forecast_weatherdata",
         "frame_width": 10,
