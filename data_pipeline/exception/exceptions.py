@@ -148,3 +148,45 @@ class RawDataException(DataPipelineException):
             return 'RawDataException: {0}'.format(self.message)
         else:
             return 'RawDataException has been raised'
+
+
+class FormatException(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'FormatException: {0}'.format(self.message)
+        else:
+            return 'FormatException has been raised'
+
+
+class NoDataException(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'NoDataException: {0}'.format(self.message)
+        else:
+            return 'NoDataException has been raised'
+
+
+class ImputationDictionaryException(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'ImputationDictionaryException: {0}'.format(self.message)
+        else:
+            return 'ImputationDictionaryException has been raised'
