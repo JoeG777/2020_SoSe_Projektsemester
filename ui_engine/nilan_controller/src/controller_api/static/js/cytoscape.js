@@ -141,7 +141,6 @@ function init(data) {
    $('#median_absolute_error').html(value['median_absolute_error']);
    $('#r2_score').html(value['r2_score']);
 
-
   });
 
     cy.on('mouseout', 'edge', function(evt)  {
@@ -265,6 +264,9 @@ function extractCalcValues(predictionUnit) {
          "mean_absolute_error": predictionUnit["mean_absolute_error"],
          "mean_squared_error": predictionUnit["mean_squared_error"],
          "median_absolute_error": predictionUnit["median_absolute_error"],
+         "r2_score": predictionUnit["r2_score"],
+         "coef": predictionUnit["coef"],
+         "intercept": predictionUnit["intercept"]
     }
 }
 // Parameter-Viewer
