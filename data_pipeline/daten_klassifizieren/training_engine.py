@@ -34,6 +34,7 @@ def train_classifier(config):
     df = read_manager.read_query(datasource_marked_data, f"SELECT * FROM {selected_event} WHERE time >= {start_time}ms "
                                                       f"AND time <= {end_time}ms")
     df.dropna(inplace=True)
+    df = df.drop(['historic_weatherdata'], axis=1)
     y = np.array(df[selected_event])
     X = np.array(df.drop(labels=[selected_event, f"{selected_event}_marker"], axis=1))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)

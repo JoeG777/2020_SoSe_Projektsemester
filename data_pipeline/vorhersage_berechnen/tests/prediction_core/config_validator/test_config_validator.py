@@ -1,4 +1,10 @@
 from unittest import TestCase
+from mockito import *
+from mockito.matchers import ANY, captor
+import data_pipeline.log_writer.log_writer as logger
+when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
+    (mock(dict(info=lambda x: print(x), warning=lambda x: print(x),
+               error=lambda x: print(x), write_into_measurement=lambda x: print(x))))
 from data_pipeline.vorhersage_berechnen.src.prediction_core.config_validator.config_validator import validate_config
 from data_pipeline.exception.exceptions import *
 

@@ -43,6 +43,7 @@ def apply_classifier(config):
     try:
         df_query = df_query.drop(df_query.index[-1])
         df_query = df_query.drop(df_query.index[0])
+        df_query = df_query.drop(['historic_weatherdata'], axis=1)
     except IndexError:
         raise ex.DBException('Wrong query')
 
@@ -61,7 +62,6 @@ def apply_classifier(config):
                                                    f"<= {end}ms")
     df_raw = df_raw.drop(df_raw.index[-1])
     df_raw = df_raw.drop(df_raw.index[0])
-
     df_raw[selected_event] = classified_data_df[selected_event]
     print(classified_data_df[selected_event].sum())
     try:
