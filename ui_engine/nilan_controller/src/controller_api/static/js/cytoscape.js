@@ -298,15 +298,13 @@ function generateFunction(predictionUnit) {
     let independent = predictionUnit['independent'];
 
     let linearFunc = ''
-    if(predictionUnit[0] && predictionUnit[0].constructor === Array) { // multivariate
-
-    } else { // multiple
-        linearFunc += '<span class=functionContainer>'
-        for (let i = 0; i < coef[0].length; i++) {
-            linearFunc +=  roundToTwoDec(coef[0][i]) + ' * '  + independent[i] + ' + ';
+    for (let i = 0; i < coef.length; i++) {
+        linearFunc += '<div class=functionContainer>'
+        for (let j = 0; j < coef[i].length; j++) {
+            linearFunc += roundToTwoDec(coef[i][j]) + ' * '  + independent[j] + ' + ';
         }
         linearFunc += Math.round(intercept,2);
-        linearFunc += ' = ' + dependent[0] + '</span>';
+        linearFunc += ' = ' + dependent[i] + '</div>';
     }
 
     return linearFunc;
