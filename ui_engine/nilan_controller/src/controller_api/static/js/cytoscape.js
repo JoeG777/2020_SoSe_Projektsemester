@@ -146,6 +146,8 @@ function init(data) {
                 top:   evt.renderedPosition.y
       });
 
+   $('#independent_curves').append(getCurvesAsHtml(value['independent']));
+   $('#dependent_curves').append(getCurvesAsHtml(value['dependent']));
    $('#test_sample_size').html(value['test_sample_size']);
    $('#explained_variance_score').html(value['explained_variance_score']);
    $('#max_error').html(value['max_error']);
@@ -153,12 +155,20 @@ function init(data) {
    $('#mean_squared_error').html(value['mean_squared_error']);
    $('#median_absolute_error').html(value['median_absolute_error']);
    $('#r2_score').html(value['r2_score']);
+   $('#function').append(generateFunction(value));
+
+    var problems = document.getElementsByClassName('functionContainer');
+   for (let i = 0; i < problems.length; i++) {
+        MQ.StaticMath(problems[i]);
+   }
+
+
 
   });
 
   /* AVERAGE PARAMETERS */
 
-    let average_data = getAverageValues()
+    let average_data = getAverageValues(data)
 
     $('#average_score').html(average_data['average_score']);
     $('#average_explained_variance_score').html(average_data['average_explained_variance_score']);
@@ -169,6 +179,8 @@ function init(data) {
     $('#average_r2_score').html(average_data['average_r2_score']);
 
     cy.on('mouseout', 'edge', function(evt)  {
+        $('.curveContainer').remove();
+        $('.functionContainer').remove();
         $('#parameter_wrapper').hide();
         resetAllEdges();
     });
@@ -277,8 +289,36 @@ function createElementArray(predictionUnits) {
 
 }
 
+function generateFunction(predictionUnit) {
+    //$ax^2 + bx + c = 0$
+
+    let coef = predictionUnit['coef'];
+    let intercept = predictionUnit['intercept'];
+    let dependent = predictionUnit['dependent'];
+    let independent = predictionUnit['independent'];
+
+    let linearFunc = ''
+    if(predictionUnit[0] && predictionUnit[0].constructor === Array) { // multivariate
+
+    } else { // multiple
+        linearFunc += '<span class=functionContainer>'
+        for (let i = 0; i < coef[0].length; i++) {
+            linearFunc +=  roundToTwoDec(coef[0][i]) + ' * '  + independent[i] + ' + ';
+        }
+        linearFunc += Math.round(intercept,2);
+        linearFunc += ' = ' + dependent[0] + '</span>';
+    }
+
+    return linearFunc;
+}
+
+function roundToTwoDec(number) {
+    return Math.round((number + Number.EPSILON) * 100) / 100;
+}
 function extractCalcValues(predictionUnit) {
     return {
+         "dependent": predictionUnit["dependent"],
+         "independent": predictionUnit["independent"],
          "test_sample_size": predictionUnit["test_sample_size"],
          "explained_variance_score": predictionUnit["explained_variance_score"],
          "max_error": predictionUnit["max_error"],
@@ -291,8 +331,7 @@ function extractCalcValues(predictionUnit) {
     }
 }
 
-function getAverageValues() {
-    let data = fetchModelData()
+function getAverageValues(data) {
     //let data = averageData
     return {
         "average_score": data["average_score"],
@@ -305,8 +344,19 @@ function getAverageValues() {
     }
 }
 
-// Parameter-Viewer
+function getCurvesAsHtml(curveArray) {
+    let html = '';
 
+    for (let i = 0; i < curveArray.length; i++) {
+        html += '<h3 class="curveContainer">' + curveArray[i] + '</h3>';
+    }
+
+    return html;
+}
+
+
+// Parameter-Viewer
+/*
 let curve_name_independent = document.getElementById("curve_name_independent");
 let curve_name_dependent = document.getElementById("curve_name_dependent");
 
@@ -317,6 +367,7 @@ let mean_absolute_error = document.getElementById("mean_absolute_error");
 let mean_squared_error = document.getElementById("mean_squared_error");
 let median_absolute_error = document.getElementById("median_absolute_error");
 let r2_score = document.getElementById("r2_score");
+*/
 /*
 //Independent Curves
 

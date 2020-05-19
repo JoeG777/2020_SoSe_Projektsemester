@@ -40,16 +40,21 @@
                 <p class="parameter_value" id="average_median_absolute_error"></p>
                 <p class="parameter_tag">Average R2 Score</p>
                 <p class="parameter_value" id="average_r2_score"></p>
+
             </div>
         </div>
         <div class="parameter_wrapper" id="parameter_wrapper">
             <div class="curves">
-                <div class="independent_curves">
+                <div id="independent_curves" class="independent_curves">
                 </div>
-                <div class="dependent_curves">
+                <div class="arrow_container">
                     <div class="parameter_arrow"></div>
                 </div>
+                <div id="dependent_curves" class="dependent_curves">
+
+                </div>
             </div>
+            <p class="parameter_heading">Test Sample Size</p>
             <p class="parameter_value" id="test_sample_size"></p>
 
             <p class="parameter_heading">Explained Variance Score</p>
@@ -69,6 +74,9 @@
 
             <p class="parameter_heading">R2 Score</p>
             <p class="parameter_value" id="r2_score"></p>
+            <p class="parameter_heading">Funktionsgleichung</p>
+            <div id="function" class="function">
+            </div>
         </div>
     </div>
 
@@ -76,6 +84,13 @@
     <script src="../static/js/cytoscape.js"></script>
     <script type="text/javascript"
             src='../static/js/prediction.js'>
+    </script>
+    <script type="text/javascript"
+            src='../static/js/mathquill.min.js'>
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css"/>
+    <script>
+        var MQ = MathQuill.getInterface(2);
     </script>
     </body>
 </html>
