@@ -61,6 +61,13 @@ let predictionUnits = [{"independent": ["outdoor"],
 var edgesPredictionCalcValues = {}
 var cy = null;
 
+let standardStyles = {
+    'line-color': '#ffffff',
+    'target-arrow-color': '#ffffff',
+    'line-color-grayed-out': '#4d4b57',
+    'target-arrow-color-grayed-out': '#4d4b57'
+}
+
 $(document).ready(init(predictionUnits))
 
 function fetchModelData() {
@@ -109,8 +116,7 @@ function init(data) {
           },
         ],
         layout: {
-          name: 'breadthfirst',
-
+          name: 'grid',
         }
 
       });
@@ -135,6 +141,8 @@ function init(data) {
    $('#mean_squared_error').innerHTML = value['mean_squared_error']
    $('#median_absolute_error').innerHTML = value['median_absolute_error']
    $('#r2_score').innerHTML =value['r2_score']
+
+
   });
 
     cy.on('mouseout', 'edge', function(evt)  {
@@ -163,8 +171,8 @@ function makeEdgesGradient(eventId) {
     }
     for (let i = 0; i < unrelatedEdges.length; i++) {
         let currEdge = cy.$('#' + unrelatedEdges[i]);
-        currEdge.style('line-color', 'green');
-        currEdge.style('target-arrow-color', 'green');
+        currEdge.style('line-color', standardStyles['line-color-grayed-out']);
+        currEdge.style('target-arrow-color', standardStyles['target-arrow-color-grayed-out']);
     }
 }
 
@@ -176,8 +184,8 @@ function resetAllEdges() {
         allEdges[i].style('line-fill', '');
         allEdges[i].style('line-gradient-stop-positions', '');
 
-        allEdges[i].style('target-arrow-color', ''); // TODO insert standard colors
-        allEdges[i].style('line-color', 'white');// TODO insert standard colors
+        allEdges[i].style('target-arrow-color', standardStyles['target-arrow-color']);
+        allEdges[i].style('line-color', standardStyles['line-color']);
     }
 }
 

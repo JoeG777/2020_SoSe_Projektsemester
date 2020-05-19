@@ -63,8 +63,6 @@ def validate_input():
     luefterstufe_abluft = None
     betriebsmodus = None
 
-    #print(request.get_json(force=True))
-
     try:
 
         start_safari = request.form['start_safari']
