@@ -1,5 +1,5 @@
 from flask import *
-from data_pipeline.daten_bereinigen.src.bereinigungs_engine import bereinigungs_engine as cleaning_eng
+from data_pipeline.datenbereinigen.src.bereinigungs_engine import bereinigungs_engine as cleaning_eng
 import data_pipeline.exception.exceptions as exceptions
 import data_pipeline.konfiguration.src.config_validator as validator
 
@@ -83,6 +83,7 @@ def cleaning():
     except Exception as e:
         response['statuscode'] = 500
         logger.error(e.args[0])
+        print(type(e))
 
     finally:
         logger.info('bereinigungsprozess beendet mit statuscode: ' + str(response['statuscode']))

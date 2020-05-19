@@ -3,7 +3,7 @@ from mockito import *
 from mockito.matchers import ANY
 import pandas as pd
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
-import data_pipeline.daten_bereinigen.src.bereinigungs_engine.bereinigungs_engine as be
+import data_pipeline.datenbereinigen.src.bereinigungs_engine.bereinigungs_engine as be
 
 
 class test_integration(unittest.TestCase):

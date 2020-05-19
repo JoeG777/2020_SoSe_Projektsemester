@@ -8,7 +8,7 @@ from data_pipeline.log_writer.log_writer import Logger
 
 
 # initialize logger
-logger = Logger("logs", "cleaning_logs", "uipserver.ddns.net", 8086, "Cleaning_Engine")
+logger = Logger("logs", "logs", "uipserver.ddns.net", 8086, "Cleaning_Engine")
 
 
 def get_data(from_db, from_measurement, value_name, register, time):
@@ -25,13 +25,18 @@ def get_data(from_db, from_measurement, value_name, register, time):
     query = ""
     if isInt(register):
 
-        query = "SELECT {0} FROM {1} WHERE register='{2}' and time >= {3} and time <= {4} limit 10000".format(
+        query = "SELECT {0} FROM {1} WHERE register='{2}' and time >= {3} and time <= {4}".format(
             value_name, from_measurement, register, time["from"], time["to"])
     else:
         query = "SELECT {0} FROM {1} WHERE time >={2} AND time <={3}".format(
             value_name, from_measurement, time["from"], time["to"])
-    return rm.read_query(from_db, query)
 
+    try:
+        res = rm.read_query(from_db, query)
+    except KeyError as ke:
+        raise exc.NoDataException("Result from Database was probably empty. Machste erstmal die basics")
+
+    return res
 
 def isInt(v):
     try:
@@ -233,6 +238,11 @@ def craft(data, value_name, register):
     return res.where((pd.notnull(res)), None)
 
 
+def shift(data, stepsize):
+
+    return data.shift(-stepsize)
+
+
 def workflow(from_db, to_db, from_measurement, to_measurement, value_name, register, frame_width, freq, threshold,
              time):
     """
@@ -257,6 +267,7 @@ def workflow(from_db, to_db, from_measurement, to_measurement, value_name, regis
     try:
         raw_data_series = get_data(from_db, from_measurement, value_name, register, time)
         print("Daten geholt")
+        logger.info("Daten geholt")
 
         formated = format(raw_data_series)
         print("daten formatiert")
@@ -277,9 +288,12 @@ def workflow(from_db, to_db, from_measurement, to_measurement, value_name, regis
         print("lücken entfernt")
 
         final = craft(without_gaps, value_name, register)
+        final = shift(final, frame_width-1)
+        print("Daten finalisiert")
 
         write_data(to_db, final, to_measurement)
         print("Daten bereinigt")
+        logger.info("Daten bereinigt")
 
     except exc.DBException as dbe:
         logger.error(dbe.args[0])
@@ -318,16 +332,27 @@ def fast_and_furious(from_db, to_db, from_measurement, to_measurement, value_nam
     :param time: start and end time of the desired period where the curve should be cleaned
     """
     curves = [v.strip() for v in register.split(',')]
-    procs = []
-    for i in range(len(curves)):
-        proc = multiprocessing.Process(target=workflow,
-                                       args=(from_db, to_db, from_measurement, to_measurement,
-                                             value_name, curves[i], frame_width, freq, threshold, time))
-        procs.append(proc)
 
-        proc.start()
-    for proc in procs:
-        proc.join()
+    use_multiprocessing = False
+
+    if use_multiprocessing:
+        procs = []
+        for i in range(len(curves)):
+            proc = multiprocessing.Process(target=workflow,
+                                           args=(from_db, to_db, from_measurement, to_measurement,
+                                                 value_name, curves[i], frame_width, freq, threshold, time))
+            procs.append(proc)
+
+            proc.start()
+        for proc in procs:
+            proc.join()
+
+    else:
+        for i in range(len(curves)):
+            workflow(from_db, to_db, from_measurement, to_measurement,
+                     value_name, curves[i], frame_width, freq, threshold, time)
+            print("kurve {0} abgeschlossen".format(curves[i]))
+            logger.info("kurve {0} abgeschlossen".format(curves[i]))
 
 
 if __name__ == "__main__":
