@@ -1,4 +1,4 @@
-/*let predictionUnits = [{"independent": ["outdoor"],
+let predictionUnits = [{"independent": ["outdoor"],
                         "dependent": ["freshAirIntake"],
                         "test_sample_size": 0.2,
                         "explained_variance_score": 1.0,
@@ -57,23 +57,24 @@
                          "mean_squared_error": 22.747382804899328,
                          "median_absolute_error": 2.195879102725417,
                          "r2_score": 0.0019386808175004822}
-                        ]*/
+                        ]
 var edgesPredictionCalcValues = {}
 var cy = null;
 
-$(document).ready(fetchModelData())
+$(document).ready(init(predictionUnits))
 
 function fetchModelData() {
     jQuery.when(
         jQuery.getJSON('get_model_data')
     ).done(function (json) {
-        init(json)
+        init(json);
     })
 }
 
 
 function init(data) {
-    let predictionUnits = data.prediction_units //createElementArray(predictionUnits);
+    $('#parameter_wrapper').hide();
+    let predictionUnits =  data// createElementArray(predictionUnits); //data.prediction_units //;
 
     cy = cytoscape({
 
@@ -84,7 +85,6 @@ function init(data) {
           {
             selector: 'node',
             style: {
-              'background-color': '#666',
               'label': 'data(id)',
               'content': 'data(id)',
               'background-color': 'white',
@@ -102,9 +102,9 @@ function init(data) {
               'line-color': '#ccc',
               'target-arrow-color': '#ccc',
               'target-arrow-shape': 'triangle',
-              'curve-style': 'bezier',
               'target-arrow-shape': 'vee',
               'arrow-scale': '1',
+              'curve-style': 'bezier',
             }
           },
         ],
@@ -118,6 +118,8 @@ function init(data) {
 
   cy.on('mouseover', 'edge', function(evt)  {
       let eventId = evt.target.id();
+
+      makeEdgesGradient(eventId);
 
       let value = edgesPredictionCalcValues[eventId];
       $('#parameter_wrapper').show();
@@ -137,9 +139,50 @@ function init(data) {
 
     cy.on('mouseout', 'edge', function(evt)  {
         $('#parameter_wrapper').hide();
+        resetAllEdges();
     });
-
   cy.userZoomingEnabled(false);
+}
+
+function makeEdgesGradient(eventId) {
+    let predictionUnitId = eventId.substring(0,2); // this should be more dynamic
+    let relatedEdges = Object.keys(edgesPredictionCalcValues).filter(x => x.startsWith(predictionUnitId));
+    let unrelatedEdges = Object.keys(edgesPredictionCalcValues).filter(x => !x.startsWith(predictionUnitId));
+
+
+    for (let i = 0; i < relatedEdges.length; i++) {
+        let currEdge = cy.$('#' + relatedEdges[i]);
+        let connectedNodes = currEdge.connectedNodes();
+        let firstNodeColor = connectedNodes[0].style().backgroundColor;
+        let secondNodeColor = connectedNodes[1].style().backgroundColor;
+
+        currEdge.style('line-gradient-stop-colors', firstNodeColor + ' ' + secondNodeColor);
+        currEdge.style('line-fill', 'linear-gradient');
+        currEdge.style('line-gradient-stop-positions', '0 100%;');
+        currEdge.style('target-arrow-color', secondNodeColor);
+    }
+    for (let i = 0; i < unrelatedEdges.length; i++) {
+        let currEdge = cy.$('#' + unrelatedEdges[i]);
+        currEdge.style('line-color', 'green');
+        currEdge.style('target-arrow-color', 'green');
+    }
+}
+
+function resetAllEdges() {
+    let allEdges = cy.$('edge');
+
+    for (let i = 0; i < allEdges.length; i++) {
+        allEdges[i].style('line-gradient-stop-colors', '');
+        allEdges[i].style('line-fill', '');
+        allEdges[i].style('line-gradient-stop-positions', '');
+
+        allEdges[i].style('target-arrow-color', ''); // TODO insert standard colors
+        allEdges[i].style('line-color', 'white');// TODO insert standard colors
+    }
+}
+
+function rgbToHex(color) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 function onEdgeHover(evt) {
@@ -151,7 +194,8 @@ function onEdgeHover(evt) {
 function createElementArray(predictionUnits) {
     let elements = [];
     let predictionUnitId = 10;
-
+    let elementColors = ['#E07D7D', '#90A3E3', '#EFC893', '#84D0C7', '#E0D47B', '#E3A2D9'];
+    let colorCounter = 0;
     for (let i = 0; i < predictionUnits.length; i++) {
         let currentUnit = predictionUnits[i];
 
@@ -164,6 +208,11 @@ function createElementArray(predictionUnits) {
             }
 
             if (!elements.includes(currentNode)) {
+                if (colorCounter == elementColors.length) colorCounter = 0;
+                let color = elementColors[colorCounter];
+                currentNode['style'] = {}
+                currentNode['style']['background-color'] = color;
+                colorCounter++;
                 elements.push(currentNode);
             }
         }
@@ -174,19 +223,24 @@ function createElementArray(predictionUnits) {
             }
 
             if (!elements.includes(currentNode)) {
+                if (colorCounter == elementColors.length) colorCounter = 0;
+                let color = elementColors[colorCounter];
+                currentNode['style'] = {}
+                currentNode['style']['background-color'] = color;
+                colorCounter++;
                 elements.push(currentNode);
             }
 
             for (let k = 0; k < independent.length; k++) {
                 let node = elements.find(n => n['data']['id'] == independent[k])
 
-                let id = predictionUnitId + '-' + node['data']['id'] + independent[j];
+                let id = predictionUnitId + '-' + node['data']['id'] + dependent[j];
                 let linkNode = {
                     'data': {
                         'id': id,
                         'source': node['data']['id'],
                         'target': dependent[j]
-                    }
+                    },
                 }
                 edgesPredictionCalcValues[id] = extractCalcValues(predictionUnits[i]);
 
@@ -196,13 +250,16 @@ function createElementArray(predictionUnits) {
             // create nodes and create link or create link only
         }
 
-        predictionUnitId += 10;
+    predictionUnitId += 10;
     }
 
     return elements;
 
 }
 
+function getColor(elementColors, colorCounter) {
+
+}
 function extractCalcValues(predictionUnit) {
     return {
          "test_sample_size": predictionUnit["test_sample_size"],
