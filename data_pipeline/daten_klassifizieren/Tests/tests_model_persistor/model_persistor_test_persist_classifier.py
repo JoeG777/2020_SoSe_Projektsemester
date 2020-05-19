@@ -1,6 +1,6 @@
 import unittest
 import data_pipeline.daten_klassifizieren.model_persistor as mp
-from data_pipeline.konfiguration.src.config import classification_config as config
+from data_pipeline.daten_klassifizieren.config import classification_config as config
 import data_pipeline.exception.exceptions as ex
 from sklearn.svm import SVC
 

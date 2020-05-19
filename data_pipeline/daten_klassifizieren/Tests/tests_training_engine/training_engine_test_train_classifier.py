@@ -1,18 +1,13 @@
 import unittest
-from mockito.matchers import ANY
-from mockito import *
-import data_pipeline.log_writer.log_writer as logger
-when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
-    (mock(dict(info=lambda x: print(x), warning=lambda x: print(x),
-               error=lambda x: print(x), write_into_measurement=lambda x: print(x))))
-import data_pipeline.exception.exceptions as ex
 import data_pipeline.daten_klassifizieren.training_engine as training_engine
 
+import data_pipeline.exception.exceptions as ex
 
 
 class TestTrainClassifier(unittest.TestCase):
 
     def test_returns_statuscode_0(self):
+
         classification_config = {
             "selected_event": "abtauzyklus",
             "required_score": {"abtauzyklus": 0.9, "warmwasseraufbereitung": 0.2, "offennutzung": 0.5,
@@ -25,19 +20,20 @@ class TestTrainClassifier(unittest.TestCase):
                 "SVM": "sklearn.svm.SVC()",
                 "kNN": "sklearn.neighbors.KNeighborsClassifier()"
             },
-            "create_new_classifier": "True",
+            "new_classifier_method": "kNN",
             "datasource_classifier": 'model.txt'
 
         }
         self.assertEqual(training_engine.train_classifier(classification_config), 0)
 
-    def test_returns_InvalidConfig1(self):
-        """this method tests the exception without some data
+
+
+    def test_returns_InvalidConfig(self):
+        '''this method tests the exception without some data
 
         :return:InvalidConfigException
-        """
+        '''
         classification_config = {
-            "timeframe": ["2020-01-14 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
             "selected_event": "abtauzyklus",
             "required_score": {"abtauzyklus": 0.9, "warmwasseraufbereitung": 0.2, "offennutzung": 0.5,
                                "luefterstufen": 0.8},
@@ -45,48 +41,12 @@ class TestTrainClassifier(unittest.TestCase):
         }
         self.assertEqual(training_engine.train_classifier(classification_config), ex.InvalidConfigValueException)
 
-    def test_returns_InvalidConfig2(self):
-        classification_config = {
-            "selected_event": "abtauzyklus",
-
-            "test_size": 0.3,
-            "datasource_training_data": {'database': 'nilan_erweitert', 'measurement': 'training'},
-            "timeframe": ["2020-01-14 00:00:00.000 UTC", "2020-01-20 12:0:00.000 UTC"],
-            "datasource_marked_data": {'database': 'nilan_marked', 'measurement': 'training'},
-            "classification_method_options": {
-                "SVM": "sklearn.svm.SVC()",
-                "kNN": "sklearn.neighbors.KNeighborsClassifier()"
-            },
-            "create_new_classifier": "True",
-            "datasource_classifier": 'model.txt'
-        }
-        self.assertEqual(training_engine.train_classifier(classification_config), ex.InvalidConfigValueException)
-
-
-    def test_returns_InvalidConfig3(self):
-        classification_config = {
-            "selected_event": "abtauzyklus",
-
-            "test_size": 0.3,
-            "datasource_training_data": {'database': 'nilan_erweitert', 'measurement': 'training'},
-
-            "datasource_marked_data": {'database': 'nilan_marked', 'measurement': 'training'},
-            "classification_method_options": {
-                "SVM": "sklearn.svm.SVC()",
-                "kNN": "sklearn.neighbors.KNeighborsClassifier()"
-            },
-            "create_new_classifier": "True",
-            "datasource_classifier": 'model.txt'
-        }
-        self.assertEqual(training_engine.train_classifier(classification_config), ex.InvalidConfigValueException)
-
     def test_returns_noPersist(self):
-        """
+        '''
         Tests with no new classifier method
         :return: PersistException
-        """
+        '''
         classification_config = {
-
             "selected_event": "abtauzyklus",
             "required_score": {"abtauzyklus": 0.9, "warmwasseraufbereitung": 0.2, "offennutzung": 0.5,
                                "luefterstufen": 0.8},
@@ -97,7 +57,8 @@ class TestTrainClassifier(unittest.TestCase):
             "classification_method_options": {
                 "SVM": "sklearn.svm.SVC()",
                 "kNN": "sklearn.neighbors.KNeighborsClassifier()"
-            }
+            },
+            "new_classifier_method": ""
         }
         self.assertEqual(training_engine.train_classifier(classification_config), ex.PersistorException)
 
@@ -118,12 +79,11 @@ class TestTrainClassifier(unittest.TestCase):
                 "SVM": "sklearn.svm.SVC()",
                 "kNN": "sklearn.neighbors.KNeighborsClassifier()"
             },
-            "create_new_classifier": " True",
-            "datasource_classifier": 'model.txt'
-
+            "new_classifier_method": "KNN",
+            "datasource_classifier": ''
         }
-
         self.assertEqual(training_engine.train_classifier(classification_config), 1)
+
 
 
 if __name__ == '__main__':

@@ -102,14 +102,6 @@ class InsufficientDataException(DBException):
             return 'InsufficientDataException has been raised'
 
 
-class FileException(DataPipelineException):  # author: Johannes, stand so in der Doku noch drinn...
-    def __str__(self):
-        if self.message:
-            return 'FileExcpetion: {0}'.format(self.message)
-        else:
-            return 'FileExcpetion has been raised'
-
-
 class SklearnException(DataPipelineException):  # author: Johannes, stand so in der Doku noch drinn...
     def __str__(self):
         if self.message:
