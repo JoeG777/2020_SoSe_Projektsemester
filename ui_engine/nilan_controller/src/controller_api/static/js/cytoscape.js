@@ -80,7 +80,7 @@ function fetchModelData() {
 
 function init(data) {
     $('#parameter_wrapper').hide();
-    let predictionUnits =  createElementArray(predictionUnits); //data.prediction_units //;
+    let predictionUnits =  createElementArray(data.prediction_units);
 
     cy = cytoscape({
 
@@ -133,13 +133,13 @@ function init(data) {
                 top:   evt.renderedPosition.y
       });
 
-   $('#test_sample_size').innerHTML = value['test_sample_size']
-   $('#explained_variance_score').innerHTML = value['explained_variance_score']
-   $('#max_error').innerHTML = value['max_error']
-   $('#mean_absolute_error').innerHTML = value['mean_absolute_error']
-   $('#mean_squared_error').innerHTML = value['mean_squared_error']
-   $('#median_absolute_error').innerHTML = value['median_absolute_error']
-   $('#r2_score').innerHTML =value['r2_score']
+   $('#test_sample_size').html(value['test_sample_size']);
+   $('#explained_variance_score').html(value['explained_variance_score']);
+   $('#max_error').html(value['max_error']);
+   $('#mean_absolute_error').html(value['mean_absolute_error']);
+   $('#mean_squared_error').html(value['mean_squared_error']);
+   $('#median_absolute_error').html(value['median_absolute_error']);
+   $('#r2_score').html(value['r2_score']);
 
 
   });
@@ -188,16 +188,6 @@ function resetAllEdges() {
     }
 }
 
-function rgbToHex(color) {
-  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
-
-function onEdgeHover(evt) {
-    let eventId = evt.target.id();
-    let value = edgesPredictionCalcValues[eventId];
-
-
-}
 function createElementArray(predictionUnits) {
     let elements = [];
     let predictionUnitId = 10;
