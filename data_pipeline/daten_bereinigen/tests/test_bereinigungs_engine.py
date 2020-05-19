@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-import data_pipeline.datenbereinigen.src.bereinigungs_engine.bereinigungs_engine as be
+import data_pipeline.daten_bereinigen.src.bereinigungs_engine.bereinigungs_engine as be
 import pandas as pd
 import data_pipeline.exception.exceptions as exc
 

@@ -1,10 +1,10 @@
-import data_pipeline.log_writer.log_writer as logger
+from data_pipeline.log_writer.log_writer import Logger
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
 LOGGER_HOST = "uipserver.ddns.net"
 LOGGER_PORT = "8086"
 LOGGER_COMPONENT = "Daten klassifizieren"
-logger = logger.Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT, LOGGER_COMPONENT)
+logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT, LOGGER_COMPONENT)
 
 from flask import *
 import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
@@ -53,7 +53,7 @@ def classify():
     response = 200
     if request.is_json:
         try:
-            extracted_config = request.get_json(force=True)
+            extracted_config = request.get_json()
             classification.apply_classifier(extracted_config)
         except ex.ConfigException as e:
             exception_name = e.__class__.__name__
@@ -109,7 +109,7 @@ def train():
     response = 200
     if request.is_json:
         try:
-            config = request.get_json(force=True)
+            config = request.get_json()
             trainingsdata.enrich_data(config)
             logger.info("Enrich data was successful.")
             trainingsdata.mark_data(config)

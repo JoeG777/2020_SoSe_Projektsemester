@@ -6,13 +6,13 @@ bereinigungs_config = {
         "from_measurement": "temperature_register",
         "to_measurement": "temperature_register",
         "value_name": "valueScaled",
-        "register": "201, 202, 204",
-        "frame_width": 100,
+        "register": "201, 202, 204, 206, 205, 210",
+        "frame_width": 10,
         "freq": "60S",
         "threshold": 3600,
         "time": {
-            "from": "1478268800189003008",
-            "to": "1678268811144129024"
+            "from": "1578610800000000000",
+            "to": "1578913200000000000"
         }
     },
 
@@ -23,7 +23,7 @@ bereinigungs_config = {
         "to_measurement": "temperature_register",
         "value_name": "temperature",
         "register": "historic_weatherdata",
-        "frame_width": 100,
+        "frame_width": 10,
         "freq": "600S",
         "threshold": 3600,
         "time": {
@@ -39,7 +39,7 @@ bereinigungs_config = {
         "to_measurement": "temperature_register",
         "value_name": "temperature",
         "register": "forecast_weatherdata",
-        "frame_width": 100,
+        "frame_width": 10,
         "freq": "3600S",
         "threshold": 10000,
         "time": {

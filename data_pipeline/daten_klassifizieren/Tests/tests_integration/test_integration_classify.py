@@ -2,7 +2,7 @@ import copy
 import unittest
 import requests
 
-from data_pipeline.konfiguration.src.config import classification_config as config
+from data_pipeline.daten_klassifizieren.config import classification_config as config
 
 
 class test_classify(unittest.TestCase):

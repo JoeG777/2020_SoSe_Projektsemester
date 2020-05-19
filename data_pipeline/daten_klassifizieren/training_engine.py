@@ -1,3 +1,5 @@
+import sklearn
+import pandas as pd
 import data_pipeline.exception.exceptions as exce
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.daten_klassifizieren.model_persistor as model_persistor
@@ -61,8 +63,8 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
         boolean: True: New Classifier has a higher score and will be persist, False: New Classifier has a lower score and will not be persist)"""
     # TODO : ursprünglicher und neuer Score loggen
     score = classifier.score(X_test, y_test)
-    print("Das ist der alte Score: ", required_score)
-    print("Das ist der neue Score: ", score)
+    logger.info("Das ist der alte Score: " + str(required_score))
+    logger.info("Das ist der neue Score: "+ str(score))
     if score >= required_score:
         logger.info("evaluating Model")
         return True

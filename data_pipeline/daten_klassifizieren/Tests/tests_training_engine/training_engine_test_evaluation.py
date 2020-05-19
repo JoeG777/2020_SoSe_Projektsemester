@@ -1,4 +1,11 @@
 import unittest
+import data_pipeline.exception.exceptions as ex
+from mockito.matchers import ANY
+from mockito import *
+import data_pipeline.log_writer.log_writer as logger
+when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
+    (mock(dict(info=lambda x: print(x), warning=lambda x: print(x),
+               error=lambda x: print(x), write_into_measurement=lambda x: print(x))))
 import data_pipeline.db_connector.src.read_manager.read_manager as read_manager
 import data_pipeline.daten_klassifizieren.model_persistor as model_persistor
 import data_pipeline.daten_klassifizieren.training_engine as training_engine
@@ -6,8 +13,6 @@ from data_pipeline.daten_klassifizieren.training_engine import get_config_parame
 from data_pipeline.daten_klassifizieren.config import classification_config as config
 from sklearn.model_selection import train_test_split
 import numpy as np
-
-
 
 from data_pipeline.daten_klassifizieren.training_engine import convert_time
 
@@ -31,8 +36,8 @@ class TestEvaluateClassifier(unittest.TestCase):
                 "SVM": "sklearn.svm.SVC()",
                 "kNN": "sklearn.neighbors.KNeighborsClassifier()"
             },
-            "new_classifier_method": "kNN",
-            "datasource_classifier": 'model.txt'
+            "create_new_classifier": "True",
+            "datasource_classifier": 'model_training_engine.txt'
 
         }
 
@@ -46,16 +51,15 @@ class TestEvaluateClassifier(unittest.TestCase):
                                      f"AND time <= {end_time}ms")
         df.dropna(inplace=True)
         y = np.array(df[selected_event])
-        X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-        classifier = classifier.fit(X_train, y_train)
+        X = np.array(df.drop(labels=[selected_event, f"{selected_event}_marker"], axis=1))
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=float(test_size))
 
         self.assertEqual(training_engine.evaluate_classifier(classifier, required_score, X_test, y_test), True)
 
     def test_returns_false(self):
         """
         does the same like above but with a higher require score in the config
-        :return: false
+        :return:
         """
 
         classification_config = {
@@ -70,7 +74,7 @@ class TestEvaluateClassifier(unittest.TestCase):
                 "SVM": "sklearn.svm.SVC()",
                 "kNN": "sklearn.neighbors.KNeighborsClassifier()"
             },
-            "new_classifier_method": "kNN",
+            "create_new_classifier": "True",
             "datasource_classifier": 'model.txt'
 
         }
@@ -85,12 +89,11 @@ class TestEvaluateClassifier(unittest.TestCase):
                                  f"AND time <= {end_time}ms")
         df.dropna(inplace=True)
         y = np.array(df[selected_event])
-        X = np.array(df.drop(labels=[selected_event, 'abtaumarker'], axis=1))
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+        X = np.array(df.drop(labels=[selected_event, f"{selected_event}_marker"], axis=1))
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=float(test_size))
         classifier = classifier.fit(X_train, y_train)
 
         self.assertEqual(training_engine.evaluate_classifier(classifier, required_score, X_test, y_test), False)
-
 
 
 
