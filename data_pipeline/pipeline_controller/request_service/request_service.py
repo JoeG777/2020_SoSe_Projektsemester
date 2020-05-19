@@ -42,7 +42,7 @@ def start_classification_training(config):
 
 
 def start_filtering(config):
-    return drop_post_request(DATA_PREDICTION_URL + "/filtern", config)
+    return drop_post_request(DATA_FILTER_URL + "/filtern", config)
 
 
 def start_prediction_training(config):

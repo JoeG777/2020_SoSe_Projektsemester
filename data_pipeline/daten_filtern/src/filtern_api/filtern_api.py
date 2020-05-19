@@ -37,7 +37,7 @@ def filter():
     logger.info("Received request on filter data. Starting ...")
     response = None
     try:
-        filtern_config = request.get_json(force=True)['filtern_config']
+        filtern_config = request.get_json()['filtern_config']
         filtern_validator.config_validation(filtern_config)
         logger.info("Config validated")
         timeframe = filtern_config['timeframe']
@@ -76,6 +76,8 @@ def filter():
         logger.error(exception_name + " was caught. StackTrace: " + stack_trace)
         response = e.args[1]
         logger.error("Returning " + str(response))
+    except Exception:
+        logger.error(str(Exception))
     finally:
         return Response(status=response)
 
@@ -88,4 +90,4 @@ def get_logs():
     return 'logs'
 
 if __name__ == '__main__':
-    app.run(host='localhost', port='8000')
+    app.run(host='localhost', port='5000')

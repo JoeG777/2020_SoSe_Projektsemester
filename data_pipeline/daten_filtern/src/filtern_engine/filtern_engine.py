@@ -49,7 +49,7 @@ def get_data(timeframe):
     """
     try:
         #print(timeframe)
-        classified_data = reader.read_data('nilan_classified' ,measurement = 'abtauzyklus' ,
+        classified_data = reader.read_data('nilan_classified' ,measurement = 'classified',
                                            start_utc= str(convert_time(timeframe[0])),
                                            end_utc= str(convert_time(timeframe[1])))
 
@@ -106,11 +106,12 @@ def interpolation(methode, curve, zyklenfreie_daten):
     try:
         zyklenfreie_daten[curve] = zyklenfreie_daten[curve].interpolate(method= methode, order = 3)
 
-        #print("Interpoliert:")
+        print("Interpoliert:")
         #print(zyklenfreie_daten.loc[zyklenfreie_daten.abtauzyklus == True][curve])
         #print("________________________________")
 
-    except:
+    except exe.DataPipelineException as e:
+        logger.error(e.message)
         raise exe.ConfigException("Filtern Config format is not correct. Interpolation() failed.", 900)
 
     return zyklenfreie_daten

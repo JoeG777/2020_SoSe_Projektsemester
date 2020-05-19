@@ -1,7 +1,7 @@
 from flask import *
 from data_pipeline.konfiguration.src.bereinigungs_config import bereinigungs_config as be_con
 from data_pipeline.konfiguration.src.erhebungs_config import erhebungs_config as er_con
-from data_pipeline.konfiguration.src.filterungs_config import filtern_config as fi_con
+from data_pipeline.konfiguration.src.filterungs_config import filtern_con as fi_con
 from data_pipeline.konfiguration.src.klassifikations_config import classification_config as kl_con
 from data_pipeline.konfiguration.src.vorhersage_config import vorhersage_config as vs_con
 from data_pipeline.konfiguration.src.frontend_interface_config import frontend_interface_config as fei_con
