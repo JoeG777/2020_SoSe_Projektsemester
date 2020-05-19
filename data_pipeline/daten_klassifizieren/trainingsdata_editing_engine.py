@@ -34,6 +34,7 @@ def enrich_data(config):
     except Exception as e:
         raise ex.DBException(str(e))
     logger.info('raw_data loaded')
+    df_query = df_query.astype('float64')
     for register in required_registers:
         if register_dict[register] not in df_query.columns:
             raise ex.InvalidConfigValueException(register_dict[register] + ' not found in dataframe columns')
@@ -130,9 +131,7 @@ def mark_data(config):
     else:
         raise ex.InvalidConfigValueException(selected_event + ' not an valid classification event')
     try:
-        print(df.head(5))
-        print(df.loc[df['warmwasseraufbereitung'] == True])
-        write_manager.write_dataframe(datasource_marked_data, df, selected_event)
+        write_manager.write_dataframe("nilan_marked", df, selected_event)
     except Exception as e:
         raise ex.DBException(str(e))
     logger.info(f"marked_data for {selected_event} successfully persisted")

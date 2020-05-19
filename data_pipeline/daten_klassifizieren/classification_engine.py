@@ -57,7 +57,7 @@ def apply_classifier(config):
     except ValueError:
         raise ex.SklearnException("Input contains NaN, infinity or a value too large for dtype('float64')")
 
-    df_raw = read_manager.read_query('test', f"SELECT * FROM {measurement_raw} WHERE time >= {start}ms AND time "
+    df_raw = read_manager.read_query(datasource_raw_data, f"SELECT * FROM {measurement_raw} WHERE time >= {start}ms AND time "
                                                    f"<= {end}ms")
     df_raw = df_raw.drop(df_raw.index[-1])
     df_raw = df_raw.drop(df_raw.index[0])
