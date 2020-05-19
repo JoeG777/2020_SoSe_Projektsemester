@@ -34,22 +34,22 @@ def get_start_date():
     :return: start date for the beginning of the query
     '''
 
-#    try:
-#        if not os.path.exists(date_tmp_file):
-#            open(date_tmp_file, "w")
+    try:
+        if not os.path.exists(date_tmp_file):
+            open(date_tmp_file, "w")
 
-#        tmp = open(date_tmp_file, "r")
-#        start_date = tmp.read()
+        tmp = open(date_tmp_file, "r")
+        start_date = tmp.read()
 
-#        if start_date == "":
-    start_date = "2020-01-05T00:00:00Z"
-#        tmp.close()
+        if start_date == "":
+            start_date = "2020-01-05T00:00:00Z"
+            tmp.close()
 
-    return start_date
+        return start_date
 
-#    except:
-#        logger.info("Inadequate read and write rights.")
-#        raise FileException("Inadequate read and write rights.", 903)
+    except:
+        logger.info("Inadequate read and write rights.")
+        raise FileException("Inadequate read and write rights.", 903)
 
 
 def get_temp_data(url):
@@ -99,17 +99,17 @@ def find_start_date(temperatures):
     :return: Start-date for the query.
     '''
 
-    start_date = 1
+    start_date = 0
 
-#    try:
+    try:
 
-#        for i in range(len(temperatures)):
-#            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
-#               start_date = i
-#
-#    except:
-#       logger.info("incorrect passed data.")
-#       raise RawDataException("incorrect passed data.", 905)
+        for i in range(len(temperatures)):
+            if get_timestamp_dwd(temperatures[i][0]) == get_start_date():
+               start_date = i
+
+    except:
+       logger.info("incorrect passed data.")
+       raise RawDataException("incorrect passed data.", 905)
 
     return start_date
 
