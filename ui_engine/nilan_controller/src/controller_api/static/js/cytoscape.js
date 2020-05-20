@@ -82,6 +82,8 @@ $(document).ready(fetchModelData())
 //$(document).ready(init())
 
 function fetchModelData() {
+    $('#calc_container_curve').hide();
+    $('#curves').hide();
     jQuery.when(
         jQuery.getJSON('get_model_data')
     ).done(function (json) {
@@ -91,7 +93,6 @@ function fetchModelData() {
 
 
 function init(data) {
-    $('#parameter_wrapper').hide();
     let predictionUnits = createElementArray(data.prediction_units);
     //let predictionUnitsData = predictionUnits;
 
@@ -134,17 +135,17 @@ function init(data) {
       });
 
 
-  cy.on('mouseover', 'edge', function(evt)  {
+  cy.on('mouseover', 'edge', function(evt) {
       let eventId = evt.target.id();
 
       makeEdgesGradient(eventId);
 
       let value = edgesPredictionCalcValues[eventId];
-      $('#parameter_wrapper').show();
-      $('#parameter_wrapper').offset({
-                left:  evt.renderedPosition.x,
-                top:   evt.renderedPosition.y
-      });
+      $('#curves').show();
+      $('#averageHeader').hide();
+      $('#calc_container_curve').show();
+      $('#calc_container_average').hide();
+
 
    $('#independent_curves').append(getCurvesAsHtml(value['independent']));
    $('#dependent_curves').append(getCurvesAsHtml(value['dependent']));
@@ -160,11 +161,8 @@ function init(data) {
     var problems = document.getElementsByClassName('functionContainer');
    for (let i = 0; i < problems.length; i++) {
         MQ.StaticMath(problems[i]);
-   }
-
-
-
-  });
+    }
+   });
 
   /* AVERAGE PARAMETERS */
 
@@ -181,7 +179,10 @@ function init(data) {
     cy.on('mouseout', 'edge', function(evt)  {
         $('.curveContainer').remove();
         $('.functionContainer').remove();
-        $('#parameter_wrapper').hide();
+        $('#calc_container_curve').hide();
+        $('#calc_container_average').show();
+        $('#curves').hide();
+        $('#averageHeader').show();
         resetAllEdges();
     });
   cy.userZoomingEnabled(false);
@@ -303,7 +304,7 @@ function generateFunction(predictionUnit) {
         for (let j = 0; j < coef[i].length; j++) {
             linearFunc += roundToTwoDec(coef[i][j]) + ' * '  + independent[j] + ' + ';
         }
-        linearFunc += Math.round(intercept,2);
+        linearFunc += roundToTwoDec(intercept[i]);
         linearFunc += ' = ' + dependent[i] + '</div>';
     }
 
