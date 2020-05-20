@@ -19,8 +19,9 @@ def start_timer_based_process_cycle():
     start_classification(all_configs["classification"])
     start_filtering(all_configs["filtering"])
     start_prediction_training(all_configs["prediction"])
+    start_prediction("prediction")
 
 
 def start_trigger_based_process():
     config = fetch_config("prediction")
-    start_prediction(config)
+    start_prediction("prediction")
