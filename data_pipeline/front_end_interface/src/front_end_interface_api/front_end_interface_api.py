@@ -50,7 +50,6 @@ def pipeline_control_service():
     :return: statuscode
     '''
     try:
-        print("test2")
         pcs.build_request_data_pipeline_cmd()
 
         response = 200

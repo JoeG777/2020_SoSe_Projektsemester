@@ -15,7 +15,6 @@ def build_request_data_pipeline_cmd(nilan_json):
     '''
 
     try:
-        print("test")
         return requests.post("http://localhost:5001" + "/pipeline_control_service", {}, headers = {'Content-type': 'application/json', 'Accept': 'text/plain'})
     except:
         logger.influx_logger.error('Unable to start forecast process.')

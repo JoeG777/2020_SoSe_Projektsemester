@@ -15,7 +15,7 @@ def build_request_modbus_cmd(nilan_json):
     '''
 
     try:
-        return requests.post("http://localhost:5001" + "/nilan_control_service ", json=json.dumps(nilan_json))
+        return requests.post("http://localhost:5001" + "/nilan_control_service ", json=json.dumps(nilan_json), headers = {'Content-type': 'application/json', 'Accept': 'text/plain'})
 
     except:
         logger.influx_logger.error('Unable to save new parameters.')

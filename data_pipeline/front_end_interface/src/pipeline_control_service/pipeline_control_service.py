@@ -11,7 +11,6 @@ def build_request_data_pipeline_cmd():
     '''
 
     try:
-        print("test3")
         return requests.post("http://localhost:5000" + "/start_process", {}, headers = {'Content-type': 'application/json', 'Accept': 'text/plain'})
     except:
         logger.influx_logger.error('Unable to start process')
