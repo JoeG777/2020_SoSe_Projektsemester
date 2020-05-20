@@ -1,3 +1,11 @@
+pip install flask
+pip install requests
+pip install pandas
+pip install sklearn
+pip install influx_logging
+pip install timeloop
+
+
 cd daten_erheben
 cd src
 cd data_collection_api
