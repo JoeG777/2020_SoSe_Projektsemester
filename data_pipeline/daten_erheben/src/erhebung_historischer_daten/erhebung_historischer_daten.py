@@ -48,7 +48,7 @@ def get_start_date():
         return start_date
 
     except:
-        logger.info("Inadequate read and write rights.")
+        logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
 
@@ -85,7 +85,7 @@ def get_temp_data(url):
                 return_data.append(element)
 
     except:
-        logger.info("Inadequate read and write rights.")
+        logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
     return return_data
@@ -108,7 +108,7 @@ def find_start_date(temperatures):
                start_date = i
 
     except:
-       logger.info("incorrect passed data.")
+       logger.error("incorrect passed data.")
        raise RawDataException("incorrect passed data.", 905)
 
     return start_date
@@ -126,7 +126,7 @@ def write_into_tmp(last_date_read):
         tmp.write(last_date_read)
         tmp.close()
     except FileException:
-        logger.info("Inadequate read and write rights.")
+        logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
 
@@ -163,11 +163,11 @@ def get_dwd_data(url):
         df = df.set_index('time')
 
     except FileException:
-        logger.info("Inadequate read and write rights.")
+        logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
     except UrlException:
-        logger.info("Incorrect URL.")
+        logger.error("Incorrect URL.")
         raise UrlException("Incorrect URL.", 904)
 
     return df

@@ -1,6 +1,9 @@
 from datetime import datetime
 import pytz
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
+import data_pipeline.log_writer.log_writer as logger
+
+logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Datenerhebung")
 
 
 def get_converted_date(date):
@@ -31,5 +34,4 @@ def write_to_influx(dataframe):
     '''
 
     wm.write_dataframe("db_rohdaten", dataframe, "temperature_DWD")
-
-    print("Daten aktualisiert.")
+    logger.info("Wetterdaten in die Datenbank eingeschrieben.")

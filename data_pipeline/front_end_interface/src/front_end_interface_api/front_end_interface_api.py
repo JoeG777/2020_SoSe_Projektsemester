@@ -29,7 +29,6 @@ def nilan_control_service():
     try:
         json_validation()
         ncs.write_to_nilan(request.args)
-
         response = 200
 
     except exc.DataPipelineException as dpxc:
@@ -51,7 +50,6 @@ def pipeline_control_service():
     '''
     try:
         pcs.build_request_data_pipeline_cmd()
-
         response = 200
 
     except exc.DataPipelineException as dpxc:
