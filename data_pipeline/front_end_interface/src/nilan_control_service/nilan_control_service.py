@@ -2,13 +2,11 @@ from datetime import datetime
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
 import pytz
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as logger
-
-logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Forntend-Interface")
+from data_pipeline.front_end_interface.src.front_end_interface_api.front_end_interface_api import logger
 
 def get_current_time_utc():
     '''
-    Name in documentation: 'get_current_time_utc'
+    Name in documentation: 'get_current_time'
     This method sets the timezone of the timestamp to UTC in order to show it correctly in Grafana.
     :return: the date 2 hours before the passed date.
     '''
@@ -24,7 +22,7 @@ def get_current_time_utc():
 
 def format_json(json):
     '''
-    Name in documentation: 'formatiere_eingabedaten'
+    Name in documentation: 'formatiere_eingabedaten()'
     Formats the Json-File for InfluxDB
     :param json: Nilan-Ventilation Unit Parameters
     '''
@@ -58,7 +56,7 @@ def format_json(json):
 
 def write_to_nilan(json):
     '''
-    Name in documentation: 'schreibe_eingabedaten'
+    Name in documentation: 'schreibe_eingabedaten()'
     Writes the User-Settings into Nilan-Ventilation Unit
     :param json: Nilan-Ventilation Unit Parameters
     :raises

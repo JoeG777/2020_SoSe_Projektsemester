@@ -2,6 +2,7 @@ from flask import *
 import ui_engine.nilan_controller.src.data_pipeline_format_executor.data_pipeline_command_executor as dpce
 import ui_engine.nilan_controller.src.modbus_command_executor.modbus_command_executor as mce
 import data_pipeline.exception.exceptions as exc
+import requests
 
 app = Flask(__name__)
 
@@ -9,7 +10,7 @@ app = Flask(__name__)
 @app.route('/')
 def start():
     '''
-    Name in documentation: 'start'
+    Name in documentation: ''
     triggers the index method
     :return: the link to index.html
     '''
@@ -20,7 +21,7 @@ def start():
 @app.route('/index')
 def index():
     '''
-        Name in documentation: 'index'
+        Name in documentation: ''
         renders the index.html
         :return: index.html the site to be shown
     '''
@@ -41,10 +42,15 @@ def index():
                            value_betriebsmodus=betriebsmodus)
 
 
+@app.route('/prediction')
+def prediction():
+    return render_template('prediction.html')
+
+
 @app.route('/validate_input', methods=['POST'])
 def validate_input():
     '''
-        Name in documentation: 'validate_input'
+        Name in documentation: ''
         Validates from which button the input came and afterwards calls the right method.
         :return: index.html the site to be shown
     '''
@@ -56,8 +62,6 @@ def validate_input():
     luefterstufe_zuluft = None
     luefterstufe_abluft = None
     betriebsmodus = None
-
-    #print(request.get_json(force=True))
 
     try:
 
@@ -111,7 +115,6 @@ def exec_modbus_cmd():
 
 def format_json():
     '''
-    Name in documentation: 'format_json'
     Requests the mandatory values from the index.html and saves it into a JSON-file.
     :return: json the formatted JSON-file
     '''
@@ -126,3 +129,9 @@ def format_json():
     }
 
     return json
+
+
+@app.route('/get_model_data', methods=['GET'])
+def get_current_models():
+    return requests.get('http://localhost:5555/current_models').json()
+

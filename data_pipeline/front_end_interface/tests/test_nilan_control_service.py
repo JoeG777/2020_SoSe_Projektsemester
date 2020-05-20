@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timedelta
-from data_pipeline.front_end_interface.src.nilan_control_service import nilan_control_service
+from data_pipeline.front_end_interface_old.src.nilan_control_service import nilan_control_service
 import data_pipeline.exception.exceptions as exc
 
 

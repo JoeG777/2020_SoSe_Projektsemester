@@ -1,10 +1,97 @@
 <html>
 <head>
-    <link rel="stylesheet" href="../static/styles/prediction.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/prediction.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<body style="background-color: green;">
-<div class="cy" id="cy" style="background-color: white;width:80%;height:80%;"></div>
-<script src="../static/js/cytoscape.min.js"></script>
-<script src="../static/js/cytoscape.js"></script>
-</body>
+    <body>
+    <div class="header_container">
+        <div class="heading_dropdown">
+            <div class="dropdown_header">
+                <p class="heading" id="heading">CURRENT MODEL</p>
+                <div class="dropdown_arrow" onclick="press_dropdown()"></div>
+            </div>
+            <div class="dropdown_options">
+                <a class="dropdown_option" id="dropdown_option_1" onclick="option_pressed(1)" href="index">Control Panel</a>
+                <a class="dropdown_option" id="dropdown_option_2" onclick="option_pressed(2)" href="prediction">Current Model</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="body_container">
+        <div class="cy_container">
+            <div class="cy" id="cy"></div>
+        </div>
+        <div class="average_container_wrapper">
+            <div class="average_container">
+                <h3>Average values</h3>
+                <p class="parameter_tag">Average Score</p>
+                <p class="parameter_value" id="average_score"></p>
+                <p class="parameter_tag">Average Explained Variance Score</p>
+                <p class="parameter_value" id="average_explained_variance_score"></p>
+                <p class="parameter_tag">Average Max Error</p>
+                <p class="parameter_value" id="average_max_error"></p>
+                <p class="parameter_tag">Average Mean Absolute Error</p>
+                <p class="parameter_value" id="average_mean_absolute_error"></p>
+                <p class="parameter_tag">Average Mean Squared Error</p>
+                <p class="parameter_value" id="average_mean_squared_error"></p>
+                <p class="parameter_tag">Average Median Absolute Error</p>
+                <p class="parameter_value" id="average_median_absolute_error"></p>
+                <p class="parameter_tag">Average R2 Score</p>
+                <p class="parameter_value" id="average_r2_score"></p>
+
+            </div>
+        </div>
+        <div class="parameter_wrapper" id="parameter_wrapper">
+            <div class="curves">
+                <div id="independent_curves" class="independent_curves">
+                </div>
+                <div class="arrow_container">
+                    <div class="parameter_arrow"></div>
+                </div>
+                <div id="dependent_curves" class="dependent_curves">
+
+                </div>
+            </div>
+            <p class="parameter_heading">Test Sample Size</p>
+            <p class="parameter_value" id="test_sample_size"></p>
+
+            <p class="parameter_heading">Explained Variance Score</p>
+            <p class="parameter_value"id="explained_variance_score"></p>
+
+            <p class="parameter_heading">Max Error</p>
+            <p class="parameter_value" id="max_error"></p>
+
+            <p class="parameter_heading">Mean Absolute Error</p>
+            <p class="parameter_value" id="mean_absolute_error"></p>
+
+            <p class="parameter_heading">Mean Squared Error</p>
+            <p class="parameter_value" id="mean_squared_error"></p>
+
+            <p class="parameter_heading">Median Absolute Error</p>
+            <p class="parameter_value" id="median_absolute_error"></p>
+
+            <p class="parameter_heading">R2 Score</p>
+            <p class="parameter_value" id="r2_score"></p>
+            <p class="parameter_heading">Funktionsgleichung</p>
+            <div id="function" class="function">
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/js/cytoscape.min.js"></script>
+    <script src="../static/js/cytoscape.js"></script>
+    <script type="text/javascript"
+            src='../static/js/prediction.js'>
+    </script>
+    <script type="text/javascript"
+            src='../static/js/mathquill.min.js'>
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css"/>
+    <script>
+        var MQ = MathQuill.getInterface(2);
+    </script>
+    </body>
 </html>
+

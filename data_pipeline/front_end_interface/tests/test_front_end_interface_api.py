@@ -1,7 +1,7 @@
 import unittest
 from mockito import *
 import requests
-import data_pipeline.front_end_interface.src.front_end_interface_api.front_end_interface_api as feiapi
+import data_pipeline.front_end_interface_old.src.front_end_interface_api.front_end_interface_api as feiapi
 
 
 class test_data_collection_api(unittest.TestCase):

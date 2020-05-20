@@ -1,17 +1,26 @@
 from flask import *
+from data_pipeline.log_writer.log_writer import Logger
+LOGGER_DB_NAME = "logs"
+LOGGER_MEASUREMENT = "logs"
+LOGGER_HOST = "localhost"
+LOGGER_PORT = "8086"
+LOGGER_COMPONENT = "Frontend Interface"
+
+logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
+                LOGGER_COMPONENT)
+from data_pipeline.db_connector.src.read_manager import read_manager as rm
 import data_pipeline.front_end_interface.src.nilan_control_service.nilan_control_service as ncs
 import data_pipeline.front_end_interface.src.pipeline_control_service.pipeline_control_service as pcs
 import data_pipeline.exception.exceptions as exc
-import data_pipeline.log_writer.log_writer as logger
 
 app = Flask(__name__)
-logger = logger.Logger("logs", "logs", "uipserver.ddns.net", 8086,"Forntend-Interface")
 response = None
+
 
 @app.route('/nilan_control_service', methods=['POST'])
 def nilan_control_service():
     '''
-    Name in documentation: 'nilan_control_service'
+    Name in documentation: 'nilan_control_service()'
     Gets called when new Data has to be persisted.
     The passed Data gets validated and afterwards calls the write_to_nilan method on
     nilan_control_service.
@@ -30,6 +39,7 @@ def nilan_control_service():
         response = icxc.args[1]
 
     return Response(status=response)
+
 
 @app.route('/pipeline_control_service', methods=['POST'])
 def pipeline_control_service():
@@ -53,10 +63,23 @@ def pipeline_control_service():
 
     return Response(status=response)
 
+
+@app.route('/current_models', methods=['GET'])
+def get_current_models():
+    """
+    //TODO ADD TO DOCUMENTATION
+    Used to retrieve the current model metadata for display in a front-end application.
+    :return: The current model metadata as json.
+    """
+    df = rm.read_query("logs", "SELECT short_message FROM model GROUP BY short_message ORDER BY DESC LIMIT 1")["short_message"]
+    df.reset_index(drop=True, inplace=True)
+    print(df)
+    return df.to_dict()[0]
+
+
 def json_validation():
 
     '''
-    Name in Documentation: 'json_validation'
     Gets called in the beginning of either 'pipeline_control_service' or 'nilan_control_service' to proof wether the passed config data
     is complete or not.
     :param index: Depending on the passed index, the config gets checked for another tag. Either 'forecastURL' or 'historischURL'.

@@ -1,4 +1,242 @@
+html, body {
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #212025;
+    font-family: 'Montserrat';
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+}
+
+canvas {
+    z-index: 9998;
+}
+.header_container {
+    width: 100%;
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.heading_dropdown {
+    height: 50%;
+    width: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.heading_dropdown p {
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 30pt;
+    padding: 0 30px 0 0;
+
+}
+.dropdown_arrow {
+    height: 15px;
+    width: 15px;
+    border-bottom: 5px solid #fff;
+    border-right: 5px solid #fff;
+    transform: rotate(45deg) translateY(-50%);
+    transition: all 400ms cubic-bezier(0.1, 1, 0.1 , 1);
+}
+
+.dropdown_arrow:hover {
+    transform: rotate(45deg) translateY(-50%) scale(1.2);
+}
+
+.dropdown_arrow.active {
+    transform: rotate(225deg) translateY(35%) translateX(-35%);
+}
+
+.dropdown_header {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.dropdown_options {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+}
+
+.dropdown_option {
+    height: 100%;
+    width: 100%;
+    display: none;
+    text-decoration: none;
+    color: #000;
+    font-weight: 400;
+    padding: 12px 16px;
+    background-color: #fff;
+}
+.dropdown_option.active {
+    display: block;
+}
+.dropdown_option:hover {
+    background-color: #c1c1c1;
+}
+
+.body_container {
+    width: 100%;
+    height: 85%;
+    display: flex;
+    flex-direction: row;
+}
+
+.cy_container {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex: 4;
+    justify-content: center;
+    align-items: center;
+}
+
 .cy {
     height: 100%;
     width: 100%;
 }
+
+/* AVERAGE VALUES */
+
+.average_container_wrapper {
+    height: 100%;
+    width: 50%;
+    flex: 1;
+    padding: 30px 50px 0px 30px;
+}
+
+.average_container {
+    height: 80%;
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 0px 0px 15px #000;
+    transition: all 800ms cubic-bezier(0.1, 1, 0.1, 1);
+}
+
+.average_container:hover {
+    transform: scale(1.025);
+}
+
+.average_container h3 {
+    margin: 0;
+}
+
+.parameter_tag {
+    font-size: 8pt;
+    opacity: 0.5;
+    margin: 20px 0 0 0;
+}
+
+.parameter_value {
+    margin: 0;
+}
+
+/* PARAMETER WRAPPER */
+
+.parameter_wrapper {
+    background-color: #fff;
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    padding: 30px;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 15px #000;
+    min-height: 400px;
+    max-height: 800px;
+}
+
+.curves {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0 0 10px 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 12pt;
+}
+
+.parameter_wrapper h3 {
+    margin: 0;
+    padding: 0;
+}
+
+.parameter_wrapper p {
+    margin: 0;
+    padding: 0;
+}
+
+.dependent_curves {
+    width: 40%;
+    margin: 5px 0 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 9pt;
+}
+
+.independent_curves {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 9pt;
+}
+
+.arrow_container {
+    width: 19%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.parameter_arrow {
+    height: 10px;
+    width: 10px;
+    border-right: 3px solid #000;
+    border-bottom: 3px solid #000;
+    transform: rotate(-45deg);
+    margin: 0 6px 0 0;
+    float: left;
+}
+
+.parameter_heading {
+    color: #c1c1c1;
+    margin: 2px 0 1px 0;
+}
+
+.parameter_value {
+    font-size: 11pt;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
