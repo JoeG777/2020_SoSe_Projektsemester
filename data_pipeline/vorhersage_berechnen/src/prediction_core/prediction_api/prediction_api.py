@@ -128,6 +128,7 @@ def predict():
             status_code = http_status_codes.get("PersistorException")
             logger.error("Returning " + str(status_code))
         except Exception as e:
+            print(e.with_traceback())
             exception_name = e.__class__.__name__
             stack_trace = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
             logger.error(exception_name + " was caught (unknown). StackTrace: " + stack_trace)

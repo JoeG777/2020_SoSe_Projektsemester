@@ -18,4 +18,4 @@ def fetch_all_configs():
 
 
 def fetch_config(config_key):
-    return drop_get_request(CONFIG_ENDPOINTS[config_key])
+    return drop_get_request("http://localhost:4998" + CONFIG_ENDPOINTS[config_key])

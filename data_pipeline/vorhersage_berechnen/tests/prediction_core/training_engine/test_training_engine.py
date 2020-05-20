@@ -1,8 +1,8 @@
 import unittest
 import data_pipeline.db_connector.src.read_manager.read_manager as rm
 import pandas
-from mockito import mockito, ANY, captor
-from mockito.mockito import when2, when, mock
+from mockito import mockito, ANY, captor, mock
+from mockito.mockito import when2, when
 import data_pipeline.log_writer.log_writer as logger
 when(logger).Logger(ANY, ANY, ANY, ANY, ANY).thenReturn \
     (mock(dict(info=lambda x: print(x), warning=lambda x: print(x),
@@ -17,10 +17,17 @@ class test_train(unittest.TestCase):
         valid_config = {
             "database_options": {
                 "training": {
-                    "datasource_nilan_dbname": "nilan_db",
-                    "datasource_nilan_measurement": "nilan_measurement",
-                    "datasource_weatherdata_dbname": "weather_dbname",
-                    "datasource_weatherdata_measurement": "weather_measurement",
+                    "datasource_nilan_dbname": "filtered_data",
+                    "datasource_nilan_measurement": "temperature_register",
+                    "datasource_weatherdata_dbname": "bereinigte_Daten",
+                    "datasource_weatherdata_measurement": "temperature_register"
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "bereinigte_Daten",
+                    "datasource_forecast_measurement": "forecast_temperature_register",
+                    "datasource_forecast_register": "201",
+                    "datasink_prediction_dbname": "prediction_data",
+                    "datasink_prediction_measurement": "vorhergesagteDaten"
                 }
             },
             "selected_value": "default",
@@ -44,14 +51,13 @@ class test_train(unittest.TestCase):
                 ]
             }
         }
-        when2(rm.read_data, "nilan_db", measurement="nilan_measurement", register=ANY(str),
-              resolve_register="True").thenReturn(pandas.DataFrame(
+        when2(rm.read_query, 'bereinigte_Daten', 'SELECT bereinigte_Daten FROM temperature_register WHERE time > 1578610800000000000 AND time < 1578912660000000000').thenReturn(pandas.DataFrame(
             {
                 "time": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                 "valueScaled": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             }
         ))
-        when2(rm.read_data, "weather_dbname", measurement="weather_measurement").thenReturn(
+        when2(rm.read_data, 'SELECT historic_weatherdata FROM temperature_register WHERE time > 1578610800000000000 AND time < 1578912660000000000').thenReturn(
             pandas.DataFrame(
                 {
                     "time": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -71,10 +77,17 @@ class test_train(unittest.TestCase):
         valid_config = {
             "database_options": {
                 "training": {
-                    "datasource_nilan_dbname": "nilan_db",
-                    "datasource_nilan_measurement": "nilan_measurement",
-                    "datasource_weatherdata_dbname": "weather_dbname",
-                    "datasource_weatherdata_measurement": "weather_measurement",
+                    "datasource_nilan_dbname": "filtered_data",
+                    "datasource_nilan_measurement": "temperature_register",
+                    "datasource_weatherdata_dbname": "bereinigte_Daten",
+                    "datasource_weatherdata_measurement": "temperature_register"
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "bereinigte_Daten",
+                    "datasource_forecast_measurement": "forecast_temperature_register",
+                    "datasource_forecast_register": "201",
+                    "datasink_prediction_dbname": "prediction_data",
+                    "datasink_prediction_measurement": "vorhergesagteDaten"
                 }
             },
             "selected_value": "default",
@@ -121,10 +134,17 @@ class test_train(unittest.TestCase):
         valid_config = {
             "database_options": {
                 "training": {
-                    "datasource_nilan_dbname": "nilan_db",
-                    "datasource_nilan_measurement": "nilan_measurement",
-                    "datasource_weatherdata_dbname": "weather_dbname",
-                    "datasource_weatherdata_measurement": "weather_measurement",
+                    "datasource_nilan_dbname": "filtered_data",
+                    "datasource_nilan_measurement": "temperature_register",
+                    "datasource_weatherdata_dbname": "bereinigte_Daten",
+                    "datasource_weatherdata_measurement": "temperature_register"
+                },
+                "prediction": {
+                    "datasource_forecast_dbname": "bereinigte_Daten",
+                    "datasource_forecast_measurement": "forecast_temperature_register",
+                    "datasource_forecast_register": "201",
+                    "datasink_prediction_dbname": "prediction_data",
+                    "datasink_prediction_measurement": "vorhergesagteDaten"
                 }
             },
             "selected_value": "default",

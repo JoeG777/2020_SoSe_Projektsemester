@@ -1,5 +1,6 @@
 from data_pipeline.pipeline_controller.process_engine import process_engine
 from data_pipeline.log_writer.log_writer import Logger
+
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
 LOGGER_HOST = "uipserver.ddns.net"
@@ -10,6 +11,7 @@ logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
                 LOGGER_COMPONENT)
 
 from flask import *
+from data_pipeline.pipeline_controller.config_handler import config_handler
 
 app = Flask(__name__)
 
@@ -30,3 +32,10 @@ def start_process():
     logger.info("lets gooo")
     process_engine.start_timer_based_process_cycle()
     return "Success!"
+
+
+@app.route('/config', methods=['POST'])
+def config():
+    logger.info("incoming request for config")
+    json = request.get_json()
+    return config_handler.fetch_config(json["config"]).json()
