@@ -50,8 +50,7 @@ def pipeline_control_service():
     :return: statuscode
     '''
     try:
-        json_validation()
-        pcs.start_process(request.args)
+        pcs.build_request_data_pipeline_cmd()
 
         response = 200
 

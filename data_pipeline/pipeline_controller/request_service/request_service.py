@@ -50,4 +50,4 @@ def start_prediction_training(config):
 
 
 def start_prediction(config):
-    return requests.post(DATA_PREDICTION_URL + "/predict", config)
+    return drop_post_request(DATA_PREDICTION_URL + "/predict", config)
