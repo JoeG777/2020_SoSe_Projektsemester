@@ -2,7 +2,7 @@ from flask import *
 from data_pipeline.log_writer.log_writer import Logger
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
-LOGGER_HOST = "localhost"
+LOGGER_HOST = "uipserver.ddns.net"
 LOGGER_PORT = "8086"
 LOGGER_COMPONENT = "Frontend Interface"
 
