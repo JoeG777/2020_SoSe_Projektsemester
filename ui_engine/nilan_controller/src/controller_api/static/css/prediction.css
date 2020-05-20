@@ -121,7 +121,7 @@ canvas {
     width: 90%;
     background-color: #fff;
     border-radius: 25px;
-    padding: 20px;
+
 }
 /*
 .calc_container_container:hover {
@@ -134,7 +134,14 @@ canvas {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    height: 10%;
+    height: 15%;
+    border-bottom: 1px solid black;
+}
+
+.calc_container_content {
+    overflow: auto;
+    height: 85%;
+    width: 100%;
 }
 
 .curves {
@@ -143,9 +150,8 @@ canvas {
     align-items: center;
     justify-content: center;
     width: 100%;
-
-
 }
+
 .dependent_curves {
     width: 40%;
     margin: 5px 0 0 0;
@@ -153,7 +159,7 @@ canvas {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-size: 12pt;
+    font-size: 9pt;
 }
 
 .dependent_curves div {
@@ -167,7 +173,7 @@ canvas {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-size: 12pt;
+    font-size: 9pt;
 }
 
 .arrow_container {
@@ -185,154 +191,33 @@ canvas {
     margin: 0 6px 0 0;
     float: left;
 }
-
 h3 {
     margin: 0;
     padding: 0;
 }
-
-.parameter_wrapper p {
-    margin: 0;
-    padding: 0;
-}
-
 .parameter_tag {
-    font-size: 10pt;
-    opacity: 0.5;
-    margin: 20px 0 0 0;
-}
-
-.parameter_value {
-    margin: 0;
-    font-size: 9pt;
-}
-
-.parameter_heading {
-    font-size: 9pt;
-    opacity: 0.5;
-    margin: 20px 0 0 0;
-}
-
-.parameter_value {
-    font-size: 11pt;
-}
-
-/*
-.average_container_wrapper {
-    height: 100%;
-    width: 50%;
-    flex: 1;
-    padding: 30px 50px 0px 30px;
-}
-
-.average_container {
-    height: 80%;
-    background-color: #fff;
-    border-radius: 25px;
-    padding: 20px;
-    box-shadow: 0px 0px 15px #000;
-    transition: all 800ms cubic-bezier(0.1, 1, 0.1, 1);
-}
-
-.average_container:hover {
-    transform: scale(1.025);
-}
-
-.average_container h3 {
-    margin: 0;
-}
-
-.parameter_tag {
-    font-size: 8pt;
-    opacity: 0.5;
-    margin: 20px 0 0 0;
-}
-
-.parameter_value {
-    margin: 0;
-}
-
-
-
-.parameter_wrapper {
-    background-color: #fff;
-    position: absolute;
-    bottom: 50px;
-    left: 50px;
-    padding: 30px;
-    border-radius: 25px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 0px 15px #000;
-    min-height: 400px;
-    max-height: 800px;
-}
-
-.curves {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    margin: 0 0 10px 0;
-    justify-content: center;
-    align-items: center;
     font-size: 12pt;
+    text-decoration: underline;
+    padding-left: 20px;
+    margin-bottom: 1px;
 }
-
-.parameter_wrapper h3 {
-    margin: 0;
-    padding: 0;
-}
-
-.parameter_wrapper p {
-    margin: 0;
-    padding: 0;
-}
-
-.dependent_curves {
-    width: 40%;
-    margin: 5px 0 0 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-size: 9pt;
-}
-
-.independent_curves {
-    width: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-size: 9pt;
-}
-
-.arrow_container {
-    width: 19%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.parameter_arrow {
-    height: 10px;
-    width: 10px;
-    border-right: 3px solid #000;
-    border-bottom: 3px solid #000;
-    transform: rotate(-45deg);
-    margin: 0 6px 0 0;
-    float: left;
-}
-
 .parameter_heading {
-    color: #c1c1c1;
-    margin: 2px 0 1px 0;
+    font-size: 12pt;
+    text-decoration: underline;
+    padding-left: 20px;
+    margin-bottom: 1px;
 }
-
 .parameter_value {
     font-size: 11pt;
+    padding-left: 20px;
 }
 
-*/
+.function {
+    padding-left: 20px;
+}
+
+
+
 
 
 
