@@ -1,4 +1,5 @@
 from data_pipeline.log_writer.log_writer import Logger
+
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
 LOGGER_HOST = "uipserver.ddns.net"
@@ -14,6 +15,7 @@ import data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine.tr
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine as prediction_engine
 from data_pipeline.exception.exceptions import *
 import traceback
+import requests
 
 app = Flask(__name__)
 
@@ -25,6 +27,7 @@ http_status_codes = {
     "DBException": 901,
     "PersistorException": 902
 }
+CLASSIFICATION_INIT_URL = "http://localhost:5000/classfiy"
 
 
 @app.route('/')
@@ -150,7 +153,9 @@ def get_logs():
     return 'logs'
 
 
-def send_classification_request(documentation):
+def send_classification_request(classification_config):
     """
     Name in documentation: 'sende_klassifizierungsanfrage'
     """
+    requests.post(CLASSIFICATION_INIT_URL, json=classification_config)
+    return "Success!"

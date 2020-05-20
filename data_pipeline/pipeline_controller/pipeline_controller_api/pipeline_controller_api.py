@@ -1,5 +1,6 @@
 from data_pipeline.pipeline_controller.process_engine import process_engine
 from data_pipeline.log_writer.log_writer import Logger
+from data_pipeline.pipeline_controller.request_service import request_service
 
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
@@ -39,3 +40,11 @@ def config():
     logger.info("incoming request for config")
     json = request.get_json()
     return config_handler.fetch_config(json["config"]).json()
+
+
+@app.route('/classfiy', methods=['POST'])
+def classify():
+    logger.info("incoming request for classification")
+    json = request.get_json()
+    request_service.start_classification(json)
+    return "Success!"
