@@ -30,7 +30,7 @@ if __name__ == '__main__':
 @app.route('/start_process', methods=['POST'])
 def start_process():
     logger.info("lets gooo")
-    process_engine.start_timer_based_process_cycle()
+    process_engine.start_trigger_based_process()
     return "Success!"
 
 

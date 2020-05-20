@@ -52,7 +52,7 @@ def get_forecast_data(url):
             data.append([timestamps_formatted[i], temperatures[i]])
 
     except:
-        logger.influx_logger.error("Incorrect file format.")
+        logger.error("Incorrect file format.")
         raise FileException("Incorrect file format.", 903)
 
     try:
@@ -72,7 +72,7 @@ def get_forecast_data(url):
 
 
     except:
-        logger.influx_logger.error("incorrect passed data.")
+        logger.error("incorrect passed data.")
         raise RawDataException("incorrect passed data.", 905)
 
     return df
@@ -92,7 +92,7 @@ def get_forecast(url):
         urllib.request.urlretrieve(url, "data.zip") # KMZ-Datei herunterladen und als .zip speichern
 
     except:
-        logger.influx_logger.error("Incorrect URL.")
+        logger.error("Incorrect URL.")
         raise UrlException("Incorrect URL.", 904)
 
     try:
@@ -101,7 +101,7 @@ def get_forecast(url):
             zip_datei.extractall("") # ZIP-Datei entpacken 
 
     except:
-        logger.influx_logger.error("Inadequate read and write rights.")
+        logger.error("Inadequate read and write rights.")
         raise FileException("Inadequate read and write rights.", 903)
 
     return filename

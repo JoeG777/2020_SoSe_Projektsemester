@@ -28,6 +28,7 @@ def get_historic_data():
         his.raise_historic_data(url_historisch)
 
         response = 200
+        logger.info("Historische Wetterdaten aktualisiert.")
 
     except exc.DataPipelineException as dpxc:
         response = dpxc.args[1]
@@ -57,6 +58,7 @@ def get_forecast_data():
         forc.raise_forecast_data(url_forecast)
 
         response = 200
+        logger.info("Vorhersage-Wetterdaten aktualisiert.")
 
     except exc.DataPipelineException as dpxc:
         response = dpxc.args[1]
@@ -75,13 +77,13 @@ def json_validation(index):
     '''
 
     if int(request.headers.get('Content-Length')) == 0:
-        logger.info('Config-JSON empty')
+        logger.error('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
 
     try:
         request.get_json(force=True)[index]
     except:
-        logger.info(index + 'missing in Config-JSON')
+        logger.error(index + 'missing in Config-JSON')
         raise exc.IncompleteConfigException(index + 'missing in Config-JSON.', 900)
 
 

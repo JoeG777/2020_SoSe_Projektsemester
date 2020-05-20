@@ -23,5 +23,6 @@ def start_timer_based_process_cycle():
 
 
 def start_trigger_based_process():
-    config = fetch_config("prediction")
-    start_prediction("prediction")
+    all_configs = fetch_all_configs()
+    start_prediction_training(all_configs["prediction"])
+    start_prediction(all_configs["prediction"])
