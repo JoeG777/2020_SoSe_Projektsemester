@@ -26,7 +26,7 @@ def calculate_prediction(config):
     all_prediction_units = config.get("prediction_options").get(selected_value)
     known_data_sources = db_read.read_data(datasource_forecast_dbname, measurement=datasource_forecast_measurement)
     known_data_sources = known_data_sources.astype('float64')
-    known_data_sources = known_data_sources.rename(columns={'forecast_weatherdata': 'outdoor'})
+    known_data_sources = known_data_sources.rename(columns={datasource_forecast_register: 'outdoor'})
     time_start = known_data_sources.first_valid_index()
     time_end = known_data_sources.last_valid_index()
     logger.info("Fetched relevant data...")
