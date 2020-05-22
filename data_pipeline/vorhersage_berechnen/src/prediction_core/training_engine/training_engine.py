@@ -52,7 +52,7 @@ def get_all_data(db_config):
     try:
         df_contains_all_data(df)
     except InsufficientDataException as e:
-        logger.influx_logger.exception(e.message)
+        logger.error(e.message)
     logger.info("Data fetching successful!")
     return df
 
@@ -133,7 +133,6 @@ def train_model(all_data, prediction_unit, log_models):
     independent_data_keys = prediction_unit["independent"]
     dependent_data_keys = prediction_unit["dependent"]
     test_sample_size = prediction_unit["test_sample_size"]
-    print(all_data)
     independent_train, independent_test, dependent_train, dependent_test = train_test_split(
         all_data[independent_data_keys],
         all_data[dependent_data_keys],
@@ -189,7 +188,7 @@ def train(config):
     try:
         config_validator.validate_config(config)
     except ConfigException as e:
-        logger.influx_logger.exception(e.message)
+        logger.error(e.message)
         raise ConfigException("Wrong config: " + e.message)
     all_models = []
     all_data = get_all_data(config["database_options"]["training"])
