@@ -25,13 +25,15 @@ def index():
         renders the index.html
         :return: index.html the site to be shown
     '''
+
+    current_modbus = get_current_modbus()
     start_safari = "2020-01-05"
     end_safari = "2020-01-05"
     vorhersage = 1
-    raumtemperatur = 2100
-    luefterstufe_zuluft = 2
-    luefterstufe_abluft = 2
-    betriebsmodus = 1
+    raumtemperatur = current_modbus["temperatur"]["0"]
+    luefterstufe_zuluft = current_modbus["zuluft_stufe"]["0"]
+    luefterstufe_abluft = current_modbus["abluft_stufe"]["0"]
+    betriebsmodus = current_modbus["modus"]["0"]
     return render_template('index.html',
                            value_start_safari=start_safari,
                            value_end_safari=end_safari,
@@ -129,6 +131,10 @@ def format_json():
     }
 
     return json
+
+
+def get_current_modbus():
+    return mce.request_current_modbus()
 
 
 @app.route('/get_model_data', methods=['GET'])

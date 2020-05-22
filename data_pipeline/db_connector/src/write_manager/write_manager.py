@@ -23,7 +23,11 @@ def write_query(db, json):
     :param db: The database the JSON should be written to.
     :param json: The json file to write into the database
     """
-    InfluxDBClient(url, port, user, password, db).write_points(json)
+    try:
+        print(json)
+        InfluxDBClient(url, port, user, password, db).write_points(json)
+    except Exception as e:
+        print(e)
 
 
 def write_query_array(db, json_array):
