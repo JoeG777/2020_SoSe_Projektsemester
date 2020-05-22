@@ -62,7 +62,6 @@ def train_classifier(config):
             return 1
         logger.info("model trained")
         if evaluate_classifier(classifier, required_score[event], X_test, y_test):
-            print('model persisted')
             model_persistor.persist_classifier(classifier, config, event)
             #logger.info("Saving Model")
     return 0
