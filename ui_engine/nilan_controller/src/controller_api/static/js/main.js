@@ -318,7 +318,8 @@ function refreshTimePeriod () {
 
 function set_initial_date () {
 
-    
+    var regex = "(?<=\btracks\/.*)(?<!\d)\d{9}(?!\d)"
+    co
 
 }
 
