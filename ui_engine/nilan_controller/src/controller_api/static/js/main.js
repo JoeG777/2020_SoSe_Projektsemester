@@ -1,5 +1,21 @@
 let mouseDown = false;
 
+/* Grafana-Dashboards */
+
+let dashboardTimestamps = {
+    "start_date": "1589356859000",
+    "end_date": "1590134459000"
+};
+
+let dashboards = {
+    "dashboard_1": "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=2",
+    "dashboard_2": "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=3"
+};
+
+document.getElementById('grafana_frame').src = dashboards["dashboard_1"];
+
+let activeDashboard = 1;
+
 /* Dropdown Menu */
 document.querySelector('.heading').innerHTML = "CONTROL PANEL";
 function press_dropdown() {
@@ -258,17 +274,51 @@ function setInititalPositionBetriebsmodus () {
 }
 
 function dropdown (index) {
-    let quelle1 = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=2";
-    let quelle2 = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=3";
     switch (index) {
         case 1:
-        document.querySelector('.grafana-frame').src = quelle1;
+        document.querySelector('.grafana-frame').src = dashboards["dashboard_1"];
         document.querySelector('.dropbtn').innerHTML = "Dashboard 1";
+        activeDashboard = index;
         break;
         case 2:
-        document.querySelector('.grafana-frame').src = quelle2;
+        document.querySelector('.grafana-frame').src = dashboards["dashboard_2"];
         document.querySelector('.dropbtn').innerHTML = "Dashboard 2";
+        activeDashboard = index;
         break;
     }
+}
+
+/* Set timeperiod in Grafana */
+
+function refreshTimePeriod () {
+
+    var start_date = document.getElementById('start_date').value;
+    var start_date_converted = start_date.substring(0,19) + ".000000000Z";
+    var end_date = document.getElementById('end_date').value;
+    var end_date_converted = end_date.substring(0,19) + ".000000000Z";
+
+    var start_date_unix =  Math.round((new Date(start_date_converted)).getTime() / 1000);
+    dashboardTimestamps["start_date"] = parseInt(start_date_unix + "000");
+
+    var end_date_unix =  Math.round((new Date(end_date_converted)).getTime() / 1000);
+    dashboardTimestamps["end_date"] = parseInt(end_date_unix + "000");
+
+    dashboards["dashboard_1"] = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=2";
+    dashboards["dashboard_2"] = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=3";
+
+    if (activeDashboard == 1) {
+        dropdown(activeDashboard);
+    }
+
+    if (activeDashboard == 2) {
+        dropdown(activeDashboard);
+    }
+
+}
+
+function set_initial_date () {
+
+    
+
 }
 

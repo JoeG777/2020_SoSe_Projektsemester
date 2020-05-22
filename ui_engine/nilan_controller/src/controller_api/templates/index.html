@@ -2,10 +2,10 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:500,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="utf-8">
 </head>
-<!-- TODO: Make JavaScript work without this onload event here -->
 <body>
 <div class="heading_dropdown">
     <div class="heading_container">
@@ -24,10 +24,8 @@
         <div class="content active" id="content">
             <div class="controlPanel">
                 <div class="date-control-wrapper">
-                    <input class="date-element safari" type="datetime-local" id="start_safari" name="start_safari" value={{value_start_safari}} size="10">
-                    <input class="date-element not-safari disable" type="date" id="start_not_safari" name="start_not_safari">
-                    <input class="date-element safari" type="datetime-local" id="end_safari" name="end_safari" value={{value_end_safari}} size="10">
-                    <input class="date-element not-safari disable" type="date" id="end_not_safari" name="end_not_safari">
+                    <input class="date-element not-safari" type="datetime-local" id="start_date" value="2020-01-05T00:00:00Z" name="start_not_safari">
+                    <input class="date-element not-safari" type="datetime-local" id="end_date" value="2020-05-21T00:00:00Z" name="end_not_safari" onchange="refreshTimePeriod()">
                 </div>
                 <div class="vorhersage-wrapper">
                     <label class="switch">
@@ -82,7 +80,7 @@
                 </div>
             </div>
             <div class="grafana-wrapper">
-                <iframe class="grafana-frame" src="http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=2" width="700" height="500" frameborder="0"></iframe>
+                <iframe class="grafana-frame" id="grafana_frame" src="" width="700" height="500" frameborder="0"></iframe>
             </div>
         </div>
         <div class="dropdown active" id="dashboard_dropdown">
@@ -107,5 +105,6 @@
 <script type="text/javascript"
         src="{{ url_for('static', filename='js/main.js') }}">
 </script>
+<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
 </body>
 </html>
