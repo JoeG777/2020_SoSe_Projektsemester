@@ -43,12 +43,10 @@ def cleaning():
      """
 
     response = {'statuscode': 200}
-
     try:
 
         incoming_req = check_if_request_empty()
         if validator.check_keys_in_request(incoming_req, expected_keys):
-
             start_process_with_config_params(incoming_req, 'sensor_data')
             start_process_with_config_params(incoming_req, 'historic_weatherdata')
             start_process_with_config_params(incoming_req, 'forecast_weatherdata')
@@ -82,7 +80,9 @@ def cleaning():
 
     except Exception as e:
         response['statuscode'] = 500
-        logger.error(e.args[0])
+        print("davor")
+        logger.error(str(e))
+        print("wo bin ich")
         print(type(e))
 
     finally:

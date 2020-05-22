@@ -6,7 +6,6 @@ import data_pipeline.db_connector.src.read_manager.read_manager as rm
 import data_pipeline.db_connector.src.write_manager.write_manager as wm
 from data_pipeline.log_writer.log_writer import Logger
 
-
 # initialize logger
 logger = Logger("logs", "logs", "uipserver.ddns.net", 8086, "Cleaning_Engine")
 
@@ -37,6 +36,7 @@ def get_data(from_db, from_measurement, value_name, register, time):
         raise exc.NoDataException("Result from Database was probably empty. Machste erstmal die basics")
 
     return res
+
 
 def isInt(v):
     try:
@@ -88,7 +88,7 @@ def format(data):
     return pd.Series(data.squeeze(), dtype='float64')
 
 
-def imputation(data, threshold=3600):
+def imputation(data, threshold="3600S"):
     """
     Goes through the dataset and saves a data point and his predecessor in a dictionary if
     the time difference between them is bigger than a given threshold
@@ -102,25 +102,22 @@ def imputation(data, threshold=3600):
 
     if data.empty:
         raise exc.NoDataException("Data mustn't be empty")
-    if threshold < 1:
+    if int(threshold[:-1]) < 1:
         raise exc.InvalidConfigValueException('Threshold must be greater than 1.')
 
-    time_index = data.index
-    imputation_dict = dict()
-    key = 0
-    # write points where difference is greater than the threshold into imputation dict
-    for i in range(1, len(time_index)):
-        diff = (time_index[i] - time_index[i - 1]).total_seconds()
-        if diff > threshold:
-            value_dict = dict()
-            value_dict["from"] = time_index[i - 1].round('min')
-
-            value_dict["to"] = time_index[i].round('min')
-
-            imputation_dict["gap" + str(key)] = value_dict
-            key += 1
-
-    return imputation_dict
+    imp_frame = pd.DataFrame(columns=["from", "to"])
+    time_index = pd.Series(data.index)
+    time_delta = time_index.diff()
+    threshold = pd.to_timedelta(threshold)
+    froms = []
+    tos = []
+    for i in range(1, len(time_delta)):
+        if pd.to_timedelta(time_delta.values[i]) > threshold:
+            froms.append(time_index.get(i - 1))
+            tos.append(time_index.get(i))
+    imp_frame["from"] = froms
+    imp_frame["to"] = tos
+    return imp_frame
 
 
 def rolling_mean(data, frame_width=100):
@@ -189,7 +186,7 @@ def cut(data, time_from, time_to):
     return data
 
 
-def remove_gaps(data, imputation_dict):
+def remove_gaps(data, imp_frame):
     """
     Method to remove the gaps of the given data which are found out in the imputation() method
     :param data: whole interpolated data as pandas Series in which the gaps should be cutted
@@ -199,18 +196,16 @@ def remove_gaps(data, imputation_dict):
     :exception NoDataException: Exception is thrown when data is empty
     :exception ImputationDictionaryException: Exception is thrown when no Imputation Dictionary is given
     """
-
     # Using the implicit booleanness of the empty list is quite pythonic
     if data.empty:
         raise exc.NoDataException("Data mustn't be empty")
-    if imputation_dict is None:
+    if imp_frame is None:
         raise exc.ImputationDictionaryException("Imputation Dictionary mustn't be None")
-
     # set values between gaps to NaN with cut function
-    for i in range(len(imputation_dict)):
-        cut(data, imputation_dict["gap" + str(i)]["from"], imputation_dict["gap" + str(i)]["to"])
-
-    return data
+    for i in range(len(imp_frame.index)):
+        # cut(data, imputation_dict["gap" + str(i)]["from"], imputation_dict["gap" + str(i)]["to"])
+        data = cut(data, imp_frame["from"].get(i), imp_frame["to"].get(i))
+    return data.astype('float64')
 
 
 def craft(data, value_name, register):
@@ -240,7 +235,6 @@ def craft(data, value_name, register):
 
 
 def shift(data, stepsize):
-
     return data.shift(-stepsize)
 
 
@@ -289,7 +283,7 @@ def workflow(from_db, to_db, from_measurement, to_measurement, value_name, regis
         print("lücken entfernt")
 
         final = craft(without_gaps, value_name, register)
-        final = shift(final, frame_width-1)
+        final = shift(final, frame_width - 1)
         print("Daten finalisiert")
 
         write_data(to_db, final, to_measurement)
@@ -334,7 +328,7 @@ def fast_and_furious(from_db, to_db, from_measurement, to_measurement, value_nam
     """
     curves = [v.strip() for v in register.split(',')]
 
-    use_multiprocessing = False
+    use_multiprocessing = True
 
     if use_multiprocessing:
         procs = []
@@ -362,4 +356,5 @@ if __name__ == "__main__":
     #                 {"from": "1478268800189003008", "to": "1678268811144129024"}, 3600, 10, "60S")
 
     fast_and_furious("nilan", "testlauf_Datenbereinigung", "temperature_register", "temperature_register",
-                     "valueScaled", "201", 10, "60S", 3600, {"from": "1578268800189003008", "to": "1578270018458657024"})
+                     "valueScaled", "201", 10, "60S", 3600,
+                     {"from": "1578268800189003008", "to": "1578270018458657024"})
