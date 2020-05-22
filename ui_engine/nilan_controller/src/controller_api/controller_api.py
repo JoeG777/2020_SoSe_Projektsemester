@@ -26,14 +26,21 @@ def index():
         :return: index.html the site to be shown
     '''
 
-    current_modbus = get_current_modbus()
-    start_safari = "2020-01-05"
-    end_safari = "2020-01-05"
-    vorhersage = 1
-    raumtemperatur = current_modbus["temperatur"]["0"]
-    luefterstufe_zuluft = current_modbus["zuluft_stufe"]["0"]
-    luefterstufe_abluft = current_modbus["abluft_stufe"]["0"]
-    betriebsmodus = current_modbus["modus"]["0"]
+    #current_modbus = get_current_modbus()
+    #start_safari = "2020-01-05"
+    #end_safari = "2020-01-05"
+    #vorhersage = 1
+    #raumtemperatur = current_modbus["temperatur"]["0"]
+    #luefterstufe_zuluft = current_modbus["zuluft_stufe"]["0"]
+    #luefterstufe_abluft = current_modbus["abluft_stufe"]["0"]
+    #betriebsmodus = current_modbus["modus"]["0"]
+    start_safari = "2020-05-05T00:00:00Z"
+    end_safari = "2020-05-10T00:00:00Z"
+    vorhersage = 0
+    raumtemperatur = 1800
+    luefterstufe_zuluft = 1
+    luefterstufe_abluft = 1
+    betriebsmodus = 1
     return render_template('index.html',
                            value_start_safari=start_safari,
                            value_end_safari=end_safari,
@@ -67,8 +74,8 @@ def validate_input():
 
     try:
 
-        start_safari = request.form['start_safari']
-        end_safari = request.form['end_safari']
+        start_date = request.form['start_safari']
+        end_date = request.form['end_safari']
         vorhersage = request.form.get('vorhersage')
         raumtemperatur = request.form['raumtemperaturSlider']
         luefterstufe_zuluft = request.form['lüfterZuluftSlider']

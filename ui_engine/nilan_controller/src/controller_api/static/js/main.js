@@ -3,8 +3,8 @@ let mouseDown = false;
 /* Grafana-Dashboards */
 
 let dashboardTimestamps = {
-    "start_date": "1589356859000",
-    "end_date": "1590134459000"
+    "start_date": "",
+    "end_date": ""
 };
 
 let dashboards = {
@@ -16,13 +16,18 @@ document.getElementById('grafana_frame').src = dashboards["dashboard_1"];
 
 let activeDashboard = 1;
 
+set_initial_date();
+refreshTimePeriod();
+
 /* Dropdown Menu */
 document.querySelector('.heading').innerHTML = "CONTROL PANEL";
+
 function press_dropdown() {
     document.querySelector('.dropdown_arrow').classList.toggle('active');
     document.getElementById('dropdown_option_1').classList.toggle('active');
     document.getElementById('dropdown_option_2').classList.toggle('active');
 }
+
 function option_pressed(option) {
     if (option == 1) {
         document.getElementById('content').classList.add('active');
@@ -40,12 +45,16 @@ function option_pressed(option) {
         document.querySelector('.heading').innerHTML = "CURRENT MODEL";
     }
 }
+
 /* Variablen für Buttons */
+
 let btnAktualisieren = document.getElementById('aktualisieren');
 let btnAnwenden = document.getElementById('anwenden');
 let einstellungenAktualisiert = false;
 let werteGeaendert = false;
+
 /******/
+
 setInititalPositionRaumtemp();
 setInititalPositionZuluft();
 setInititalPositionAbluft();
@@ -318,8 +327,58 @@ function refreshTimePeriod () {
 
 function set_initial_date () {
 
-    var regex = "(?<=\btracks\/.*)(?<!\d)\d{9}(?!\d)"
-    co
+    document.getElementById('end_date').value = get_current_date();
+    document.getElementById('start_date').value = get_current_date_minus_two_weeks();
+
+}
+
+function format_date (date_object) {
+
+    var month = add_zero(date_object.getMonth() + 1);
+    var year = date_object.getFullYear();
+    var day = add_zero(date_object.getDate());
+
+    var hour = add_zero(date_object.getHours());
+    var min = add_zero(date_object.getMinutes());
+    var sec = add_zero(date_object.getSeconds());
+
+    var date = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+
+    function add_zero (num) {
+
+        if (num < 10) {
+            return "0" + num;
+        } else {
+            return num;
+        }
+
+    }
+
+    return date;
+
+}
+
+function get_current_date () {
+
+    var date_object = new Date();
+    return format_date(date_object)
+
+}
+
+function get_current_date_minus_two_weeks () {
+
+    Date.prototype.AddDays = function(noOfDays) {
+        this.setTime(this.getTime() + (noOfDays * (1000 * 60 * 60 * 24)));
+        return this;
+    }
+
+    function get_date () {
+        var dateNew = new Date();
+        dateNew.AddDays(-14);
+        return dateNew;
+    }
+
+    return format_date(get_date())
 
 }
 

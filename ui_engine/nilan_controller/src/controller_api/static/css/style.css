@@ -375,6 +375,7 @@ input:checked + .checkboxSlider:before {
     margin: 0;
     z-index: 10;
     position: relative;
+    pointer-events: none;
 }
 
 .dropdown {
