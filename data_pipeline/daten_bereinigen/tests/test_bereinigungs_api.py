@@ -32,7 +32,7 @@ class test_check_request(unittest.TestCase):
 
     def test_none_request(self):
         test_request_body = None
-        self.assertRaises(excep.InvalidConfigKeyException, validator.check_keys_in_request, test_request_body, expected_keys)
+        self.assertRaises(excep.ConfigException, validator.check_keys_in_request, test_request_body, expected_keys)
 
     def test_correct_request(self):
         test_request_body = {

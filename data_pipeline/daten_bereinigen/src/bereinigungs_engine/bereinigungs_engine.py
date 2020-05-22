@@ -276,19 +276,13 @@ def workflow(from_db, to_db, from_measurement, to_measurement, value_name, regis
         resampled = resample(rolling, freq)
         print("Daten resampled")
 
-        print("resampled:", resampled)
-
         interpolated = interpolation(resampled)
         print("Daten interpoliert")
 
-        print("interpoliert:", interpolated)
-
-        print("Gleitender Mittelwert gebildet")
         without_gaps = remove_gaps(interpolated, imputation_dict)
         print("lücken entfernt")
 
         final = craft(without_gaps, value_name, register)
-        #final = shift(final, frame_width - 1)
         print("Daten finalisiert")
 
         write_data(to_db, final, to_measurement)
