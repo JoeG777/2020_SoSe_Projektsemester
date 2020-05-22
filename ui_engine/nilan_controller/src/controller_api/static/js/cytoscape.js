@@ -11,12 +11,12 @@ $(document).ready(fetchModelData())
 
 function fetchModelData() {
     $('#calc_container_wrapper').hide();
-    $('#curves').hide();
     jQuery.when(
         jQuery.getJSON('get_model_data')
     ).done(function (json) {
         $('#calc_container_wrapper').show();
         $('#curves').hide();
+        $('#calc_container_curve').hide();
         init(json);
     })
 }
