@@ -24,6 +24,8 @@ http_status_codes = {
     "PersistorException": 902
 }
 
+process_engine.start_timer_based_process_cycle()
+
 if __name__ == '__main__':
     app.run(host='localhost', port=5000)
 
