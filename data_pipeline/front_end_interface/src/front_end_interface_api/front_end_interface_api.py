@@ -86,11 +86,8 @@ def json_validation():
     if int(request.headers.get('Content-Length')) == 0:
         logger.influx_logger.error('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
-    print(3)
-    print(request.get_json)
     parameter_names = ["start_datum", "end_datum", "vorhersage", "raumtemperatur", "luefterstufe_zuluft", "luefterstufe_abluft", "betriebsmodus"]
     if collections.Counter(parameter_names) != collections.Counter(request.get_json().keys()):
-        print(5)
         logger.influx_logger.error('Incomplete Config-JSON')
         raise exc.IncompleteConfigException('Incomplete Config-JSON.', 900)
 
