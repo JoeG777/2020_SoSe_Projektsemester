@@ -47,7 +47,6 @@ def cleaning():
     try:
 
         incoming_req = check_if_request_empty()
-        print(validator.check_keys_in_request(incoming_req, expected_keys))
         if validator.check_keys_in_request(incoming_req, expected_keys):
             start_process_with_config_params(incoming_req, 'sensor_data')
             start_process_with_config_params(incoming_req, 'historic_weatherdata')
@@ -82,10 +81,9 @@ def cleaning():
 
     except Exception as e:
         response['statuscode'] = 500
-        print("davor")
+
         logger.error(str(e))
-        print("wo bin ich")
-        print(type(e))
+
 
     finally:
         logger.info('bereinigungsprozess beendet mit statuscode: ' + str(response['statuscode']))
@@ -114,7 +112,7 @@ def start_process_with_config_params(incoming_req, process_type):
         timeframe = {'from': "",
                 'to': ""}
 
-    print(timeframe)
+
     cleaning_eng.multi_processing(from_db, to_db, from_measurement, to_measurement, value_name, register,
                                   frame_width, freq, threshold, timeframe)
 
