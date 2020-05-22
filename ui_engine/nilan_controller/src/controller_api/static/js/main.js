@@ -1,5 +1,9 @@
 let mouseDown = false;
 
+$(document).ready(function(){
+    jQuery('#datetimepicker').datetimepicker();
+});
+
 /* Grafana-Dashboards */
 
 let dashboardTimestamps = {

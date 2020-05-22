@@ -2,8 +2,6 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:500,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css')}}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="utf-8">
 </head>
 <body>
@@ -24,8 +22,9 @@
         <div class="content active" id="content">
             <div class="controlPanel">
                 <div class="date-control-wrapper">
-                    <input class="date-element not-safari" type="datetime-local" id="start_date" name="start_not_safari">
-                    <input class="date-element not-safari" type="datetime-local" id="end_date" name="end_not_safari" onchange="refreshTimePeriod()">
+                    <input id="datetimepicker" type="text">
+                    <input class="date-element not-safari" type="text" id="start_date" name="start_not_safari" onchange="refreshTimePeriod()">
+                    <input class="date-element not-safari" type="text" id="end_date" name="end_not_safari" onchange="refreshTimePeriod()">
                 </div>
                 <div class="vorhersage-wrapper">
                     <label class="switch">
@@ -99,12 +98,13 @@
 <div class="cy_container" id="cy_container">
     <div class="cy" id="cy"></div>
 </div>
-
 <script src="../static/js/cytoscape.min.js"></script>
 <script src="../static/js/cytoscape.js"></script>
+<link href="{{ url_for('static', filename='css/jquery.datetimepicker.min.css') }}">
+<script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.datetimepicker.full.js') }}"></script>
 <script type="text/javascript"
         src="{{ url_for('static', filename='js/main.js') }}">
 </script>
-<script src="../static/js/bootstrap-datetimepicker.min.js"></script>
 </body>
 </html>
