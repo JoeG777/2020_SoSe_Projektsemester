@@ -1,74 +1,3 @@
-let averageData = {
-    "average_score": 0.5763061660139956,
-    "average_explained_variance_score": 0.5763743321592572,
-    "average_max_error": 8.096326490599703,
-    "average_mean_absolute_error": 1.0542581697922409,
-    "average_mean_squared_error": 5.5904049363090556,
-    "average_median_absolute_error": 0.7699636093103956,
-    "average_r2_score_avg": 0.5763637120083245
-}
-
-let predictionUnits = [{"independent": ["outdoor"],
-                        "dependent": ["freshAirIntake"],
-                        "test_sample_size": 0.2,
-                        "explained_variance_score": 1.0,
-                        "max_error": 1.2789769243681803e-13,
-                        "mean_absolute_error": 2.278405095523464e-14,
-                        "mean_squared_error": 8.703805249786064e-28,
-                        "median_absolute_error": 1.865174681370263e-14,
-                        "r2_score": 1.0
-                        },
-                        {"independent": ["freshAirIntake"],
-                         "dependent": ["evaporator"],
-                         "test_sample_size": 0.2,
-                         "explained_variance_score": 0.48818420249388716,
-                         "max_error": 36.83065486016068,
-                         "mean_absolute_error": 1.3825711925035478,
-                         "mean_squared_error": 7.071028234732214,
-                         "median_absolute_error": 0.786521716559321,
-                         "r2_score": 0.48817132880890124
-                         },
-                         {"independent": ["freshAirIntake"],
-                         "dependent": ["outlet"],
-                         "test_sample_size": 0.2,
-                         "explained_variance_score": 0.9957086110267189,
-                         "max_error": 1.0530777202267636,
-                         "mean_absolute_error": 0.18703818986862245,
-                         "mean_squared_error": 0.051838806393370615,
-                         "median_absolute_error": 0.16520420187688956,
-                         "r2_score": 0.9957079945275119
-                         },
-                         {"independent": ["outlet", "evaporator"],
-                         "dependent": ["room"],
-                         "test_sample_size": 0.2,
-                         "explained_variance_score": 0.39409689392476754,
-                         "max_error": 2.597899872610938,
-                         "mean_absolute_error": 0.8379751101821196,
-                         "mean_squared_error": 1.048255439776959,
-                         "median_absolute_error": 0.7230608026499219,
-                         "r2_score": 0.3940581483692188
-                         },
-                         {"independent": ["outdoor", "freshAirIntake"],
-                         "dependent": ["inlet"],
-                         "test_sample_size": 0.2,
-                         "explained_variance_score": 0.005806806348559901,
-                         "max_error": 67.75236956309371,
-                         "mean_absolute_error": 2.7542098772958985,
-                         "mean_squared_error": 16.81471032621601,
-                         "median_absolute_error": 2.1694281471428667,
-                         "r2_score": 0.005806104136281687
-                         },
-                         {"independent": ["outdoor", "freshAirIntake"],
-                         "dependent": ["condenser"],
-                         "test_sample_size": 0.2,
-                         "explained_variance_score": 0.0019395462959949095,
-                         "max_error": 85.52762483967015,
-                         "mean_absolute_error": 2.979519419826366,
-                         "mean_squared_error": 22.747382804899328,
-                         "median_absolute_error": 2.195879102725417,
-                         "r2_score": 0.0019386808175004822}
-                        ]
-
 var edgesPredictionCalcValues = {}
 var cy = null;
 let standardStyles = {
@@ -79,19 +8,21 @@ let standardStyles = {
 }
 
 $(document).ready(fetchModelData())
-//$(document).ready(init())
 
 function fetchModelData() {
+    $('#calc_container_wrapper').hide();
+    $('#curves').hide();
     jQuery.when(
         jQuery.getJSON('get_model_data')
     ).done(function (json) {
+        $('#calc_container_wrapper').show();
+        $('#curves').hide();
         init(json);
     })
 }
 
 
 function init(data) {
-    $('#parameter_wrapper').hide();
     let predictionUnits = createElementArray(data.prediction_units);
     //let predictionUnitsData = predictionUnits;
 
@@ -129,22 +60,23 @@ function init(data) {
         ],
         layout: {
           name: 'grid',
+          rows: 3,
         }
 
       });
 
 
-  cy.on('mouseover', 'edge', function(evt)  {
+  cy.on('mouseover', 'edge', function(evt) {
       let eventId = evt.target.id();
 
       makeEdgesGradient(eventId);
 
       let value = edgesPredictionCalcValues[eventId];
-      $('#parameter_wrapper').show();
-      $('#parameter_wrapper').offset({
-                left:  evt.renderedPosition.x,
-                top:   evt.renderedPosition.y
-      });
+      $('#curves').show();
+      $('#averageHeader').hide();
+      $('#calc_container_curve').show();
+      $('#calc_container_average').hide();
+
 
    $('#independent_curves').append(getCurvesAsHtml(value['independent']));
    $('#dependent_curves').append(getCurvesAsHtml(value['dependent']));
@@ -160,11 +92,8 @@ function init(data) {
     var problems = document.getElementsByClassName('functionContainer');
    for (let i = 0; i < problems.length; i++) {
         MQ.StaticMath(problems[i]);
-   }
-
-
-
-  });
+    }
+   });
 
   /* AVERAGE PARAMETERS */
 
@@ -181,7 +110,10 @@ function init(data) {
     cy.on('mouseout', 'edge', function(evt)  {
         $('.curveContainer').remove();
         $('.functionContainer').remove();
-        $('#parameter_wrapper').hide();
+        $('#calc_container_curve').hide();
+        $('#calc_container_average').show();
+        $('#curves').hide();
+        $('#averageHeader').show();
         resetAllEdges();
     });
   cy.userZoomingEnabled(false);
@@ -231,15 +163,12 @@ function createElementArray(predictionUnits) {
     let colorCounter = 0;
     for (let i = 0; i < predictionUnits.length; i++) {
         let currentUnit = predictionUnits[i];
-
         let dependent = predictionUnits[i]['dependent'];
         let independent = predictionUnits[i]['independent'];
-
         for (let j = 0; j < independent.length; j++) {
             let currentNode = {
                 'data': {'id': independent[j]},
             }
-
             if (!elements.includes(currentNode)) {
                 if (colorCounter == elementColors.length) colorCounter = 0;
                 let color = elementColors[colorCounter];
@@ -249,12 +178,10 @@ function createElementArray(predictionUnits) {
                 elements.push(currentNode);
             }
         }
-
         for (let j = 0; j < dependent.length; j++) {
             let currentNode = {
                 'data': {'id': dependent[j]},
             }
-
             if (!elements.includes(currentNode)) {
                 if (colorCounter == elementColors.length) colorCounter = 0;
                 let color = elementColors[colorCounter];
@@ -263,10 +190,8 @@ function createElementArray(predictionUnits) {
                 colorCounter++;
                 elements.push(currentNode);
             }
-
             for (let k = 0; k < independent.length; k++) {
                 let node = elements.find(n => n['data']['id'] == independent[k])
-
                 let id = predictionUnitId + '-' + node['data']['id'] + dependent[j];
                 let linkNode = {
                     'data': {
@@ -276,37 +201,28 @@ function createElementArray(predictionUnits) {
                     },
                 }
                 edgesPredictionCalcValues[id] = extractCalcValues(predictionUnits[i]);
-
                 elements.push(linkNode);
             }
-
         }
-
     predictionUnitId += 10;
     }
-
     return elements;
-
 }
 
 function generateFunction(predictionUnit) {
-    //$ax^2 + bx + c = 0$
-
     let coef = predictionUnit['coef'];
     let intercept = predictionUnit['intercept'];
     let dependent = predictionUnit['dependent'];
     let independent = predictionUnit['independent'];
-
     let linearFunc = ''
     for (let i = 0; i < coef.length; i++) {
         linearFunc += '<div class=functionContainer>'
         for (let j = 0; j < coef[i].length; j++) {
             linearFunc += roundToTwoDec(coef[i][j]) + ' * '  + independent[j] + ' + ';
         }
-        linearFunc += Math.round(intercept,2);
+        linearFunc += roundToTwoDec(intercept[i]);
         linearFunc += ' = ' + dependent[i] + '</div>';
     }
-
     return linearFunc;
 }
 
@@ -330,7 +246,6 @@ function extractCalcValues(predictionUnit) {
 }
 
 function getAverageValues(data) {
-    //let data = averageData
     return {
         "average_score": data["average_score"],
         "average_explained_variance_score": data["average_explained_variance_score"],
@@ -344,48 +259,8 @@ function getAverageValues(data) {
 
 function getCurvesAsHtml(curveArray) {
     let html = '';
-
     for (let i = 0; i < curveArray.length; i++) {
         html += '<h3 class="curveContainer">' + curveArray[i] + '</h3>';
     }
-
     return html;
 }
-
-
-// Parameter-Viewer
-/*
-let curve_name_independent = document.getElementById("curve_name_independent");
-let curve_name_dependent = document.getElementById("curve_name_dependent");
-
-let test_sample_size = document.getElementById("test_sample_size");
-let explained_variance_score = document.getElementById("explained_variance_score");
-let max_error = document.getElementById("max_error");
-let mean_absolute_error = document.getElementById("mean_absolute_error");
-let mean_squared_error = document.getElementById("mean_squared_error");
-let median_absolute_error = document.getElementById("median_absolute_error");
-let r2_score = document.getElementById("r2_score");
-*/
-/*
-//Independent Curves
-
-for (var i = 0; i < predictionUnits[3]['independent'].length; i++) {
-
-    var curve = document.createElement("h3");
-    curve.innerHTML = predictionUnits[3]['independent'][i];
-    document.querySelector(".independent_curves").appendChild(curve);
-
-}
-
-//Dependent Curves
-
-for (var i = 0; i < predictionUnits[3]['dependent'].length; i++) {
-
-    var curve = document.createElement("h3");
-    curve.innerHTML = predictionUnits[3]['dependent'][i];
-    document.querySelector(".dependent_curves").appendChild(curve);
-
-}
-
-
-*/

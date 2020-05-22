@@ -21,61 +21,66 @@
 
     <div class="body_container">
         <div class="cy_container">
-            <div class="cy" id="cy"></div>
-        </div>
-        <div class="average_container_wrapper">
-            <div class="average_container">
-                <h3>Average values</h3>
-                <p class="parameter_tag">Average Score</p>
-                <p class="parameter_value" id="average_score"></p>
-                <p class="parameter_tag">Average Explained Variance Score</p>
-                <p class="parameter_value" id="average_explained_variance_score"></p>
-                <p class="parameter_tag">Average Max Error</p>
-                <p class="parameter_value" id="average_max_error"></p>
-                <p class="parameter_tag">Average Mean Absolute Error</p>
-                <p class="parameter_value" id="average_mean_absolute_error"></p>
-                <p class="parameter_tag">Average Mean Squared Error</p>
-                <p class="parameter_value" id="average_mean_squared_error"></p>
-                <p class="parameter_tag">Average Median Absolute Error</p>
-                <p class="parameter_value" id="average_median_absolute_error"></p>
-                <p class="parameter_tag">Average R2 Score</p>
-                <p class="parameter_value" id="average_r2_score"></p>
-
+            <div class="cy" id="cy">
             </div>
         </div>
-        <div class="parameter_wrapper" id="parameter_wrapper">
-            <div class="curves">
-                <div id="independent_curves" class="independent_curves">
+        <div id="calc_container_wrapper" class="calc_container_wrapper">
+            <div class="calc_container_container">
+                <div class="calc_container_header">
+                    <div id="curves" class="curves">
+                        <div id="independent_curves" class="independent_curves">
+                        </div>
+                        <div class="arrow_container">
+                            <div class="parameter_arrow"></div>
+                        </div>
+                        <div id="dependent_curves" class="dependent_curves">
+                        </div>
+                    </div>
+                    <h3 id="averageHeader" class="averageHeader">Average values</h3>
                 </div>
-                <div class="arrow_container">
-                    <div class="parameter_arrow"></div>
+                <div id="calc_container_container" class="calc_container_content">
+                    <div id="calc_container_average" class="calc_container_average">
+                        <p class="parameter_tag">Average Score</p>
+                        <p class="parameter_value" id="average_score"></p>
+                        <p class="parameter_tag">Average Explained Variance Score</p>
+                        <p class="parameter_value" id="average_explained_variance_score"></p>
+                        <p class="parameter_tag">Average Max Error</p>
+                        <p class="parameter_value" id="average_max_error"></p>
+                        <p class="parameter_tag">Average Mean Absolute Error</p>
+                        <p class="parameter_value" id="average_mean_absolute_error"></p>
+                        <p class="parameter_tag">Average Mean Squared Error</p>
+                        <p class="parameter_value" id="average_mean_squared_error"></p>
+                        <p class="parameter_tag">Average Median Absolute Error</p>
+                        <p class="parameter_value" id="average_median_absolute_error"></p>
+                        <p class="parameter_tag">Average R2 Score</p>
+                        <p class="parameter_value" id="average_r2_score"></p>
+                    </div>
+                        <div id="calc_container_curve" class="calc_container_curve">
+                        <p class="parameter_heading">Test Sample Size</p>
+                        <p class="parameter_value" id="test_sample_size"></p>
+
+                        <p class="parameter_heading">Explained Variance Score</p>
+                        <p class="parameter_value"id="explained_variance_score"></p>
+
+                        <p class="parameter_heading">Max Error</p>
+                        <p class="parameter_value" id="max_error"></p>
+
+                        <p class="parameter_heading">Mean Absolute Error</p>
+                        <p class="parameter_value" id="mean_absolute_error"></p>
+
+                        <p class="parameter_heading">Mean Squared Error</p>
+                        <p class="parameter_value" id="mean_squared_error"></p>
+
+                        <p class="parameter_heading">Median Absolute Error</p>
+                        <p class="parameter_value" id="median_absolute_error"></p>
+
+                        <p class="parameter_heading">R2 Score</p>
+                        <p class="parameter_value" id="r2_score"></p>
+                        <p class="parameter_heading">Functional equation</p>
+                        <div id="function" class="function"></div>
+                        </div>
+                    </div>
                 </div>
-                <div id="dependent_curves" class="dependent_curves">
-
-                </div>
-            </div>
-            <p class="parameter_heading">Test Sample Size</p>
-            <p class="parameter_value" id="test_sample_size"></p>
-
-            <p class="parameter_heading">Explained Variance Score</p>
-            <p class="parameter_value"id="explained_variance_score"></p>
-
-            <p class="parameter_heading">Max Error</p>
-            <p class="parameter_value" id="max_error"></p>
-
-            <p class="parameter_heading">Mean Absolute Error</p>
-            <p class="parameter_value" id="mean_absolute_error"></p>
-
-            <p class="parameter_heading">Mean Squared Error</p>
-            <p class="parameter_value" id="mean_squared_error"></p>
-
-            <p class="parameter_heading">Median Absolute Error</p>
-            <p class="parameter_value" id="median_absolute_error"></p>
-
-            <p class="parameter_heading">R2 Score</p>
-            <p class="parameter_value" id="r2_score"></p>
-            <p class="parameter_heading">Funktionsgleichung</p>
-            <div id="function" class="function">
             </div>
         </div>
     </div>
