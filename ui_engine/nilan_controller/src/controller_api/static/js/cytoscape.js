@@ -7,7 +7,7 @@ let standardStyles = {
     'target-arrow-color-grayed-out': '#4d4b57'
 }
 
-$(document).ready(fetchModelData())
+//$(document).ready(fetchModelData())
 
 function fetchModelData() {
     $('#calc_container_wrapper').hide();
