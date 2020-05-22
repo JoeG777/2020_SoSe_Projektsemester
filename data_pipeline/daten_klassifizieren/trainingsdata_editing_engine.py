@@ -185,5 +185,5 @@ def convert_time(time_var):
 
 
 if __name__ == "__main__":
-    enrich_data(config)
-    mark_data(config)
+    enrich_data()
+    mark_data()

@@ -129,4 +129,4 @@ def convert_time(time_var):
 
 
 if __name__ == "__main__":
-    apply_classifier(config)
+    apply_classifier()

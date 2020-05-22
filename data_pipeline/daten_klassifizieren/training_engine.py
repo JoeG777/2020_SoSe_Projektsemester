@@ -114,4 +114,4 @@ def convert_time(time_var):
 
 
 if __name__ == "__main__":
-    train_classifier(config)
+    train_classifier()
