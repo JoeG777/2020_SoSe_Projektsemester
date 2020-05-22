@@ -39,15 +39,16 @@ def get_all_data(db_config):
     """
     logger.info("Fetching data....")
     df = rm.read_query(db_config["datasource_weatherdata_dbname"],
-                      "SELECT historic_weatherdata FROM " + db_config["datasource_weatherdata_measurement"] + " WHERE time > 1578610800000000000 AND time < 1578912660000000000")
-    print(df)
+                      "SELECT historic_weatherdata FROM "+ db_config["datasource_weatherdata_measurement"]
+                       )
     df = df.rename(columns={'historic_weatherdata': "outdoor"})
     current_dataset = rm.read_query(
         db_config["datasource_nilan_dbname"],
-        "SELECT * FROM " + db_config["datasource_nilan_measurement"] + " WHERE time > 1578610800000000000 AND time < 1578912660000000000")
+        "SELECT * FROM " + db_config["datasource_nilan_measurement"]
+    )
     current_dataset = current_dataset.astype('float64')
     df = pd.merge(df, current_dataset, on='time', how='inner')
-    print(df.columns)
+    df.dropna()
     try:
         df_contains_all_data(df)
     except InsufficientDataException as e:
