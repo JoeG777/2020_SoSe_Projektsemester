@@ -30,7 +30,7 @@ def nilan_control_service():
     '''
     try:
         json_validation()
-        ncs.write_to_nilan(request.args)
+        ncs.write_to_nilan(request.get_json())
         response = 200
 
     except exc.DataPipelineException as dpxc:
@@ -74,6 +74,14 @@ def get_current_models():
     df.reset_index(drop=True, inplace=True)
     print(df)
     return df.to_dict()[0]
+
+
+@app.route('/get_current_modbus', methods=['GET'])
+def get_current_modbus():
+    df = rm.read_query("db_steuerungsparameter", "SELECT * FROM steuerungsparameter ORDER BY DESC LIMIT 1")
+    print(df.head())
+    df.reset_index(drop=True, inplace=True)
+    return df.to_dict()
 
 
 def json_validation():

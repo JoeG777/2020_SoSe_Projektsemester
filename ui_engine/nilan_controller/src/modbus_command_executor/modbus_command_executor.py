@@ -20,3 +20,10 @@ def build_request_modbus_cmd(nilan_json):
     except:
         logger.influx_logger.error('Unable to save new parameters.')
         raise exc.RawDataException('Unable to save new parameters.', 905)
+
+
+def request_current_modbus():
+    try:
+        return requests.get("http://localhost:5001" + "/get_current_modbus").json()
+    except:
+        raise exc.RawDataException('Unable to load new parameters.', 905)

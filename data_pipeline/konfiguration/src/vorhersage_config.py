@@ -9,7 +9,7 @@ vorhersage_config = {
         "prediction": {
             "datasource_forecast_dbname": "bereinigte_Daten",
             "datasource_forecast_measurement": "forecast_temperature_register",
-            "datasource_forecast_register": "201",
+            "datasource_forecast_register": "forecast_weatherdata",
             "datasink_prediction_dbname": "prediction_data",
             "datasink_prediction_measurement": "vorhergesagteDaten"
         }
