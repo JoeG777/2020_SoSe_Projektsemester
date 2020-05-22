@@ -26,27 +26,18 @@ def format_json(json):
     Formats the Json-File for InfluxDB
     :param json: Nilan-Ventilation Unit Parameters
     '''
-
     try:
         json_nilan = [
-            {'measurement': 'raumtemperatur',
+            {'measurement': 'steuerungsparameter',
              "time": get_current_time_utc(),
-             "fields": {"temperatur": json['raumtemperatur']}
-             },
-            {'measurement': 'luefterstufe_zuluft',
-             "time": get_current_time_utc(),
-             "fields": {"stufe": json['luefterstufe_zuluft']}
-             },
-            {'measurement': 'luefterstufe_abluft',
-             "time": get_current_time_utc(),
-             "fields": {"stufe": json['luefterstufe_abluft']}
-             },
-            {'measurement': 'betriebsmodus',
-             "time": get_current_time_utc(),
-             "fields": {"modus": json['betriebsmodus']}
+             "fields": {
+                 "temperatur": json['raumtemperatur'],
+                 "zuluft_stufe": json['luefterstufe_zuluft'],
+                 "abluft_stufe": json['luefterstufe_abluft'],
+                 "modus": json['betriebsmodus']
+                 }
              }
         ]
-
     except:
         logger.influx_logger.error('Config-JSON incomplete')
         raise exc.RawDataException('Config-JSON incomplete', 905)
@@ -63,7 +54,7 @@ def write_to_nilan(json):
     '''
 
     try:
-        wm.write_query("db_steuerungsparameter", json)
+        wm.write_query("db_steuerungsparameter", format_json(json))
 
     except:
         logger.influx_logger.error('Writing data to database was unsuccessful')

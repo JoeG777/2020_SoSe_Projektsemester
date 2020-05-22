@@ -1,8 +1,10 @@
+import collections
+
 from flask import *
 from data_pipeline.log_writer.log_writer import Logger
 LOGGER_DB_NAME = "logs"
 LOGGER_MEASUREMENT = "logs"
-LOGGER_HOST = "localhost"
+LOGGER_HOST = "uipserver.ddns.net"
 LOGGER_PORT = "8086"
 LOGGER_COMPONENT = "Frontend Interface"
 
@@ -28,8 +30,7 @@ def nilan_control_service():
     '''
     try:
         json_validation()
-        ncs.write_to_nilan(request.args)
-
+        ncs.write_to_nilan(request.get_json())
         response = 200
 
     except exc.DataPipelineException as dpxc:
@@ -50,9 +51,7 @@ def pipeline_control_service():
     :return: statuscode
     '''
     try:
-        json_validation()
-        pcs.start_process(request.args)
-
+        pcs.build_request_data_pipeline_cmd()
         response = 200
 
     except exc.DataPipelineException as dpxc:
@@ -77,6 +76,14 @@ def get_current_models():
     return df.to_dict()[0]
 
 
+@app.route('/get_current_modbus', methods=['GET'])
+def get_current_modbus():
+    df = rm.read_query("db_steuerungsparameter", "SELECT * FROM steuerungsparameter ORDER BY DESC LIMIT 1")
+    print(df.head())
+    df.reset_index(drop=True, inplace=True)
+    return df.to_dict()
+
+
 def json_validation():
 
     '''
@@ -87,14 +94,8 @@ def json_validation():
     if int(request.headers.get('Content-Length')) == 0:
         logger.influx_logger.error('Config-JSON empty')
         raise exc.IncompleteConfigException('Config-JSON empty.', 900)
-
     parameter_names = ["start_datum", "end_datum", "vorhersage", "raumtemperatur", "luefterstufe_zuluft", "luefterstufe_abluft", "betriebsmodus"]
+    if collections.Counter(parameter_names) != collections.Counter(request.get_json().keys()):
+        logger.influx_logger.error('Incomplete Config-JSON')
+        raise exc.IncompleteConfigException('Incomplete Config-JSON.', 900)
 
-    for i in range(len(parameter_names)):
-
-        try:
-            request.get_json()[parameter_names[i]]
-
-        except:
-            logger.influx_logger.error('Incomplete Config-JSON')
-            raise exc.IncompleteConfigException('Incomplete Config-JSON.', 900)
