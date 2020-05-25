@@ -3,6 +3,7 @@ import ui_engine.nilan_controller.src.data_pipeline_format_executor.data_pipelin
 import ui_engine.nilan_controller.src.modbus_command_executor.modbus_command_executor as mce
 import data_pipeline.exception.exceptions as exc
 import requests
+import ui_engine.nilan_controller.src.controller_api.config as config
 
 app = Flask(__name__)
 
@@ -105,6 +106,10 @@ def validate_input():
                            value_luefterstufe_zuluft=luefterstufe_zuluft,
                            value_luefterstufe_abluft=luefterstufe_abluft,
                            value_betriebsmodus=betriebsmodus)
+
+@app.route('/get_config')
+def get_config():
+    return json.dumps(config.config)
 
 def exec_data_pipeline_cmd():
     '''

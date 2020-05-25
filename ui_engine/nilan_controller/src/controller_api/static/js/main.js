@@ -12,20 +12,26 @@ let dashboardTimestamps = {
     "end_date": ""
 };
 
-let dashboards = {
-    "dashboard_1": "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=2",
-    "dashboard_2": "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=3"
-};
-
-document.getElementById('grafana_frame').src = dashboards["dashboard_1"];
-
+let dashboards;
 let activeDashboard = 1;
 
-set_initial_date();
-refreshTimePeriod();
+get_dashboard_urls();
 
 /* Dropdown Menu */
 document.querySelector('.heading').innerHTML = "CONTROL PANEL";
+
+function get_dashboard_urls () {
+
+    jQuery.when(
+        jQuery.getJSON('get_config')
+    ).done(function (data) {
+        dashboards = data;
+        set_initial_date();
+        refreshTimePeriod();
+        document.getElementById('grafana_frame').src = dashboards["dashboard_1"];
+    });
+
+}
 
 function press_dropdown() {
     document.querySelector('.dropdown_arrow').classList.toggle('active');
@@ -233,6 +239,7 @@ function update (event, slider, span, low, high) {
         }
     }
 }
+
 function setInititalPositionRaumtemp () {
     let raumtemp = document.getElementById('raumtemperaturSlider').value
     let verhältnis = (raumtemp-1800) / 600
@@ -306,10 +313,12 @@ function dropdown (index) {
 
 function refreshTimePeriod () {
 
-    var start_date = document.getElementById('start_date').value;
-    var start_date_converted = start_date.substring(0,19) + ".000000000Z";
-    var end_date = document.getElementById('end_date').value;
-    var end_date_converted = end_date.substring(0,19) + ".000000000Z";
+    var start_date = new Date(document.getElementById('start_date').value);
+    var start_date_formatted = format_date(start_date);
+    var start_date_converted = start_date_formatted.substring(0,19) + ".000000000Z";
+    var end_date = new Date(document.getElementById('end_date').value);
+    var end_date_formatted = format_date(start_date);
+    var end_date_converted = end_date_formatted.substring(0,19) + ".000000000Z";
 
     var start_date_unix =  Math.round((new Date(start_date_converted)).getTime() / 1000);
     dashboardTimestamps["start_date"] = parseInt(start_date_unix + "000");
@@ -317,8 +326,8 @@ function refreshTimePeriod () {
     var end_date_unix =  Math.round((new Date(end_date_converted)).getTime() / 1000);
     dashboardTimestamps["end_date"] = parseInt(end_date_unix + "000");
 
-    dashboards["dashboard_1"] = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=2";
-    dashboards["dashboard_2"] = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=" + dashboardTimestamps["start_date"] + "&to=" + dashboardTimestamps["end_date"] + "&panelId=3";
+    dashboards["dashboard_1"] = replace_timestamps(dashboards["dashboard_1"], dashboardTimestamps["start_date"], dashboardTimestamps["end_date"]);
+    dashboards["dashboard_2"] = replace_timestamps(dashboards["dashboard_2"], dashboardTimestamps["start_date"], dashboardTimestamps["end_date"]);
 
     if (activeDashboard == 1) {
         dropdown(activeDashboard);
@@ -327,6 +336,15 @@ function refreshTimePeriod () {
     if (activeDashboard == 2) {
         dropdown(activeDashboard);
     }
+
+}
+
+function replace_timestamps (url, start_date, end_date) {
+
+    var re = /[0-9]{13}/g;
+    var split = url.split(re);
+
+    return split[0] + start_date + split[1] + end_date + split[2];
 
 }
 
