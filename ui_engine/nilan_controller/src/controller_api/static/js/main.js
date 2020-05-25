@@ -341,10 +341,6 @@ function refreshTimePeriod () {
 
 function replace_timestamps (url, start_date, end_date) {
 
-    if (url.contains("&fullscreen")) {
-        url.replace("&fullscreen", "");
-    }
-
     var re = /[0-9]{13}/g;
     var split = url.split(re);
 
@@ -388,7 +384,7 @@ function format_date (date_object) {
 function get_current_date () {
 
     var date_object = new Date();
-    return format_date(date_object)
+    return convert_to_datepicker_format(format_date(date_object))
 
 }
 
@@ -405,7 +401,14 @@ function get_current_date_minus_two_weeks () {
         return dateNew;
     }
 
-    return format_date(get_date())
+    return convert_to_datepicker_format(format_date(get_date()))
+
+}
+
+function convert_to_datepicker_format (timestamp) {
+
+    var timestamp_splitted = timestamp.split("-").join("/");
+    return timestamp_splitted.split("T").join(" ").split(":")[0] + ":" + timestamp_splitted.split("T").join(" ").split(":")[1];
 
 }
 
