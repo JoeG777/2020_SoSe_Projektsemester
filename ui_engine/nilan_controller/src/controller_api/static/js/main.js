@@ -317,7 +317,7 @@ function refreshTimePeriod () {
     var start_date_formatted = format_date(start_date);
     var start_date_converted = start_date_formatted.substring(0,19) + ".000000000Z";
     var end_date = new Date(document.getElementById('end_date').value);
-    var end_date_formatted = format_date(start_date);
+    var end_date_formatted = format_date(end_date);
     var end_date_converted = end_date_formatted.substring(0,19) + ".000000000Z";
 
     var start_date_unix =  Math.round((new Date(start_date_converted)).getTime() / 1000);
