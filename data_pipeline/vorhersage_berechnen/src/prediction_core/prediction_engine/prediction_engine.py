@@ -43,7 +43,7 @@ def calculate_prediction(config):
 
     logger.info("Prediction finished. Sending data to database")
     db_write.write_dataframe(datasink_prediction_dbname, known_data_sources, datasink_prediction_measurement)
-    classify_prediction(time_start, time_end, config)
+    #classify_prediction(time_start, time_end, config)
 
 
 def apply_model(prediction_unit, known_data_sources, all_prediction_models):
@@ -93,4 +93,5 @@ def classify_prediction(start, end, config):
     classifiction_config["datasource_raw_data"] = datasource_raw_data
     classifiction_config["datasource_classified_data"] = datasource_classified_data
     classifiction_config["timeframe"] = [str(start), str(end)]
+    classifiction_config['selected_event'] = "pred"
     pred_api.send_classification_request(classifiction_config)

@@ -27,7 +27,7 @@ http_status_codes = {
     "DBException": 901,
     "PersistorException": 902
 }
-CLASSIFICATION_INIT_URL = "http://localhost:5000/classfiy"
+CLASSIFICATION_INIT_URL = "http://localhost:5000/classify"
 
 
 @app.route('/')
@@ -150,3 +150,6 @@ def send_classification_request(classification_config):
     """
     requests.post(CLASSIFICATION_INIT_URL, json=classification_config)
     return "Success!"
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000)
