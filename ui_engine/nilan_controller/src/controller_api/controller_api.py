@@ -26,7 +26,11 @@ def index():
         :return: index.html the site to be shown
     '''
 
-    current_modbus = get_current_modbus()
+    try:
+        current_modbus = get_current_modbus()
+    except Exception as e:
+        return render_template('index.html')
+
     start_safari = "2020-01-05"
     end_safari = "2020-01-05"
     vorhersage = 1

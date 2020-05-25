@@ -144,15 +144,6 @@ def predict():
     return Response(status=status_code)
 
 
-@app.route('/log')
-def get_logs():
-    """
-    Name in documentation: 'get_logs'
-
-    """
-    return 'logs'
-
-
 def send_classification_request(classification_config):
     """
     Name in documentation: 'sende_klassifizierungsanfrage'
