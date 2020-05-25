@@ -411,4 +411,3 @@ function convert_to_datepicker_format (timestamp) {
     return timestamp_splitted.split("T").join(" ").split(":")[0] + ":" + timestamp_splitted.split("T").join(" ").split(":")[1];
 
 }
-
