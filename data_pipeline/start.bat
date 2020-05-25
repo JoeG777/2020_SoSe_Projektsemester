@@ -38,7 +38,6 @@ cd daten_erheben
 cd src
 cd data_collection_api
 set FLASK_APP=data_collection_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4994
 cd ../../../
 
@@ -46,7 +45,6 @@ cd daten_bereinigen
 cd src
 cd bereinigungs_API
 set FLASK_APP=bereinigungs_API.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4995
 cd ../../../
 
@@ -54,7 +52,6 @@ cd daten_filtern
 cd ./src
 cd ./filtern_api
 set FLASK_APP=filtern_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4996
 cd ../../../
 
@@ -66,7 +63,6 @@ cd ../
 cd konfiguration
 cd src
 set FLASK_APP=config_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4998
 cd ../../
 
@@ -75,14 +71,12 @@ cd src
 cd prediction_core
 cd prediction_api
 set FLASK_APP=prediction_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4999
 cd ../../../../
 
 cd pipeline_controller
 cd pipeline_controller_api
 set FLASK_APP=pipeline_controller_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 5000
 cd ../../
 
@@ -90,7 +84,6 @@ cd front_end_interface
 cd src
 cd front_end_interface_api
 set FLASK_APP=front_end_interface_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 5001
 cd ../../../
 
@@ -100,7 +93,6 @@ cd nilan_controller
 cd src
 cd controller_api
 set FLASK_APP=controller_api.py
-set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 5002
 cd ../../../
 
@@ -135,7 +127,7 @@ goto localInflux
     echo Importing db_vorhersage_daten
     influxd restore -portable -db "db_vorhersage_daten" -newdb "db_vorhersage_daten" %mypath:~0,-1%\schemas\db_vorhersage_daten
     echo Importing db_angereichert_daten
-    influxd restore -portable -db "db_angereichert_daten" -newdb "db_angereichert_daten" %mypath:~0,-1%\schemas\db_angereichert_daten
+    influxd restore -portable -db "db_angereichert_daten" -newdb "db_angereicherte_daten" %mypath:~0,-1%\schemas\db_angereichert_daten
     echo Importing db_markierte_daten
     influxd restore -portable -db "db_markierte_daten" -newdb "db_markierte_daten" %mypath:~0,-1%\schemas\db_markierte_daten
     set /p DUMMY=Database is setup and running on localhost:8086

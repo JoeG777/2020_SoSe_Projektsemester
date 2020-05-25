@@ -21,6 +21,13 @@ CURVES = ["freshAirIntake", "inlet", "room", "outlet", "condenser", "evaporator"
 
 
 def df_contains_all_data(dataframe):
+    """
+    Helper Method for get_all_data.
+    Checks if a given dataframe contains all data required. The required data are all keys defined in CURVES as well as
+    the outdoor curve.
+    :param dataframe: The dataframe to check
+    :return: Throws an InsufficientDataException if not all required data is defined.
+    """
     logger.info("Validating fetched data...")
     if "outdoor" not in dataframe:
         raise InsufficientDataException("Could not predict as data is missing for outdoor!")
@@ -32,7 +39,7 @@ def df_contains_all_data(dataframe):
 
 def get_all_data(db_config):
     """
-    Name in  documentation: TODO ADD TO DOCS
+    Helper method for train.
     Retrieves all data from the database defined in nilan_db and temp_db and merges this data into a dataframe.
     The dataframe then is returned.
     :return: A dataframe containing all data relevant for the model creation.
@@ -58,6 +65,15 @@ def get_all_data(db_config):
 
 
 def build_unit_logging_model(log_models, prediction_unit, current_model, indep_test, dep_true):
+    """
+    Helper method for build_and_write_logging_model
+    Calculates various benchmarks for the defined regression model and puts them into the given log model.
+    :param log_models: the logging model created in build_and_write_logging_model.
+    :param prediction_unit: the prediction unit used for this prediction.
+    :param current_model:  the current regression modell.
+    :param indep_test: the independent test data.
+    :param dep_true: the dependent test data.
+    """
     model = current_model["model"]
     dep_predicted = model.predict(indep_test)
     prediction_unit["explained_variance_score"] = explained_variance_score(dep_true, dep_predicted)
@@ -74,6 +90,13 @@ def build_unit_logging_model(log_models, prediction_unit, current_model, indep_t
 
 
 def build_and_write_logging_model(unit_logging_models, average_score):
+    """
+    Name in documentation: benchmarks_berechnen
+    Creates a logging model and writes it into the defined influx database.
+    :param unit_logging_models: all models for this config with their respective benchmarks
+    :param average_score:the average score for the current unit_loggins_models
+    :return:
+    """
     logger.info("Calculating benchmarks for current model...")
     explained_variance_score_avg = 0
     max_error_avg = 0
@@ -104,7 +127,7 @@ def build_and_write_logging_model(unit_logging_models, average_score):
 
 def model_data_to_dict(score, model, dependent_data_keys):
     """
-    Name in  documentation: TODO ADD TO DOCS
+    Helper Method, not defined in Architecture
     Takes a score, a model and the keys of the dependent data this model was created with and returns a dictionary.
     The structure of the dictionary is defined in 3.4.1.5.3 of the architecture documentation.
     :param score: The score this model reached.
