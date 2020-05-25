@@ -88,6 +88,7 @@ p {
 .slider-wrapper {
     width: 500px;
     height: 100px;
+    margin: 0 0 20px 0;
 }
 
 .raumtemperatur .slider {
@@ -264,7 +265,7 @@ label {
 }
 
 .date-control-wrapper {
-    margin: 0 0 30px 0;
+    margin: 0 0 60px 0;
 }
 
 .date-element {

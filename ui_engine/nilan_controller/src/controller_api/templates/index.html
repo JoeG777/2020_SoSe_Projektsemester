@@ -25,6 +25,7 @@
                     <input class="date-element not-safari" id="start_date" type="text" onchange="refreshTimePeriod()">
                     <input class="date-element not-safari" type="text" id="end_date" name="end_not_safari" onchange="refreshTimePeriod()">
                 </div>
+                <!--
                 <div class="vorhersage-wrapper">
                     <label class="switch">
                         <input type="checkbox" name="vorhersage" id="vorhersage" value={{value_vorhersage}}>
@@ -32,6 +33,7 @@
                     </label>
                     <label class="vorhersageLabel">Vorhersage anzeigen</label>
                 </div>
+                -->
                 <div class="slider-wrapper raumtemperatur" id="raumtemperatur">
                     <p class="heading">Raumtemperatur</p>
                     <input type="range" min="1800" max="2400" value={{value_raumtemperatur}} class="slider" name="raumtemperaturSlider" id="raumtemperaturSlider">
@@ -90,7 +92,7 @@
         </div>
         <div class="btn-wrapper active" id="btn_wrapper">
             <input type="submit" class="button" id="aktualisieren" name="button" href="#" value="Vorhersage berechnen"/>
-            <input type="submit" class="button" id="anwenden" href="#" name="button" value="Anwenden"/>
+            <input type="submit" class="button" id="anwenden" href="#" name="button" value="Einstellungen übernehmen"/>
         </div>
     </form>
 </div>
