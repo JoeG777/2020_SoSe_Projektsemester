@@ -1,7 +1,8 @@
 let mouseDown = false;
 
 $(document).ready(function(){
-    jQuery('#datetimepicker').datetimepicker();
+    jQuery('#start_date').datetimepicker();
+    jQuery('#end_date').datetimepicker();
 });
 
 /* Grafana-Dashboards */
