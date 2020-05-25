@@ -42,7 +42,7 @@ def index():
     return render_template('index.html',
                            value_start_safari=start_safari,
                            value_end_safari=end_safari,
-                           value_vorhersage=vorhersage,
+                           #value_vorhersage=vorhersage,
                            value_raumtemperatur=raumtemperatur,
                            value_luefterstufe_zuluft=luefterstufe_zuluft,
                            value_luefterstufe_abluft=luefterstufe_abluft,
@@ -64,7 +64,7 @@ def validate_input():
 
     start_safari = None
     end_safari = None
-    vorhersage = None
+    #vorhersage = None
     raumtemperatur = None
     luefterstufe_zuluft = None
     luefterstufe_abluft = None
@@ -74,13 +74,13 @@ def validate_input():
 
         start_safari = request.form['start_safari']
         end_safari = request.form['end_safari']
-        vorhersage = request.form.get('vorhersage')
+        #vorhersage = request.form.get('vorhersage')
         raumtemperatur = request.form['raumtemperaturSlider']
         luefterstufe_zuluft = request.form['lüfterZuluftSlider']
         luefterstufe_abluft = request.form['lüfterAbluftSlider']
         betriebsmodus = request.form['betriebsmodusSlider']
 
-        if request.form['button'] == 'aktualisieren':
+        if request.form['button'] == 'Vorhersage berechnen':
             exec_data_pipeline_cmd()
 
         else:
@@ -98,7 +98,7 @@ def validate_input():
     return render_template('index.html',
                            value_start_safari=start_safari,
                            value_end_safari=end_safari,
-                           value_vorhersage=vorhersage,
+                           #value_vorhersage=vorhersage,
                            value_raumtemperatur=raumtemperatur,
                            value_luefterstufe_zuluft=luefterstufe_zuluft,
                            value_luefterstufe_abluft=luefterstufe_abluft,
@@ -132,7 +132,7 @@ def format_json():
     json = {
         "start_datum": request.form['start_safari'] + "T00:00:00Z",
         "end_datum": request.form['end_safari'] + "T00:00:00Z",
-        "vorhersage": "1" if request.form.get('vorhersage') else "0",
+        #"vorhersage": "1" if request.form.get('vorhersage') else "0",
         "raumtemperatur": round(int(request.form['raumtemperaturSlider']) / 100, 0),
         "luefterstufe_zuluft": round(int(request.form['lüfterZuluftSlider']), 0),
         "luefterstufe_abluft": round(int(request.form['lüfterAbluftSlider']), 0),

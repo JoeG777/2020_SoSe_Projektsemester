@@ -317,7 +317,7 @@ function refreshTimePeriod () {
     var start_date_formatted = format_date(start_date);
     var start_date_converted = start_date_formatted.substring(0,19) + ".000000000Z";
     var end_date = new Date(document.getElementById('end_date').value);
-    var end_date_formatted = format_date(start_date);
+    var end_date_formatted = format_date(end_date);
     var end_date_converted = end_date_formatted.substring(0,19) + ".000000000Z";
 
     var start_date_unix =  Math.round((new Date(start_date_converted)).getTime() / 1000);
@@ -340,10 +340,6 @@ function refreshTimePeriod () {
 }
 
 function replace_timestamps (url, start_date, end_date) {
-
-    if (url.contains("&fullscreen")) {
-        url.replace("&fullscreen", "");
-    }
 
     var re = /[0-9]{13}/g;
     var split = url.split(re);
@@ -388,7 +384,7 @@ function format_date (date_object) {
 function get_current_date () {
 
     var date_object = new Date();
-    return format_date(date_object)
+    return convert_to_datepicker_format(format_date(date_object))
 
 }
 
@@ -405,7 +401,13 @@ function get_current_date_minus_two_weeks () {
         return dateNew;
     }
 
-    return format_date(get_date())
+    return convert_to_datepicker_format(format_date(get_date()))
 
 }
 
+function convert_to_datepicker_format (timestamp) {
+
+    var timestamp_splitted = timestamp.split("-").join("/");
+    return timestamp_splitted.split("T").join(" ").split(":")[0] + ":" + timestamp_splitted.split("T").join(" ").split(":")[1];
+
+}
