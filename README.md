@@ -7,7 +7,7 @@ Grafana for visualization dashboards.
 InfluxDB as database.
  
 ## Usage
-To set up the system run `dev.bat` and `db.bat` file in order to create all necessary Grafana dashboards and databases. Make sure ports 4994 to 5002 are not occupied. These ports will be used for the webservers to run on. After starting the webservers using start.bat the user can interact with the system by using web hosted client application. To any given time, system configuration parameters may be adjusted using the `config.py` files. 
+To set up the system run `dev.bat` and `start.bat` file in order to create all necessary Grafana dashboards and databases. Make sure ports 4994 to 5002 are not occupied. These ports will be used for the webservers to run on. After starting the webservers using start.bat the user can interact with the system by using web hosted client application. To any given time, system configuration parameters may be adjusted using the `config.py` files. 
 First setup may take several minutes as all historic data will be gathered and processed. Since data collection works periodically it is recommended to run system permanently.
  
 ## Structure
