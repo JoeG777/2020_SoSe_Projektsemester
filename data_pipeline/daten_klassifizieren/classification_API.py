@@ -6,6 +6,7 @@ LOGGER_PORT = "8086"
 LOGGER_COMPONENT = "Daten klassifizieren"
 logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT, LOGGER_COMPONENT)
 
+
 from flask import *
 import data_pipeline.daten_klassifizieren.trainingsdata_editing_engine as trainingsdata
 import data_pipeline.daten_klassifizieren.classification_engine as classification
@@ -41,13 +42,13 @@ def classify():
     """Name in documentation: 'classify'
     This method is used to apply the trained models and classify new data.
     :return: a Flask response contains one of the following status codes
-    400 - Bad Request - e.g. if the request body is not a JSON
-    500 - Internal Server Error - in any error cases not described here
-    900 - Config Error - if the message body contains an invalid config
-    901 - DBException - if there are problems with the database connection
-    902 - PersistorException - if there are problems with the persisted models
-    903 - FileException - if there are problems im model persistor with the files
-    904 - SklearnException - if there are problems with Sklearn methods    """
+    :return 400 - Bad Request - e.g. if the request body is not a JSON
+    :return 500 - Internal Server Error - in any error cases not described here
+    :return 900 - Config Error - if the message body contains an invalid config
+    :return 901 - DBException - if there are problems with the database connection
+    :return 902 - PersistorException - if there are problems with the persisted models
+    :return 903 - FileException - if there are problems im model persistor with the files
+    :return 904 - SklearnException - if there are problems with Sklearn methods    """
 
     logger.info("Received request on classify endpoint. Starting classify procedure...")
     response = 200
@@ -98,12 +99,12 @@ def train():
     """Name in documentation: 'train'
     This method is used to train models.
     :return: a Flask response contains one of the following status codes
-    400 - Bad Request - e.g. if the request body is not a JSON
-    500 - Internal Server Error - in any error cases not described here
-    900 - Config Error - if the message body contains an invalid config
-    901 - DBException - if there are problems with the database connection
-    902 - PersistorException - if there are problems with persisting the new models
-    903 - FileException - if there are problems im model persistor with the files"""
+    :return: 400 - Bad Request - e.g. if the request body is not a JSON
+    :return: 500 - Internal Server Error - in any error cases not described here
+    :return: 900 - Config Error - if the message body contains an invalid config
+    :return: 901 - DBException - if there are problems with the database connection
+    :return: 902 - PersistorException - if there are problems with persisting the new models
+    :return: 903 - FileException - if there are problems im model persistor with the files"""
 
     logger.info("Received request on train endpoint. Starting training procedure...")
     response = 200

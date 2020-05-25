@@ -1,4 +1,6 @@
 from flask import *
+from datetime import datetime
+import time
 from data_pipeline.daten_bereinigen.src.bereinigungs_engine import bereinigungs_engine as cleaning_eng
 import data_pipeline.exception.exceptions as exceptions
 import data_pipeline.konfiguration.src.config_validator as validator
@@ -8,19 +10,18 @@ from data_pipeline.log_writer.log_writer import Logger
 app = Flask(__name__)
 
 logger = Logger("logs", "cleaning_logs", "uipserver.ddns.net", 8086, "Cleaning_API")
-expected_keys = set(['sensor_data',
-                  'from_db', 'to_db', 'from_measurement', 'to_measurement', 'value_name', 'register',
-                  'frame_width', 'freq', 'threshold', 'time',  'to', 'from',
-                  'historic_weatherdata',
-                  'from_db', 'to_db', 'from_measurement', 'to_measurement', 'value_name', 'register',
-                  'frame_width', 'freq', 'threshold', 'time',  'to', 'from',
-                  'forecast_weatherdata',
-                  'from_db', 'to_db', 'from_measurement', 'to_measurement', 'value_name', 'register',
-                  'frame_width', 'freq', 'threshold', 'time', 'to', 'from'])
+expected_keys = set(['sensor_data_timeframe',
+                     'to', 'from',
+                     'sensor_data',
+                     'from_db', 'to_db', 'from_measurement', 'to_measurement',
+                    'value_name', 'register', 'frame_width', 'freq', 'threshold',
+                    'historic_weatherdata',
+                     'from_db', 'to_db', 'from_measurement', 'to_measurement',
+                     'value_name', 'register', 'frame_width', 'freq', 'threshold',
+                     'forecast_weatherdata',
+                     'from_db', 'to_db', 'from_measurement', 'to_measurement',
+                     'value_name', 'register', 'frame_width', 'freq', 'threshold'])
 
-#expected_keys = set(
-#    ['frame_width', 'freq', 'value_name', 'to_measurement', 'to_db', 'sensor_data', 'historic_weatherdata', 'threshold',
-#     'forecast_weatherdata', 'register', 'from_measurement', 'time', 'from_db'])
 
 
 def check_if_request_empty():
@@ -80,10 +81,9 @@ def cleaning():
 
     except Exception as e:
         response['statuscode'] = 500
-        print("davor")
+
         logger.error(str(e))
-        print("wo bin ich")
-        print(type(e))
+
 
     finally:
         logger.info('bereinigungsprozess beendet mit statuscode: ' + str(response['statuscode']))
@@ -91,20 +91,43 @@ def cleaning():
 
 
 def start_process_with_config_params(incoming_req, process_type):
-    sensor_data = incoming_req[process_type]
-    from_db = sensor_data['from_db']
-    to_db = sensor_data['to_db']
-    from_measurement = sensor_data['from_measurement']
-    to_measurement = sensor_data['to_measurement']
-    value_name = sensor_data['value_name']
-    register = sensor_data['register']
-    frame_width = sensor_data['frame_width']
-    freq = sensor_data['freq']
-    threshold = sensor_data['threshold']
-    time = sensor_data['time']
+    data = incoming_req[process_type]
+    from_db = data['from_db']
+    to_db = data['to_db']
+    from_measurement = data['from_measurement']
+    to_measurement = data['to_measurement']
+    value_name = data['value_name']
+    register = data['register']
+    frame_width = data['frame_width']
+    freq = data['freq']
+    threshold = data['threshold']
 
-    cleaning_eng.fast_and_furious(from_db, to_db, from_measurement, to_measurement, value_name, register,
-                                  frame_width, freq, threshold, time)
+    if process_type == 'sensor_data' or process_type == 'historic_weatherdata':
+        timeframe = {'from': convert_time(incoming_req['sensor_data_timeframe']['from']),
+                     'to': convert_time(incoming_req['sensor_data_timeframe']['to'])}
+    elif process_type == 'forecast_weatherdata':
+        timeframe = {'from': convert_time(incoming_req['sensor_data_timeframe']['to']),
+                'to': convert_time(str(datetime.now()) + " UTC")}
+    else:
+        timeframe = {'from': "",
+                'to': ""}
+
+
+    cleaning_eng.multi_processing(from_db, to_db, from_measurement, to_measurement, value_name, register,
+                                  frame_width, freq, threshold, timeframe)
+
+
+def convert_time(time_var):
+    """Convert a given date and time to unix timestamp
+   :param time_var: date and time to convert
+   :raises InvalidConfigValueException Raised if the parameter timeframe from the config is wrong
+   :return int: The converted time as unix timestamp"""
+    try:
+        time_var = datetime.strptime(time_var, "%Y-%m-%d %H:%M:%S.%f %Z")
+    except Exception:
+        raise exceptions.InvalidConfigValueException("Timeframe value in Config wrong")
+
+    return int((time.mktime(time_var.timetuple()))) * 1000
 
 
 if __name__ == '__main__':

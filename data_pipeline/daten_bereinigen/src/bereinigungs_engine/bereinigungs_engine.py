@@ -24,10 +24,10 @@ def get_data(from_db, from_measurement, value_name, register, time):
     query = ""
     if isInt(register):
 
-        query = "SELECT {0} FROM {1} WHERE register='{2}' and time >= {3} and time <= {4}".format(
+        query = "SELECT {0} FROM {1} WHERE register='{2}' and time >= {3}ms and time <= {4}ms".format(
             value_name, from_measurement, register, time["from"], time["to"])
     else:
-        query = "SELECT {0} FROM {1} WHERE time >={2} AND time <={3}".format(
+        query = "SELECT {0} FROM {1} WHERE time >={2}ms AND time <={3}ms".format(
             value_name, from_measurement, time["from"], time["to"])
 
     try:
@@ -137,7 +137,7 @@ def rolling_mean(data, frame_width=100):
     if frame_width < 0:
         raise exc.InvalidConfigValueException('Framewidth cannot be less than 0 ')
 
-    return data.rolling(frame_width).mean()
+    return data.rolling(frame_width, center=True).mean()
 
 
 def resample(data, freq='60S'):
@@ -283,7 +283,6 @@ def workflow(from_db, to_db, from_measurement, to_measurement, value_name, regis
         print("lücken entfernt")
 
         final = craft(without_gaps, value_name, register)
-        final = shift(final, frame_width - 1)
         print("Daten finalisiert")
 
         write_data(to_db, final, to_measurement)
@@ -310,7 +309,7 @@ def workflow(from_db, to_db, from_measurement, to_measurement, value_name, regis
         raise icve
 
 
-def fast_and_furious(from_db, to_db, from_measurement, to_measurement, value_name, register, frame_width, freq,
+def multi_processing(from_db, to_db, from_measurement, to_measurement, value_name, register, frame_width, freq,
                      threshold, time):
     # (from_db, to_db, from_measurement, to_measurement, value_name, register, frame_width, freq, threshold, time)
     """
@@ -355,6 +354,6 @@ if __name__ == "__main__":
     # fast_and_furious("valueScaled", "temperature_register", "historic",
     #                 {"from": "1478268800189003008", "to": "1678268811144129024"}, 3600, 10, "60S")
 
-    fast_and_furious("nilan", "testlauf_Datenbereinigung", "temperature_register", "temperature_register",
+    multi_processing("nilan", "testlauf_Datenbereinigung", "temperature_register", "temperature_register",
                      "valueScaled", "201", 10, "60S", 3600,
                      {"from": "1578268800189003008", "to": "1578270018458657024"})

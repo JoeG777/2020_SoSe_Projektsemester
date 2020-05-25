@@ -1,4 +1,5 @@
-klassifikations_config = {
+# TODO : in ChangeLog eintragen
+classification_config = {
     "datasource_classifier": "model.txt",
     "required_score": {"abtauzyklus": 0.9, "warmwasseraufbereitung": 0.9, "offennutzung": 0.5, "luefterstufen": 0.8,
                        "abtauzyklus_pred": 0.9, "warmwasseraufbereitung_pred": 0.9, "offennutzung_pred": 0.5, "luefterstufen_pred": 0.8},
