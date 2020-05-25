@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "fileName": "20200522T130753Z.meta",
+    "size": 1955
+  },
+  "limited": false,
+  "files": [
+    {
+      "database": "bereinigte_Daten",
+      "policy": "autogen",
+      "shardID": 88,
+      "fileName": "20200522T130753Z.s88.tar.gz",
+      "size": 3072,
+      "lastModified": 0
+    }
+  ]
+}
