@@ -341,6 +341,10 @@ function refreshTimePeriod () {
 
 function replace_timestamps (url, start_date, end_date) {
 
+    if (url.contains("&fullscreen")) {
+        url.replace("&fullscreen", "");
+    }
+
     var re = /[0-9]{13}/g;
     var split = url.split(re);
 
