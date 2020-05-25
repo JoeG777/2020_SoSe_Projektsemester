@@ -1,9 +1,9 @@
 # Machine learning-Based Predictive Analytics of Time Series Data for Visualization and Process Control
-Distributed service-oriented architecture (DSOA) for analysing and predicting events based on timeseries data. This application was developed for the ventilation system Nilan Combi S 302 Polar Top. It generates models by analysing historic sensor data which enables predicting machine behaviour based on forecast weather data.
+Distributed service-oriented architecture (DSOA) for analysing and predicting events based on timeseries data. This application was developed for the ventilation system *Nilan Combi S 302 Polar Top*. It generates models by analysing historic sensor data which enables predicting machine behaviour based on forecast weather data.
 
 ## Prerequisites
-Python 3.7, all required dependencies will be imported when starting `start.bat`.
-Grafana for visualization dashboards.
+Python 3.7, all required dependencies will be imported when starting `start.bat`. <br/>
+Grafana for visualization dashboards. <br/>
 InfluxDB as database.
  
 ## Usage
@@ -30,12 +30,12 @@ First setup may take several minutes as all historic data will be gathered and p
 * README.md
 
 ## Platform
-Tested on:   </br>
- - Windows 10 </br>
+Tested on:
+ - Windows 10 
  - MacOS
 
 ## Acknowledgement
-Grafana			https://github.com/grafana/grafana    </br>
+Grafana			https://github.com/grafana/grafana    <br/>
 InfluxDB		https://github.com/influxdata/influxdb
 
 ## Author
