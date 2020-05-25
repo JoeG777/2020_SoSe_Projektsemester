@@ -1,16 +1,16 @@
 vorhersage_config = {
     "database_options": {
         "training": {
-            "datasource_nilan_dbname": "filtered_data",
+            "datasource_nilan_dbname": "db_gefilterte_data",
             "datasource_nilan_measurement": "temperature_register",
-            "datasource_weatherdata_dbname": "bereinigte_Daten",
+            "datasource_weatherdata_dbname": "db_bereinigte_daten",
             "datasource_weatherdata_measurement": "temperature_register"
         },
         "prediction": {
-            "datasource_forecast_dbname": "bereinigte_Daten",
+            "datasource_forecast_dbname": "db_bereinigte_daten",
             "datasource_forecast_measurement": "forecast_temperature_register",
             "datasource_forecast_register": "forecast_weatherdata",
-            "datasink_prediction_dbname": "prediction_data",
+            "datasink_prediction_dbname": "db_vorhersage_daten",
             "datasink_prediction_measurement": "vorhergesagteDaten"
         }
     },

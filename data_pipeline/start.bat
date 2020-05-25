@@ -1,5 +1,6 @@
 @echo off
 SET mypath=%~dp0
+cd %mypath:~0,-1%
 echo
 echo                PPPPPP          CCCCC
 echo                PP   PP  oooo  CC    C
@@ -33,91 +34,75 @@ echo Starting Servers...
 echo.
 echo.
 
-echo Starting daten_erheben at port 4994...
 cd daten_erheben
-cd src/data_collection_api
+cd src
+cd data_collection_api
 set FLASK_APP=data_collection_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4994
 cd ../../../
-echo Done!
 
-echo Starting daten_bereinigen at port 4995...
-echo.
 cd daten_bereinigen
-cd src/bereinigungs_API
+cd src
+cd bereinigungs_API
 set FLASK_APP=bereinigungs_API.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4995
 cd ../../../
-echo Done!
 
-echo Starting daten_filtern at port 4996...
-echo.
 cd daten_filtern
-cd src
-cd filtern_api
+cd ./src
+cd ./filtern_api
 set FLASK_APP=filtern_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4996
 cd ../../../
 
-echo Starting daten_klassifizieren at port 4997...
-echo.
-cd daten_klassifizieren
+cd ./daten_klassifizieren
 set FLASK_APP=classification_API.py
 start cmd /k flask run -h localhost -p 4997
 cd ../
-echo Done!
 
-echo Starting konfiguration at port 4998...
-echo.
 cd konfiguration
 cd src
 set FLASK_APP=config_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4998
 cd ../../
-echo Done!
 
-echo Starting vorhersage_berechnen at port 4999...
-echo.
 cd vorhersage_berechnen
 cd src
 cd prediction_core
 cd prediction_api
 set FLASK_APP=prediction_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 4999
 cd ../../../../
-echo Done!
 
-echo Starting pipeline_controller at port 5000...
-echo.
 cd pipeline_controller
 cd pipeline_controller_api
 set FLASK_APP=pipeline_controller_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 5000
 cd ../../
-echo Done!
 
-echo Starting front_end_interface at port 5001...
-echo.
 cd front_end_interface
 cd src
 cd front_end_interface_api
 set FLASK_APP=front_end_interface_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 5001
 cd ../../../
-echo Done!
 
-echo Starting ui_engine at port 5002...
-echo.
 cd ../
 cd ui_engine
 cd nilan_controller
 cd src
 cd controller_api
 set FLASK_APP=controller_api.py
+set FLASK_ENV=development
 start cmd /k flask run -h localhost -p 5002
 cd ../../../
-echo Done!
-echo.
 
 
 goto localInflux
@@ -134,26 +119,25 @@ goto localInflux
     set /p answer=Please provide your absolute Influx installation path:
     cd %answer%
     start influxd.exe
-    TIMEOUT 5
     echo Importing nilan database
     influxd restore -portable  %mypath:~0,-1%\schemas\nilan.backup
     echo Done!
-    echo Importing cleaned_database
-    influxd restore -portable  %mypath:~0,-1%\schemas\bereinigte_Daten
-    echo Importing raw_database
-    influxd restore -portable  %mypath:~0,-1%\schemas\db_rohdaten
-    echo Importing filtered_data
-    influxd restore -portable  %mypath:~0,-1%\schemas\filtered_data
+    echo Importing db_bereinigte_daten
+    influxd restore -portable -db "db_bereinigte_daten" -newdb "db_bereinigte_daten" %mypath:~0,-1%\schemas\db_bereinigte_daten
+    echo Importing db_rohdaten
+    influxd restore -portable -db "db_rohdaten" -newdb "db_rohdaten"  %mypath:~0,-1%\schemas\db_rohdaten
+    echo Importing db_gefilterte_daten
+    influxd restore -portable -db "db_gefilterte_daten" -newdb "db_gefilterte_daten" %mypath:~0,-1%\schemas\db_gefilterte_daten
     echo Importing logs
-    influxd restore -portable  %mypath:~0,-1%\schemas\logs
-    echo Importing nilan_classified
-    influxd restore -portable  %mypath:~0,-1%\schemas\nilan_classified
-    echo Importing prediction_data
-    influxd restore -portable  %mypath:~0,-1%\schemas\prediction_data
-    echo Importing nilan_enriched
-    influxd restore -portable  %mypath:~0,-1%\schemas\nilan_enriched
-    echo Importing nilan_marked
-    influxd restore -portable  %mypath:~0,-1%\schemas\nilan_marked
+    influxd restore -portable -db "logs" -newdb "logs" %mypath:~0,-1%\schemas\logs
+    echo Importing db_klassifizierte_daten
+    influxd restore -portable -db "db_klassifizierte_daten" -newdb "db_klassifizierte_daten" %mypath:~0,-1%\schemas\db_klassifizierte_daten
+    echo Importing db_vorhersage_daten
+    influxd restore -portable -db "db_vorhersage_daten" -newdb "db_vorhersage_daten" %mypath:~0,-1%\schemas\db_vorhersage_daten
+    echo Importing db_angereichert_daten
+    influxd restore -portable -db "db_angereichert_daten" -newdb "db_angereichert_daten" %mypath:~0,-1%\schemas\db_angereichert_daten
+    echo Importing db_markierte_daten
+    influxd restore -portable -db "db_markierte_daten" -newdb "db_markierte_daten" %mypath:~0,-1%\schemas\db_markierte_daten
     set /p DUMMY=Database is setup and running on localhost:8086
 
 :remoteInflux

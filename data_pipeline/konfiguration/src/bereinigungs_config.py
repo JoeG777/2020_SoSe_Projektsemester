@@ -7,7 +7,7 @@ bereinigungs_config = {
 
     "sensor_data": {
         "from_db": "nilan",
-        "to_db": "bereinigte_Daten",
+        "to_db": "db_bereinigte_daten",
         "from_measurement": "temperature_register",
         "to_measurement": "temperature_register",
         "value_name": "valueScaled",
@@ -19,7 +19,7 @@ bereinigungs_config = {
 
     "historic_weatherdata": {
         "from_db": "db_rohdaten",
-        "to_db": "bereinigte_Daten",
+        "to_db": "db_bereinigte_daten",
         "from_measurement": "temperature_DWD",
         "to_measurement": "temperature_register",
         "value_name": "temperature",
@@ -31,7 +31,7 @@ bereinigungs_config = {
 
     "forecast_weatherdata": {
         "from_db": "db_rohdaten",
-        "to_db": "bereinigte_Daten",
+        "to_db": "db_bereinigte_daten",
         "from_measurement": "temperature_DWD",
         "to_measurement": "forecast_temperature_register",
         "value_name": "temperature",
@@ -40,5 +40,4 @@ bereinigungs_config = {
         "freq": "60S",
         "threshold": "10000S",
     }
-
 }
