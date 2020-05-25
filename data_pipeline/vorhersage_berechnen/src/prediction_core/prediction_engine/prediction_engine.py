@@ -43,8 +43,6 @@ def calculate_prediction(config):
 
     logger.info("Prediction finished. Sending data to database")
     db_write.write_dataframe(datasink_prediction_dbname, known_data_sources, datasink_prediction_measurement)
-    print(known_data_sources.head())
-    # TODO send the actual database config to the api
     classify_prediction(time_start, time_end, config)
 
 

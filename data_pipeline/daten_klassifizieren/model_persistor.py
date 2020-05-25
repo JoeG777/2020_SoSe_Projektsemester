@@ -7,7 +7,7 @@ import data_pipeline.exception.exceptions as ex
 
 # TODO: logWriter noch einbinden
 # TODO: model.txt muss existieren und darf nicht leer sein
-def load_classifier(classification_config):
+def load_classifier(classification_config, current_model_type):
     """
     Name in documentation: 'klassifizierer_laden'
 
@@ -29,6 +29,7 @@ def load_classifier(classification_config):
         create_new_classifier, datasource_classifier, event = get_config_parameter(classification_config)
         if create_new_classifier == "True":
             return sklearn.neighbors.KNeighborsClassifier()
+            #return sklearn.svm.SVC()
     except KeyError:
         raise ex.InvalidConfigKeyException("No Key found in configuration ")#evtl. genauere aufteilung der Exception notwendig
 
@@ -37,10 +38,10 @@ def load_classifier(classification_config):
     except Exception:
         raise ex.InvalidConfigValueException("Wrong configuration values for loading")
 
-    if event in classifier_dictionary.keys():
-        model = classifier_dictionary[event]
+    if current_model_type in classifier_dictionary.keys():
+        model = classifier_dictionary[current_model_type]
     else:
-        raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
+        raise ex.InvalidConfigKeyException("No such key for event: " + str(current_model_type))
 
     if model == '':
         return sklearn.neighbors.KNeighborsClassifier()  # TODO: hardcoden oder noch entscheiden durch Analyse
@@ -48,7 +49,7 @@ def load_classifier(classification_config):
         return model
 
 
-def persist_classifier(classifier, classification_config):
+def persist_classifier(classifier, classification_config, current_model_type):
     """
     name in documentation: 'klassifizierer_persistieren'
 
@@ -81,10 +82,10 @@ def persist_classifier(classifier, classification_config):
     except Exception:
         raise ex.InvalidConfigValueException("Wrong configuration values for loading")
 
-    if event in classifier_dictionary.keys():
-        classifier_dictionary[event] = classifier
+    if current_model_type in classifier_dictionary.keys():
+        classifier_dictionary[current_model_type] = classifier
     else:
-        raise ex.InvalidConfigKeyException("No such key for event: " + str(event))
+        raise ex.InvalidConfigKeyException("No such key for event: " + str(current_model_type))
 
     save_dictionary(classifier_dictionary, datasource_classifier)
     return 0
@@ -95,7 +96,6 @@ def load_dictionary(datasource_classifier):
     Loads the dictionary containing all the available classifcation-models for the events with pickle.
 
     :raises InvalidConfigValueException: Raised when there is nothing to unpickle e.g. the file is empty
-
     :param datasource_classifier: the file in which the dictionary is currently stored
     :return dictionary: unpickled dictionary {"event_name": sklearn-model}
     """
