@@ -5,12 +5,7 @@ Distributed service-oriented architecture (DSOA) for analysing and predicting ev
 Python 3.7, all required dependencies will be imported when starting `start.bat`.
 Grafana for visualization dashboards.
 InfluxDB as database.
-
-## Platform
-* Tested on:  
-- Windows 10
-- MacOS 
-
+ 
 ## Usage
 To set up the system run `dev.bat` and `db.bat` file in order to create all necessary Grafana dashboards and databases. Make sure ports 4994 to 5002 are not occupied. These ports will be used for the webservers to run on. After starting the webservers using start.bat the user can interact with the system by using web hosted client application. To any given time, system configuration parameters may be adjusted using the `config.py` files. 
 First setup may take several minutes as all historic data will be gathered and processed. Since data collection works periodically it is recommended to run system permanently.
@@ -32,7 +27,12 @@ First setup may take several minutes as all historic data will be gathered and p
   - `start.bat`			starts webservices 
 * ui_engine
   - `nilan_controller`		contains all scripts for web-client visualization 
-* README.md				
+* README.md
+
+## Platform
+Tested on:   </br>
+ - Windows 10 </br>
+ - MacOS
 
 ## Acknowledgement
 Grafana			https://github.com/grafana/grafana    </br>
