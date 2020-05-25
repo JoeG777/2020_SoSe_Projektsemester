@@ -13,7 +13,9 @@ from data_pipeline.daten_klassifizieren.classification_API import logger
 
 def train_classifier(config):
 
-    """Name in documentation: klassifizierer_trainieren()
+    """
+    Name in documentation: klassifizierer_trainieren()
+
     Train a classifier to identify a specific event.
     :param classification_config: Contains parameters for training the classifier
     :param classifier:(sklearn-object) a classification algorithm form the sklearn package
@@ -21,14 +23,15 @@ def train_classifier(config):
     :raises  PersistorException: Raised if classifier is not an instance of sklearn
     :return int: Status code that indicates whether the training was successful(0 Success, 1 Failure)"""
     try:
-        #logger.info("Logging config")
-
         selected_event, required_score, test_size, datasource_marked_data, start_time, end_time, events = get_config_parameter(config)
     except Exception:
-        return exce.InvalidConfigValueException
-
-    start = convert_time(start_time)
-    end = convert_time(end_time)
+        raise exce.InvalidConfigValueException
+    logger.info("config parameter loaded")
+    try:
+        start = convert_time(start_time)
+        end = convert_time(end_time)
+    except Exception as e:
+        raise exce.InvalidConfigValueException(str(e))
     df = read_manager.read_query(datasource_marked_data, f"SELECT * FROM {selected_event} WHERE time >= {start}ms AND time <= {end}ms")
     for event in events:
         end_start = markers[event]
@@ -39,31 +42,29 @@ def train_classifier(config):
         df_copy = df.copy()[start_event:end_event]
 
         try:
-
-            classifier = model_persistor.load_classifier(config, event)
+            classifier = model_persistor.load_classifier(config, event, True)
         except Exception as e:
-            raise exce.PersistorException(str(e))  # TODO: warum nochmal eine werfen, wenn eh schon geworfen???
+            raise exce.PersistorException(str(e))
         logger.info("model loaded")
         df_copy.dropna(inplace=True)
         y = np.array(df_copy[event])
         for drop_event in events:
             df_copy = df_copy.drop(labels=[drop_event, f"{drop_event}_marker"], axis=1)
-        '''if event == 'abtauzyklus_pred':
-            print('outdoor')
-            X = df_copy[['outdoor']].to_numpy()
-        else:'''
         X = df_copy.to_numpy()
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
-
         try:
-
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
+        except Exception as e:
+            raise exce.SklearnException(str(e))
+        try:
             classifier = classifier.fit(X_train, y_train)
-        except Exception:
-            return 1
+        except Exception as e:
+            raise exce.SklearnException(str(e))
         logger.info("model trained")
         if evaluate_classifier(classifier, required_score[event], X_test, y_test):
             model_persistor.persist_classifier(classifier, config, event)
-            #logger.info("Saving Model")
+            logger.info('model persisted')
+        else:
+            logger.info('score too low, model not persisted')
     return 0
 
 
@@ -76,12 +77,9 @@ def evaluate_classifier(classifier, required_score, X_test, y_test):
     :param X_test: Test data for evaluation
     :param y_test: Test data for evaluation
     :return boolean: True: New Classifier has a higher score and will be persist, False: New Classifier has a lower score and will not be persist)"""
-    # TODO : ursprünglicher und neuer Score loggen
     score = classifier.score(X_test, y_test)
-    #logger.info("Das ist der alte Score: " + str(required_score))
     logger.info("new score: " + str(score))
     if score >= required_score:
-        #logger.info("evaluating Model")
         return True
     return False
 

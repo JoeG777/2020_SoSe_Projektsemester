@@ -27,20 +27,25 @@ http_status_codes = {
     "SklearnException": 904
 }
 
+
 @app.route('/')
 def default():
     """
     Not featured in the documentation.
     Just returns information about the API.
     """
+
     logger.info("Received request on default endpoint. Returning default answer.")
     return '<h1>Endpoints</h1><p>/train - Train a model</p><p>/classify - Classify data</p>'
 
 
 @app.route('/classify', methods=['POST'])
 def classify():
-    """Name in documentation: 'classify'
+    """
+    Name in documentation: 'classify'
+
     This method is used to apply the trained models and classify new data.
+
     :return: a Flask response contains one of the following status codes
     :return 400 - Bad Request - e.g. if the request body is not a JSON
     :return 500 - Internal Server Error - in any error cases not described here
@@ -48,9 +53,10 @@ def classify():
     :return 901 - DBException - if there are problems with the database connection
     :return 902 - PersistorException - if there are problems with the persisted models
     :return 903 - FileException - if there are problems im model persistor with the files
-    :return 904 - SklearnException - if there are problems with Sklearn methods    """
+    :return 904 - SklearnException - if there are problems with Sklearn methods
+    """
 
-    logger.info("Received request on classify endpoint. Starting classify procedure...")
+    logger.info("Received request on 'classify' endpoint. Starting classify procedure...")
     response = 200
     if request.is_json:
         try:
@@ -96,17 +102,21 @@ def classify():
 
 @app.route('/train', methods=['POST'])
 def train():
-    """Name in documentation: 'train'
+    """
+    Name in documentation: 'train'
+
     This method is used to train models.
+
     :return: a Flask response contains one of the following status codes
     :return: 400 - Bad Request - e.g. if the request body is not a JSON
     :return: 500 - Internal Server Error - in any error cases not described here
     :return: 900 - Config Error - if the message body contains an invalid config
     :return: 901 - DBException - if there are problems with the database connection
     :return: 902 - PersistorException - if there are problems with persisting the new models
-    :return: 903 - FileException - if there are problems im model persistor with the files"""
+    :return: 903 - FileException - if there are problems im model persistor with the files
+    """
 
-    logger.info("Received request on train endpoint. Starting training procedure...")
+    logger.info("Received request on 'train' endpoint. Starting training procedure...")
     response = 200
     if request.is_json:
         try:
@@ -147,6 +157,9 @@ def train():
             logger.error(exception_name + " was caught (unknown). StackTrace: " + stack_trace)
             logger.error("Returning " + str(http_status_codes.get("HTTPInternalServerError")))
             response = http_status_codes.get("HTTPInternalServerError")
+    else:
+        logger.info("Request is not JSON. Returning " + str(http_status_codes.get("HTTPBadRequest")))
+        response = http_status_codes.get("HTTPBadRequest")
 
     status_code = Response(status=response)
     return status_code

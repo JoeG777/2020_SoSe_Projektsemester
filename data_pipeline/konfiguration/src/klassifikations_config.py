@@ -9,25 +9,12 @@ klassifikations_config = {
     "standard": ["abtauzyklus", "warmwasseraufbereitung"],
     "pred": ["abtauzyklus_pred", "warmwasseraufbereitung_pred"],
     "datasource_raw_data": {"database": "db_bereinigte_daten", "measurement": "temperature_register"},
-    "datasource_enriched_data": {"database": "db_angereicherte_daten", "measurement": "training"},
+    "datasource_enriched_data": {"database": "db_angereichert_daten", "measurement": "training"},
     "datasource_marked_data": {"database": "db_markierte_daten", "measurement": "training"},
     "datasource_classified_data": {"database": "db_klassifizierte_daten", "measurement": "classified"},
-    "datasource_predicted_data": {"database": "prediction_data", "measurement": "vorhergesagteDaten"},
+    "datasource_predicted_data": {"database": "db_vorhersage_daten", "measurement": "vorhergesagteDaten"},
     "timeframe": ["2020-01-15 00:00:00.000 UTC", "2020-01-31 05:00:00.000 UTC"],
     "selected_event": "standard",
     "create_new_classifier": "",
-    "test_size": 0.3,
-    "event_features": {
-        "start_marker": 1.0,
-        "start_deriv": 1.7,
-        "start_evap": 1.0,
-        "start_ch": -0.064,
-        "start_abtau": 10.0,
-        "end_marker": -1.0,
-        "end_deriv": 0.5,
-        "end_ch": 0.059,
-        "end_deriv_n3": -0.65,
-        "end_shift": -1.0,
-        "del_marker": 0.0
-    }
+    "test_size": 0.3
 }
