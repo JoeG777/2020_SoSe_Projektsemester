@@ -80,6 +80,12 @@ set FLASK_APP=pipeline_controller_api.py
 start cmd /k flask run -h localhost -p 5000
 cd ../../
 
+cd pipeline_controller
+cd timer
+set FLASK_APP=timer.py
+start cmd /k flask run -h localhost -p 5003
+cd ../../
+
 cd front_end_interface
 cd src
 cd front_end_interface_api
@@ -127,7 +133,7 @@ goto localInflux
     echo Importing db_vorhersage_daten
     influxd restore -portable -db "db_vorhersage_daten" -newdb "db_vorhersage_daten" %mypath:~0,-1%\schemas\db_vorhersage_daten
     echo Importing db_angereichert_daten
-    influxd restore -portable -db "db_angereicherte_daten" -newdb "db_angereicherte_daten" %mypath:~0,-1%\schemas\db_angereicherte_daten
+    influxd restore -portable -db "db_angereichert_daten" -newdb "db_angereicherte_daten" %mypath:~0,-1%\schemas\db_angereicherte_daten
     echo Importing db_markierte_daten
     influxd restore -portable -db "db_markierte_daten" -newdb "db_markierte_daten" %mypath:~0,-1%\schemas\db_markierte_daten
     set /p DUMMY=Database is setup and running on localhost:8086

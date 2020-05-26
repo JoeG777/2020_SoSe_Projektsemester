@@ -72,7 +72,7 @@ def get_all_data(db_config):
 def build_unit_logging_model(log_models, prediction_unit, current_model, indep_test, dep_true):
     """
     Helper method for build_and_write_logging_model
-    Calculates various benchmarks for the defined regression model and puts them into the given log model.
+    Calculates various benchmarks for the a single defined regression model and puts them into the given log model.
     :param log_models: the logging model created in build_and_write_logging_model.
     :param prediction_unit: the prediction unit used for this prediction.
     :param current_model:  the current regression modell.
