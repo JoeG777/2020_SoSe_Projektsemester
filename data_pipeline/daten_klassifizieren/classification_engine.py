@@ -62,7 +62,10 @@ def apply_classifier(config):
         else:
             df_raw = read_manager.read_query(datasource_raw_data,
                                              f"SELECT * FROM {measurement_raw} WHERE time >= {start}ms AND time <= {end}ms")
+        print("raw: ",df_raw)
+        print("query: ",df_query)
         df_raw.dropna(inplace=True)
+        print(df_raw)
         df_raw = df_raw.drop(df_raw.index[-1])
         df_raw = df_raw.drop(df_raw.index[0])
     except Exception:

@@ -92,6 +92,11 @@ def classify_prediction(start, end, config):
 
     classifiction_config["datasource_raw_data"] = datasource_raw_data
     classifiction_config["datasource_classified_data"] = datasource_classified_data
-    classifiction_config["timeframe"] = [str(start) + " UTC", str(end) + " UTC"]
+    # classifiction_config["timeframe"] = [str(start) + " UTC", str(end) + " UTC"]
+    start = str(start)[:18] + ".000 UTC"
+    print(start)
+    end = str(end)[:18] + ".000 UTC"
+    classifiction_config["timeframe"] = [start, end]
+    print(classifiction_config["timeframe"])
     classifiction_config['selected_event'] = "pred"
     pred_api.send_classification_request(classifiction_config)

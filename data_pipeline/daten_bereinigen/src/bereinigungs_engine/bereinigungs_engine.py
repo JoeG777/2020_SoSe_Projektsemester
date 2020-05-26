@@ -327,7 +327,7 @@ def multi_processing(from_db, to_db, from_measurement, to_measurement, value_nam
     """
     curves = [v.strip() for v in register.split(',')]
 
-    use_multiprocessing = False
+    use_multiprocessing = True
 
     if use_multiprocessing:
         procs = []

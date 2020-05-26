@@ -56,8 +56,6 @@ def get_all_data(db_config):
     df = df.astype('float64')
     current_dataset = current_dataset.astype('float64')
     pd.set_option('display.max_columns', None)
-    print("cd", current_dataset.tail(6))
-    print("df ", df.tail(6))
     df = pd.merge(df, current_dataset, on='time', how='inner')
     df.dropna(inplace=True)
 
@@ -161,7 +159,6 @@ def train_model(all_data, prediction_unit, log_models):
     independent_data_keys = prediction_unit["independent"]
     dependent_data_keys = prediction_unit["dependent"]
     test_sample_size = prediction_unit["test_sample_size"]
-    print(all_data)
     independent_train, independent_test, dependent_train, dependent_test = train_test_split(
         all_data[independent_data_keys],
         all_data[dependent_data_keys],
