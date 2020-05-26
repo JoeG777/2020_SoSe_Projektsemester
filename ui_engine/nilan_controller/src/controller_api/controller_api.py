@@ -26,14 +26,20 @@ def index():
         renders the index.html
         :return: index.html the site to be shown
     '''
-
+    start_safari = "2020-01-05"
+    end_safari = "2020-01-05"
     try:
         current_modbus = get_current_modbus()
     except Exception as e:
-        return render_template('index.html')
+        return render_template('index.html',
+                               value_start_safari=start_safari,
+                               value_end_safari=end_safari,
+                               value_raumtemperatur=21,
+                               value_luefterstufe_zuluft=2,
+                               value_luefterstufe_abluft=2,
+                               value_betriebsmodus=0)
 
-    start_safari = "2020-01-05"
-    end_safari = "2020-01-05"
+
     vorhersage = 1
     raumtemperatur = current_modbus["temperatur"]["0"]
     luefterstufe_zuluft = current_modbus["zuluft_stufe"]["0"]
