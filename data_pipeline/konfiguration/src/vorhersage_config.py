@@ -1,7 +1,7 @@
 vorhersage_config = {
     "database_options": {
         "training": {
-            "datasource_nilan_dbname": "db_gefilterte_data",
+            "datasource_nilan_dbname": "db_gefilterte_daten",
             "datasource_nilan_measurement": "temperature_register",
             "datasource_weatherdata_dbname": "db_bereinigte_daten",
             "datasource_weatherdata_measurement": "temperature_register"

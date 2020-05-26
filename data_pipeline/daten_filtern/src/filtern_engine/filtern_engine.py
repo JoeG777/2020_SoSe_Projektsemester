@@ -49,7 +49,7 @@ def get_data(timeframe):
     """
     try:
         #print(timeframe)
-        classified_data = reader.read_data('nilan_classified' ,measurement = 'classified',
+        classified_data = reader.read_data('db_klassifizierte_daten' ,measurement = 'classified',
                                            start_utc= str(convert_time(timeframe[0])),
                                            end_utc= str(convert_time(timeframe[1])))
         classified_data = classified_data.astype('float64')

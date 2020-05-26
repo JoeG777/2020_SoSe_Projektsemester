@@ -1,7 +1,7 @@
 import json
 
 params = {
-    "url": "uipserver.ddns.net",
+    "url": "localhost",
     "port": 8086,
     "user": "student",
     "password": "Abtauzyklus"

@@ -1,8 +1,8 @@
 bereinigungs_config = {
 
     "sensor_data_timeframe": {
-        "from": "2020-01-10 00:00:00.000 UTC",
-        "to": "2020-01-13 12:00:00.000 UTC",
+        "from": "2020-01-14 00:00:00.000 UTC",
+        "to": "2020-01-31 05:00:00.000 UTC",
     },
 
     "sensor_data": {

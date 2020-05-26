@@ -9,11 +9,11 @@ klassifikations_config = {
     "standard": ["abtauzyklus", "warmwasseraufbereitung"],
     "pred": ["abtauzyklus_pred", "warmwasseraufbereitung_pred"],
     "datasource_raw_data": {"database": "db_bereinigte_daten", "measurement": "temperature_register"},
-    "datasource_enriched_data": {"database": "db_angereichert_daten", "measurement": "training"},
+    "datasource_enriched_data": {"database": "db_angereicherte_daten", "measurement": "training"},
     "datasource_marked_data": {"database": "db_markierte_daten", "measurement": "training"},
     "datasource_classified_data": {"database": "db_klassifizierte_daten", "measurement": "classified"},
     "datasource_predicted_data": {"database": "db_vorhersage_daten", "measurement": "vorhergesagteDaten"},
-    "timeframe": ["2020-01-15 00:00:00.000 UTC", "2020-01-31 05:00:00.000 UTC"],
+    "timeframe": ["2020-01-14 00:00:00.000 UTC", "2020-01-31 05:00:00.000 UTC"],
     "selected_event": "standard",
     "create_new_classifier": "",
     "test_size": 0.3

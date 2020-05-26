@@ -23,8 +23,9 @@ http_status_codes = {
     "DBException": 901,
     "PersistorException": 902
 }
-
+#process_engine.timer_based_process_cycle()
 process_engine.start_timer_based_process_cycle()
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000)
@@ -44,9 +45,10 @@ def config():
     return config_handler.fetch_config(json["config"]).json()
 
 
-@app.route('/classfiy', methods=['POST'])
+@app.route('/classify', methods=['POST'])
 def classify():
     logger.info("incoming request for classification")
     json = request.get_json()
+    request_service.start_classification_training(json)
     request_service.start_classification(json)
     return "Success!"
