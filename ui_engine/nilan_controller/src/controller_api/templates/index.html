@@ -2,10 +2,8 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:500,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="utf-8">
 </head>
-<!-- TODO: Make JavaScript work without this onload event here -->
 <body>
 <div class="heading_dropdown">
     <div class="heading_container">
@@ -24,11 +22,10 @@
         <div class="content active" id="content">
             <div class="controlPanel">
                 <div class="date-control-wrapper">
-                    <input class="date-element safari" type="datetime-local" id="start_safari" name="start_safari" value={{value_start_safari}} size="10">
-                    <input class="date-element not-safari disable" type="date" id="start_not_safari" name="start_not_safari">
-                    <input class="date-element safari" type="datetime-local" id="end_safari" name="end_safari" value={{value_end_safari}} size="10">
-                    <input class="date-element not-safari disable" type="date" id="end_not_safari" name="end_not_safari">
+                    <input class="date-element not-safari" id="start_date" type="text" onchange="refreshTimePeriod()">
+                    <input class="date-element not-safari" type="text" id="end_date" name="end_not_safari" onchange="refreshTimePeriod()">
                 </div>
+                <!--
                 <div class="vorhersage-wrapper">
                     <label class="switch">
                         <input type="checkbox" name="vorhersage" id="vorhersage" value={{value_vorhersage}}>
@@ -36,6 +33,7 @@
                     </label>
                     <label class="vorhersageLabel">Vorhersage anzeigen</label>
                 </div>
+                -->
                 <div class="slider-wrapper raumtemperatur" id="raumtemperatur">
                     <p class="heading">Raumtemperatur</p>
                     <input type="range" min="1800" max="2400" value={{value_raumtemperatur}} class="slider" name="raumtemperaturSlider" id="raumtemperaturSlider">
@@ -82,7 +80,7 @@
                 </div>
             </div>
             <div class="grafana-wrapper">
-                <iframe class="grafana-frame" src="http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=2" width="700" height="500" frameborder="0"></iframe>
+                <iframe class="grafana-frame" id="grafana_frame" src="" width="700" height="500" frameborder="0"></iframe>
             </div>
         </div>
         <div class="dropdown active" id="dashboard_dropdown">
@@ -93,17 +91,19 @@
             </div>
         </div>
         <div class="btn-wrapper active" id="btn_wrapper">
-            <input type="submit" class="button" id="aktualisieren" name="button" href="#" value="aktualisieren"/>
-            <input type="submit" class="button" id="anwenden" href="#" name="button" value="anwenden"/>
+            <input type="submit" class="button" id="aktualisieren" name="button" href="#" value="Vorhersage berechnen"/>
+            <input type="submit" class="button" id="anwenden" href="#" name="button" value="Einstellungen übernehmen"/>
         </div>
     </form>
 </div>
 <div class="cy_container" id="cy_container">
     <div class="cy" id="cy"></div>
 </div>
-
+<script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
 <script src="../static/js/cytoscape.min.js"></script>
 <script src="../static/js/cytoscape.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.datetimepicker.min.css') }}">
+<script src="{{ url_for('static', filename='js/jquery.datetimepicker.full.js') }}"></script>
 <script type="text/javascript"
         src="{{ url_for('static', filename='js/main.js') }}">
 </script>
