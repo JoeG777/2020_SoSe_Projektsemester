@@ -18,97 +18,101 @@ echo.
 echo.
 echo.
 echo.
-echo %mypath%
-echo Installing dependencies...
-echo.
-pip install flask
-pip install requests
-pip install pandas
-pip install sklearn
-pip install influx_logging
-pip install timeloop
-echo.
-echo Done!
-
-echo Starting Servers...
-echo.
-echo.
-
-cd daten_erheben
-cd src
-cd data_collection_api
-set FLASK_APP=data_collection_api.py
-start cmd /k flask run -h localhost -p 4994
-cd ../../../
-
-cd daten_bereinigen
-cd src
-cd bereinigungs_API
-set FLASK_APP=bereinigungs_API.py
-start cmd /k flask run -h localhost -p 4995
-cd ../../../
-
-cd daten_filtern
-cd ./src
-cd ./filtern_api
-set FLASK_APP=filtern_api.py
-start cmd /k flask run -h localhost -p 4996
-cd ../../../
-
-cd ./daten_klassifizieren
-set FLASK_APP=classification_API.py
-start cmd /k flask run -h localhost -p 4997
-cd ../
-
-cd konfiguration
-cd src
-set FLASK_APP=config_api.py
-start cmd /k flask run -h localhost -p 4998
-cd ../../
-
-cd vorhersage_berechnen
-cd src
-cd prediction_core
-cd prediction_api
-set FLASK_APP=prediction_api.py
-start cmd /k flask run -h localhost -p 4999
-cd ../../../../
-
-cd pipeline_controller
-cd pipeline_controller_api
-set FLASK_APP=pipeline_controller_api.py
-start cmd /k flask run -h localhost -p 5000
-cd ../../
-
-cd pipeline_controller
-cd timer
-set FLASK_APP=timer.py
-start cmd /k flask run -h localhost -p 5003
-cd ../../
-
-cd front_end_interface
-cd src
-cd front_end_interface_api
-set FLASK_APP=front_end_interface_api.py
-start cmd /k flask run -h localhost -p 5001
-cd ../../../
-
-cd ../
-cd ui_engine
-cd nilan_controller
-cd src
-cd controller_api
-set FLASK_APP=controller_api.py
-start cmd /k flask run -h localhost -p 5002
-cd ../../../
-
-
 goto localInflux
+:install_dependencies
+    echo Installing dependencies...
+    echo.
+    pip install flask
+    pip install requests
+    pip install pandas
+    pip install sklearn
+    pip install influx_logging
+    pip install timeloop
+    echo.
+    echo Done!
+    goto start_servers
+
+:start_servers
+cd %mypath:~0,-1%
+    set /p DUMMY=Please make sure your databases is running and hit enter.
+    echo Starting Servers...
+    echo.
+    echo.
+
+    cd daten_erheben
+    cd src
+    cd data_collection_api
+    set FLASK_APP=data_collection_api.py
+    start cmd /k flask run -h localhost -p 4994
+    cd ../../../
+
+    cd daten_bereinigen
+    cd src
+    cd bereinigungs_API
+    set FLASK_APP=bereinigungs_API.py
+    start cmd /k flask run -h localhost -p 4995
+    cd ../../../
+
+    cd daten_filtern
+    cd ./src
+    cd ./filtern_api
+    set FLASK_APP=filtern_api.py
+    start cmd /k flask run -h localhost -p 4996
+    cd ../../../
+
+    cd ./daten_klassifizieren
+    set FLASK_APP=classification_API.py
+    start cmd /k flask run -h localhost -p 4997
+    cd ../
+
+    cd konfiguration
+    cd src
+    set FLASK_APP=config_api.py
+    start cmd /k flask run -h localhost -p 4998
+    cd ../../
+
+    cd vorhersage_berechnen
+    cd src
+    cd prediction_core
+    cd prediction_api
+    set FLASK_APP=prediction_api.py
+    start cmd /k flask run -h localhost -p 4999
+    cd ../../../../
+
+    cd pipeline_controller
+    cd pipeline_controller_api
+    set FLASK_APP=pipeline_controller_api.py
+    start cmd /k flask run -h localhost -p 5000
+    cd ../../
+
+    cd pipeline_controller
+    cd timer
+    set FLASK_APP=timer.py
+    start cmd /k flask run -h localhost -p 5003
+    cd ../../
+
+    cd front_end_interface
+    cd src
+    cd front_end_interface_api
+    set FLASK_APP=front_end_interface_api.py
+    start cmd /k flask run -h localhost -p 5001
+    cd ../../../
+
+    cd ../
+    cd ui_engine
+    cd nilan_controller
+    cd src
+    cd controller_api
+    set FLASK_APP=controller_api.py
+    start cmd /k flask run -h localhost -p 5002
+    cd ../../../
+    echo all Servers running
+    goto finally
 
 :localInflux
     set /p answer2=Do you want your local influx to be setup automatically (Y/N)?
         if /i "%answer2:~,1%" EQU "Y" goto auto
-        if /i "%answer2:~,1%" EQU "N" goto remoteInflux
+        if /i "%answer2:~,1%" EQU "N" goto install_dependencies
         echo Please type R for remote and L for local
         goto localInflux
 
@@ -132,11 +136,13 @@ goto localInflux
     influxd restore -portable -db "db_klassifizierte_daten" -newdb "db_klassifizierte_daten" %mypath:~0,-1%\schemas\db_klassifizierte_daten
     echo Importing db_vorhersage_daten
     influxd restore -portable -db "db_vorhersage_daten" -newdb "db_vorhersage_daten" %mypath:~0,-1%\schemas\db_vorhersage_daten
-    echo Importing db_angereichert_daten
-    influxd restore -portable -db "db_angereichert_daten" -newdb "db_angereicherte_daten" %mypath:~0,-1%\schemas\db_angereicherte_daten
+    echo Importing db_angereicherte_daten
+    influxd restore -portable -db "db_angereicherte_daten" -newdb "db_angereicherte_daten" %mypath:~0,-1%\schemas\db_angereicherte_daten
     echo Importing db_markierte_daten
     influxd restore -portable -db "db_markierte_daten" -newdb "db_markierte_daten" %mypath:~0,-1%\schemas\db_markierte_daten
-    set /p DUMMY=Database is setup and running on localhost:8086
+    echo Importing db_steuerungsparameter
+    influxd restore -portable -db "db_steuerungsparameter" -newdb "db_steuerungsparameter" %mypath:~0,-1%\schemas\db_steuerungsparameter
+    goto install_dependencies
 
 :remoteInflux
     echo Setup finished!
@@ -148,4 +154,5 @@ goto localInflux
     goto finally
 
 :finally
+    set /p DUMMY=Everything else is set you can hit enter to close.
     cd %mypath:~0,-1%
