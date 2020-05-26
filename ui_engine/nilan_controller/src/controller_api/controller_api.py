@@ -78,8 +78,8 @@ def validate_input():
 
     try:
 
-        start_safari = request.form['start_safari']
-        end_safari = request.form['end_safari']
+        start_safari = request.form['start_date']
+        end_safari = request.form['end_date']
         #vorhersage = request.form.get('vorhersage')
         raumtemperatur = request.form['raumtemperaturSlider']
         luefterstufe_zuluft = request.form['lüfterZuluftSlider']
@@ -94,12 +94,20 @@ def validate_input():
 
         response = 200
 
-    except exc.DataPipelineException as dpxc:
-        response = dpxc.args[1]
-    except exc.DBException as dbxc:
-        response = dbxc.args[1]
-    except  exc.RawDataException as rdxc:
-        response = rdxc.args[1]
+    #except exc.DataPipelineException as dpxc:
+    #    response = dpxc.args[1]
+    #except exc.DBException as dbxc:
+    #    response = dbxc.args[1]
+    #except  exc.RawDataException as rdxc:
+    #    response = rdxc.args[1]
+    except Exception as exc:
+        print("Error")
+        start_safari = "18/03/1234 13:23"
+        end_safari = "23/04/1456 14:23"
+        raumtemperatur = 18
+        luefterstufe_zuluft = 1
+        luefterstufe_abluft = 1
+        betriebsmodus = 1
 
     return render_template('index.html',
                            value_start_safari=start_safari,
@@ -136,8 +144,8 @@ def format_json():
     :return: json the formatted JSON-file
     '''
     json = {
-        "start_datum": request.form['start_safari'] + "T00:00:00Z",
-        "end_datum": request.form['end_safari'] + "T00:00:00Z",
+        "start_datum": request.form['start_date'] + "T00:00:00Z",
+        "end_datum": request.form['end_date'] + "T00:00:00Z",
         #"vorhersage": "1" if request.form.get('vorhersage') else "0",
         "raumtemperatur": round(int(request.form['raumtemperaturSlider']) / 100, 0),
         "luefterstufe_zuluft": round(int(request.form['lüfterZuluftSlider']), 0),
