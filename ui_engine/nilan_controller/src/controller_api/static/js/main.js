@@ -1,12 +1,44 @@
 let mouseDown = false;
 
+$(document).ready(function(){
+    jQuery('#start_date').datetimepicker();
+    jQuery('#end_date').datetimepicker();
+});
+
+/* Grafana-Dashboards */
+
+let dashboardTimestamps = {
+    "start_date": "",
+    "end_date": ""
+};
+
+let dashboards;
+let activeDashboard = 1;
+
+get_dashboard_urls();
+
 /* Dropdown Menu */
 document.querySelector('.heading').innerHTML = "CONTROL PANEL";
+
+function get_dashboard_urls () {
+
+    jQuery.when(
+        jQuery.getJSON('get_config')
+    ).done(function (data) {
+        dashboards = data;
+        set_initial_date();
+        refreshTimePeriod();
+        document.getElementById('grafana_frame').src = dashboards["dashboard_1"];
+    });
+
+}
+
 function press_dropdown() {
     document.querySelector('.dropdown_arrow').classList.toggle('active');
     document.getElementById('dropdown_option_1').classList.toggle('active');
     document.getElementById('dropdown_option_2').classList.toggle('active');
 }
+
 function option_pressed(option) {
     if (option == 1) {
         document.getElementById('content').classList.add('active');
@@ -24,12 +56,16 @@ function option_pressed(option) {
         document.querySelector('.heading').innerHTML = "CURRENT MODEL";
     }
 }
+
 /* Variablen für Buttons */
+
 let btnAktualisieren = document.getElementById('aktualisieren');
 let btnAnwenden = document.getElementById('anwenden');
 let einstellungenAktualisiert = false;
 let werteGeaendert = false;
+
 /******/
+
 setInititalPositionRaumtemp();
 setInititalPositionZuluft();
 setInititalPositionAbluft();
@@ -203,6 +239,7 @@ function update (event, slider, span, low, high) {
         }
     }
 }
+
 function setInititalPositionRaumtemp () {
     let raumtemp = document.getElementById('raumtemperaturSlider').value
     let verhältnis = (raumtemp-1800) / 600
@@ -258,17 +295,119 @@ function setInititalPositionBetriebsmodus () {
 }
 
 function dropdown (index) {
-    let quelle1 = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=2";
-    let quelle2 = "http://localhost:3000/d-solo/SoFiK5XZz/kondensator-and-verdampfer-2w?orgId=1&from=1579970090373&to=1582171278843&panelId=3";
     switch (index) {
         case 1:
-        document.querySelector('.grafana-frame').src = quelle1;
+        document.querySelector('.grafana-frame').src = dashboards["dashboard_1"];
         document.querySelector('.dropbtn').innerHTML = "Dashboard 1";
+        activeDashboard = index;
         break;
         case 2:
-        document.querySelector('.grafana-frame').src = quelle2;
+        document.querySelector('.grafana-frame').src = dashboards["dashboard_2"];
         document.querySelector('.dropbtn').innerHTML = "Dashboard 2";
+        activeDashboard = index;
         break;
     }
 }
 
+/* Set timeperiod in Grafana */
+
+function refreshTimePeriod () {
+
+    var start_date = new Date(document.getElementById('start_date').value);
+    var start_date_formatted = format_date(start_date);
+    var start_date_converted = start_date_formatted.substring(0,19) + ".000000000Z";
+    var end_date = new Date(document.getElementById('end_date').value);
+    var end_date_formatted = format_date(end_date);
+    var end_date_converted = end_date_formatted.substring(0,19) + ".000000000Z";
+
+    var start_date_unix =  Math.round((new Date(start_date_converted)).getTime() / 1000);
+    dashboardTimestamps["start_date"] = parseInt(start_date_unix + "000");
+
+    var end_date_unix =  Math.round((new Date(end_date_converted)).getTime() / 1000);
+    dashboardTimestamps["end_date"] = parseInt(end_date_unix + "000");
+
+    dashboards["dashboard_1"] = replace_timestamps(dashboards["dashboard_1"], dashboardTimestamps["start_date"], dashboardTimestamps["end_date"]);
+    dashboards["dashboard_2"] = replace_timestamps(dashboards["dashboard_2"], dashboardTimestamps["start_date"], dashboardTimestamps["end_date"]);
+
+    if (activeDashboard == 1) {
+        dropdown(activeDashboard);
+    }
+
+    if (activeDashboard == 2) {
+        dropdown(activeDashboard);
+    }
+
+}
+
+function replace_timestamps (url, start_date, end_date) {
+
+    var re = /[0-9]{13}/g;
+    var split = url.split(re);
+
+    return split[0] + start_date + split[1] + end_date + split[2];
+
+}
+
+function set_initial_date () {
+
+    document.getElementById('end_date').value = get_current_date();
+    document.getElementById('start_date').value = get_current_date_minus_two_weeks();
+
+}
+
+function format_date (date_object) {
+
+    var month = add_zero(date_object.getMonth() + 1);
+    var year = date_object.getFullYear();
+    var day = add_zero(date_object.getDate());
+
+    var hour = add_zero(date_object.getHours());
+    var min = add_zero(date_object.getMinutes());
+    var sec = add_zero(date_object.getSeconds());
+
+    var date = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "Z";
+
+    function add_zero (num) {
+
+        if (num < 10) {
+            return "0" + num;
+        } else {
+            return num;
+        }
+
+    }
+
+    return date;
+
+}
+
+function get_current_date () {
+
+    var date_object = new Date();
+    return convert_to_datepicker_format(format_date(date_object))
+
+}
+
+function get_current_date_minus_two_weeks () {
+
+    Date.prototype.AddDays = function(noOfDays) {
+        this.setTime(this.getTime() + (noOfDays * (1000 * 60 * 60 * 24)));
+        return this;
+    }
+
+    function get_date () {
+        var dateNew = new Date();
+        dateNew.AddDays(-14);
+        return dateNew;
+    }
+
+    return convert_to_datepicker_format(format_date(get_date()))
+
+}
+
+function convert_to_datepicker_format (timestamp) {
+
+    var timestamp_splitted = timestamp.split("-").join("/");
+    return timestamp_splitted.split("T").join(" ").split(":")[0] + ":" + timestamp_splitted.split("T").join(" ").split(":")[1];
+
+}
