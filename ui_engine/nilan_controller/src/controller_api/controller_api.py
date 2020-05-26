@@ -72,8 +72,8 @@ def validate_input():
 
     try:
 
-        start_safari = request.form['start_safari']
-        end_safari = request.form['end_safari']
+        start_safari = request.form['start_date']
+        end_safari = request.form['end_date']
         #vorhersage = request.form.get('vorhersage')
         raumtemperatur = request.form['raumtemperaturSlider']
         luefterstufe_zuluft = request.form['lüfterZuluftSlider']
