@@ -23,9 +23,6 @@ http_status_codes = {
     "DBException": 901,
     "PersistorException": 902
 }
-#process_engine.timer_based_process_cycle()
-process_engine.start_timer_based_process_cycle()
-
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000)

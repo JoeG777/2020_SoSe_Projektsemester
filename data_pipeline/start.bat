@@ -80,6 +80,12 @@ set FLASK_APP=pipeline_controller_api.py
 start cmd /k flask run -h localhost -p 5000
 cd ../../
 
+cd pipeline_controller
+cd timer
+set FLASK_APP=timer.py
+start cmd /k flask run -h localhost -p 5003
+cd ../../
+
 cd front_end_interface
 cd src
 cd front_end_interface_api
