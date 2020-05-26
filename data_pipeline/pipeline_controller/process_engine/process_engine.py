@@ -20,7 +20,6 @@ def start_timer_based_process_cycle():
 
 @tl.job(interval=timedelta(minutes=30))
 def timer_based_process_cycle():
-
     all_configs = fetch_all_configs()
     start_historic_data_elicitation(all_configs["elicitation"])
     start_prediction_data_elicitation(all_configs["elicitation"])

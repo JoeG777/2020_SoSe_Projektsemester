@@ -9,7 +9,6 @@ LOGGER_COMPONENT = "Vorhersage berechnen"
 logger = Logger(LOGGER_DB_NAME, LOGGER_MEASUREMENT, LOGGER_HOST, LOGGER_PORT,
                 LOGGER_COMPONENT)
 
-import json
 from flask import *
 import data_pipeline.vorhersage_berechnen.src.prediction_core.training_engine.training_engine as training_engine
 import data_pipeline.vorhersage_berechnen.src.prediction_core.prediction_engine.prediction_engine as prediction_engine
