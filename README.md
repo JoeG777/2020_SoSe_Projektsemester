@@ -39,4 +39,4 @@ Grafana			https://github.com/grafana/grafana    <br/>
 InfluxDB		https://github.com/influxdata/influxdb
 
 ## Author
-UIP Sommer Semester 2020
+Hochschule Mannheim - Unternehmens- und Wirtschaftsinformatik Projekt -  Sommer Semester 2020
